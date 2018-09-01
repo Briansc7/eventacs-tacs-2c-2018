@@ -3,7 +3,7 @@ package com.eventacs.service;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventsService {
+public class EventService {
 
     private EventsbriteFacade eventsbriteFacade;
 

@@ -1,6 +1,7 @@
 package com.eventacs.controller;
 
 import com.eventacs.dto.UserDTO;
+import com.eventacs.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private UserService userService;
 
-    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/:userId/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public String signUpUser(@RequestBody UserDTO userDTO) {
-
-        LOGGER.info("/book [POST]");
-
-        return "User Creado!";
+    public String createAlarm(@RequestBody UserDTO userDTO) {
+        LOGGER.info("/users/{}/alarms [POST]");
+        return "User Created!";
     }
 }
