@@ -1,4 +1,4 @@
-package com.eventacs.controller;
+package com.eventacs;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,4 +14,5 @@ public class HealthCheckController {
     public String getHealthState() {
         return "Status: Ok, App online.";
     }
+
 }
