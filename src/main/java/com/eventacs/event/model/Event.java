@@ -1,9 +1,14 @@
-package com.eventacs.service;
+package com.eventacs.event.model;
 
 public class Event {
 
     private String id;
     private String name;
+
+    public Event(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;

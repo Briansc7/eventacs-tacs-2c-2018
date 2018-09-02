@@ -1,13 +1,17 @@
-package com.eventacs.dto;
+package com.eventacs.account.dto;
 
-public class UserDTO {
+public class UserAccountDTO {
 
     private String name;
     private String password;
 
-    public UserDTO(String name, String password) {
-        this.setName(name);
-        this.setPassword(password);
+    public UserAccountDTO() {
+
+    }
+
+    public UserAccountDTO(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 
     public String getName() {

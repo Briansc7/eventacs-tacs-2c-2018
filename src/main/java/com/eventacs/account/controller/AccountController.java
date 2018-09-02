@@ -1,9 +1,11 @@
-package com.eventacs.controller;
+package com.eventacs.account.controller;
 
-import com.eventacs.dto.UserDTO;
-import com.eventacs.service.AccountService;
+import com.eventacs.account.service.AccountService;
+import com.eventacs.account.dto.UserAccountDTO;
+import com.eventacs.user.dto.UserInfoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,27 +17,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AccountController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
+
+    @Autowired
     private AccountService accountService;
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ResponseBody
-    public String signup(@RequestBody UserDTO userDTO) {
-        LOGGER.info("/eventacs/signup [POST] {1}", userDTO.getName());
-        return "User Created!";
+    public UserInfoDTO signup(@RequestBody UserAccountDTO userAccountDTO) {
+        LOGGER.info("/eventacs/signup [POST]");
+        return this.accountService.createUser(userAccountDTO);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestBody UserDTO userDTO) {
+    public UserInfoDTO login(@RequestBody UserAccountDTO userAccountDTO) {
         LOGGER.info("/eventacs/login [POST]");
-        return "User Login!";
+        return this.accountService.login(userAccountDTO);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public String logout() {
+    public UserInfoDTO logout(@RequestBody String sessionCookieId) {
         LOGGER.info("/eventacs/logout [POST]");
-        return "User Logout!";
+        return this.accountService.logout(sessionCookieId);
     }
 
 }

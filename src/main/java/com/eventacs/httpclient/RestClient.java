@@ -8,7 +8,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import java.io.IOException;
 
-public class HttpClientImpl {
+public class RestClient {
 
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
