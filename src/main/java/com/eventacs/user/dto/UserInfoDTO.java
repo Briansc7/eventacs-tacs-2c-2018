@@ -4,6 +4,8 @@ public class UserInfoDTO {
 
     private String id;
     private String name;
+    private String lastName;
+    //TODO LISTA DE VEENTOS??
 
     public UserInfoDTO() {
 

@@ -4,10 +4,12 @@ public class Event {
 
     private String id;
     private String name;
+    private String categorie;
 
-    public Event(String id, String name) {
+    public Event(String id, String name, String categorie) {
         this.id = id;
         this.name = name;
+        this.categorie = categorie;
     }
 
     public String getId() {
@@ -26,4 +28,11 @@ public class Event {
         this.name = name;
     }
 
+    public String getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(String categorie) {
+        this.categorie = categorie;
+    }
 }
