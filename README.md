@@ -8,6 +8,10 @@ $- mvn clean compile exec:java
 ### Eventacs API
 ### Routes
 #### Account Services
+
+Para los métodos POST, se debe poner en el header la key Content-Type con el valor application/json.
+El body debe ser escrito en formato json como se ve en los ejemplos a continuación.
+
 **Signup**
 - Method: POST
 - Rol: User
