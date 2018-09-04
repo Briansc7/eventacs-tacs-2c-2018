@@ -46,7 +46,7 @@ public class EventController {
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
     public String changeListName(@PathVariable String listId, @RequestBody String listName) {
-        LOGGER.info("/eventacs/event-lists/{} With listName: {} [PUT]", listId, listName);
+        LOGGER.info("/eventacs/event-lists/{} [PUT] With listName: {} ", listId, listName);
         return this.eventService.changeListName(listId, listName);
     }
 
@@ -75,7 +75,7 @@ public class EventController {
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
-        LOGGER.info("/event-lists/shared-events [GET] Lists IDs: {}, {}", listId, anotherListId);
+        LOGGER.info("/eventacs/event-lists/shared-events [GET] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
 
