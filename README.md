@@ -1,17 +1,21 @@
-# eventacs-tacs-2c-2018
+# Eventacs
+### Description
 Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Construcción de Software
 
 ### Install
-Para levantar la app ejecutar desde una consola:
+Para levantar la aplicacion ejecutar desde una consola:
 $- mvn clean compile exec:java
 
 ### Eventacs API
 ### Routes
-#### Account Services
+**Puerto:** 9000 **Basepath:** "/eventacs" 
+Example:
+`localhost:9000/eventacs`
 
 Para los métodos POST, se debe poner en el header la key Content-Type con el valor application/json.
 El body debe ser escrito en formato json como se ve en los ejemplos a continuación.
 
+#### Account Services
 **Signup**
 - Method: POST
 - Rol: User
@@ -20,6 +24,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 ```
   {
     "name": "nameExample",
+    "lastName": "lastNameExample",
     "password": "encryptedPasswordExample"
   }
 ```
@@ -32,14 +37,14 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 ```
   {
     "name": "nameExample",
-    "password": "encryptedPasswordExample"
+    "encryptedPassword": "encryptedPasswordExample"
   }
 ```
 
 **Logout**
 - Method: POST
 - Rol: User
-- URI: /login
+- URI: /logout
 - Body Example:
 ```
   {
@@ -65,7 +70,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Body Example:
 ```
   {
-    "": ""
+    "searchParameters": "searchParametersExample"
   }
 ```
 
@@ -73,12 +78,13 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 **Get Events**
 - Method: GET
 - Rol: User
-- URI: /events?criteria=A,B,C
+- URI: /events?criteria={someCriteria}
+`Criterias = Any keyword`
 
-**Interested**
+**Get Watchers**
 - Method: GET
 - Rol: Administrator
-- URI: /events/:eventId/interested
+- URI: /events/:eventId/watchers
 
 **Count Events**
 - Method: GET
@@ -101,7 +107,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 ```
   {
     "userId": "userIdExample",
-    "name": "nameExample"
+    "listName": "listNameExample"
   }
 ```
 
@@ -112,7 +118,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Body Example:
 ```
   {
-    "name": "newNameExample"
+    "listName": "listNameExample"
   }
 ```
 
@@ -124,4 +130,4 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 **Get shared events between two lists**
 - Method: GET
 - Rol: Administrator
-- URI: /event-lists/shared-events?listId1=1&listId2=2
+- URI: /event-lists/shared-events?listId=1&anotherListId=2
