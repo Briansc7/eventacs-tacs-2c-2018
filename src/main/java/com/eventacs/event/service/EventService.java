@@ -63,4 +63,14 @@ public class EventService {
         return watchers;
     }
 
+    public List<Event> getSharedEvents(String listId, String anotherListId) {
+        // TODO buscar cada lista y encontrar eventos en comun
+
+        List<Event> events = new ArrayList<>();
+        events.add(new Event("id1", "name1", "somecategory"));
+        events.add(new Event("id2", "name2", "somecategory"));
+
+        return events;
+    }
+
 }

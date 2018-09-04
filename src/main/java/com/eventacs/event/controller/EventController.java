@@ -78,4 +78,11 @@ public class EventController {
         return this.eventService.getWatchers(eventId);
     }
 
+    @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
+        LOGGER.info("/event-lists/shared-events [GET] Lists IDs: {}, {}", listId, anotherListId);
+        return this.eventService.getSharedEvents(listId, anotherListId);
+    }
+
 }
