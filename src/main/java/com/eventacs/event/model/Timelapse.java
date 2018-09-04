@@ -1,4 +1,4 @@
-package com.eventacs.event.controller;
+package com.eventacs.event.model;
 
 public enum Timelapse {
     TODAY("TODAY"), FEW_DAYS("FEW_DAYS"), WEEK("WEEK"), MONTH("MONTH"), ALL("ALL");

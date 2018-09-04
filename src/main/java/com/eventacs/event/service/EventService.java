@@ -1,11 +1,10 @@
 package com.eventacs.event.service;
 
-import com.eventacs.event.controller.Timelapse;
+import com.eventacs.event.model.Timelapse;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

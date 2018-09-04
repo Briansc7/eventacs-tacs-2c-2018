@@ -1,6 +1,7 @@
 package com.eventacs.event.controller;
 
 import com.eventacs.event.model.CreateEventDTO;
+import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
