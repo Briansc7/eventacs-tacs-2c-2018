@@ -5,9 +5,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class RestClient {
 
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();

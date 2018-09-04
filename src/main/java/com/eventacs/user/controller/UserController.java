@@ -43,7 +43,7 @@ public class UserController {
     @ResponseBody
     public AlarmDTO createAlarm(@PathVariable String userId, @RequestBody SearchDTO searchDTO) {
         LOGGER.info("/users/{}/alarms [POST]", userId);
-        return userService.createAlarm(userId, searchDTO);
+        return this.userService.createAlarm(userId, searchDTO);
     }
 
 }

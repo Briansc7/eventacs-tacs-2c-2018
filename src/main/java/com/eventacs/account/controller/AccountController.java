@@ -1,5 +1,6 @@
 package com.eventacs.account.controller;
 
+import com.eventacs.account.dto.UserLoginDTO;
 import com.eventacs.account.service.AccountService;
 import com.eventacs.account.dto.UserAccountDTO;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -25,20 +26,23 @@ public class AccountController {
     @ResponseBody
     public UserInfoDTO signup(@RequestBody UserAccountDTO userAccountDTO) {
         LOGGER.info("/eventacs/signup [POST]");
+        LOGGER.info("With user name:" + userAccountDTO.getName());
+
         return this.accountService.createUser(userAccountDTO);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public UserInfoDTO login(@RequestBody UserAccountDTO userAccountDTO) {
+    public UserInfoDTO login(@RequestBody UserLoginDTO userLoginDTO) {
         LOGGER.info("/eventacs/login [POST]");
-        return this.accountService.login(userAccountDTO);
+
+        return this.accountService.login(userLoginDTO);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
     public UserInfoDTO logout(@RequestBody String sessionCookieId) {
-        LOGGER.info("/eventacs/logout [POST]");
+        LOGGER.info("/eventacs/logout [POST] With SessionCookie: {}", sessionCookieId);
         return this.accountService.logout(sessionCookieId);
     }
 
