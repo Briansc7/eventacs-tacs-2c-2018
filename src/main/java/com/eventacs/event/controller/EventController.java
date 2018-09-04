@@ -1,5 +1,6 @@
 package com.eventacs.event.controller;
 
+import com.eventacs.event.model.CreateEventDTO;
 import com.eventacs.event.service.EventService;
 import com.eventacs.event.model.Event;
 import org.slf4j.Logger;
@@ -27,10 +28,11 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
-    public String createEventList(@RequestBody String userId, String listName){
+    public String createEventList(@RequestBody CreateEventDTO createEventDTO){
         LOGGER.info("/eventacs/event-lists [POST]");
+        LOGGER.info("User id: {}, listName : {}", createEventDTO.getUserId(), createEventDTO.getListName());
 
-        return eventService.createEventList(userId, listName);
+        return eventService.createEventList(createEventDTO.getUserId(), createEventDTO.getListName());
     }
 
 
