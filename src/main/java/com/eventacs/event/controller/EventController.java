@@ -2,6 +2,7 @@ package com.eventacs.event.controller;
 
 import com.eventacs.event.service.EventService;
 import com.eventacs.event.model.Event;
+import com.eventacs.user.dto.UserInfoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,15 @@ public class EventController {
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
     public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
-        return new BigDecimal(1);
+        LOGGER.info("/eventacs/events/count [GET] Timelapse: {}", timelapse.getValue());
+        return this.eventService.count(timelapse);
+    }
+
+    @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserInfoDTO> getWatchers(@PathVariable String eventId) {
+        LOGGER.info("/eventacs/{}/watchers [GET]", eventId);
+        return this.eventService.getWatchers(eventId);
     }
 
 }

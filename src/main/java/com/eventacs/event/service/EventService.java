@@ -1,11 +1,15 @@
 package com.eventacs.event.service;
 
+import com.eventacs.event.controller.Timelapse;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.event.model.Event;
+import com.eventacs.user.dto.UserInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,4 +47,21 @@ public class EventService {
     public String deleteEventList(String listId) {
         return listId;
     }
+
+    public BigDecimal count(Timelapse timelapse) {
+        // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
+
+        return new BigDecimal(50);
+    }
+
+    public List<UserInfoDTO> getWatchers(String eventId) {
+        // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
+
+        List<UserInfoDTO> watchers = new ArrayList<>();
+        watchers.add(new UserInfoDTO("id1", "name1", "lastname1", new ArrayList<>()));
+        watchers.add(new UserInfoDTO("id2", "name2", "lastname2", new ArrayList<>()));
+
+        return watchers;
+    }
+
 }
