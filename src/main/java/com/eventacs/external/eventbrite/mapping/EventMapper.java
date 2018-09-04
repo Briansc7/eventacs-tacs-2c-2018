@@ -8,7 +8,13 @@ import org.springframework.stereotype.Component;
 public class EventMapper {
 
     public Event fromResponseToModel(EventResponse eventResponse) {
-        return new Event(eventResponse.getId(), eventResponse.getName().getText(), eventResponse.getCategory());
+        return new Event(eventResponse.getId(),
+                         eventResponse.getName().getText(),
+                         eventResponse.getDescription(),
+                         eventResponse.getCategory(),
+                         eventResponse.getStart(),
+                         eventResponse.getEnd(),
+                         eventResponse.getLogoUrl());
     }
 
 }

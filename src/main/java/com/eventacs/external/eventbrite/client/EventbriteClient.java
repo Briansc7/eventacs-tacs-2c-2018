@@ -26,8 +26,8 @@ public class EventbriteClient {
         // TODO aca hay que armar un request y llamar via REST con el restClient
         ArrayList<EventResponse> events = new ArrayList<>();
 
-        events.add(new EventResponse(new NameResponse("nametest1"), "idtest1", "CINE"));
-        events.add(new EventResponse(new NameResponse("nametest2"), "idtest2", "TEATRO"));
+        events.add(new EventResponse(new NameResponse("nametest1"), "idtest1", "CINE", "someCategory", "someStartDate", "someendDate","logoUrl"));
+        events.add(new EventResponse(new NameResponse("nametest2"), "idtest2", "TEATRO", "someCategory", "someStartDate", "someendDate","logoUrl"));
 
         return events;
 

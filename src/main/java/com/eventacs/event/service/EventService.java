@@ -67,8 +67,8 @@ public class EventService {
         // TODO buscar cada lista y encontrar eventos en comun
 
         List<Event> events = new ArrayList<>();
-        events.add(new Event("id1", "name1", "somecategory"));
-        events.add(new Event("id2", "name2", "somecategory"));
+        events.add(new Event("id1", "name1", "someDesc", "someCategory", "someStartDate", "someendDate","logoUrl"));
+        events.add(new Event("id2", "name2", "someDesc", "someCategory", "someStartDate", "someendDate","logoUrl"));
 
         return events;
     }

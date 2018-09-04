@@ -26,6 +26,8 @@ public class AccountController {
     @ResponseBody
     public UserInfoDTO signup(@RequestBody UserAccountDTO userAccountDTO) {
         LOGGER.info("/eventacs/signup [POST]");
+        LOGGER.info("With user name:" + userAccountDTO.getName());
+
         return this.accountService.createUser(userAccountDTO);
     }
 
@@ -33,6 +35,7 @@ public class AccountController {
     @ResponseBody
     public UserInfoDTO login(@RequestBody UserLoginDTO userLoginDTO) {
         LOGGER.info("/eventacs/login [POST]");
+
         return this.accountService.login(userLoginDTO);
     }
 
