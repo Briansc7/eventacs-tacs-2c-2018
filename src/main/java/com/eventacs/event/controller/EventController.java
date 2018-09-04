@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -22,10 +23,16 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @RequestMapping(value = "/events" , method = RequestMethod.GET)
+    @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getEvents(@RequestParam("criteria") List<String> criterias) {
         return eventService.getEvents(criterias);
+    }
+
+    @RequestMapping(value = "/events/count", method = RequestMethod.GET)
+    @ResponseBody
+    public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
+        return new BigDecimal(1);
     }
 
 }
