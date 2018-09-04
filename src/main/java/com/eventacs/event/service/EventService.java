@@ -22,4 +22,25 @@ public class EventService {
         return this.eventbriteFacade.getEvents(criterias);
     }
 
+    public String createEventList(String userId, String listName) {
+
+        //TODO agregar un list generator para ver que id de lista darle y voclarlo en la base.
+        //TODO hacerle un add al userId que vien esta listId con ese listName
+
+        return "U" + userId + "L1";
+    }
+
+    public void addEvent(String listId, String eventId) {
+        //TODO agregar el evento ese en la lista esa.
+    }
+
+    public String changeListName(String listId, String listName) {
+        //TODO a este listId cambiarle el nombre por listName
+
+        return listId;
+    }
+
+    public String deleteEventList(String listId) {
+        return listId;
+    }
 }

@@ -2,14 +2,14 @@ package com.eventacs.event.model;
 
 public class Event {
 
-    private String id;
+    private String id; //ES EL ID DE EVENTBRITE (ver si en futuro manejar 1 nuestro y uno de eventbrite)
     private String name;
-    private String categorie;
+    private String category;
 
-    public Event(String id, String name, String categorie) {
+    public Event(String id, String name, String category) {
         this.id = id;
         this.name = name;
-        this.categorie = categorie;
+        this.category = category;
     }
 
     public String getId() {
@@ -28,11 +28,11 @@ public class Event {
         this.name = name;
     }
 
-    public String getCategorie() {
-        return categorie;
+    public String getCategory() {
+        return category;
     }
 
-    public void setCategorie(String categorie) {
-        this.categorie = categorie;
+    public void setCategory(String categorie) {
+        this.category = categorie;
     }
 }

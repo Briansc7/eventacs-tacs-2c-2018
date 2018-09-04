@@ -4,14 +4,16 @@ public class EventResponse {
 
     private NameResponse name;
     private String id;
+    private String category;
 
     public EventResponse() {
 
     }
 
-    public EventResponse(NameResponse name, String id) {
+    public EventResponse(NameResponse name, String id, String category) {
         this.name = name;
         this.id = id;
+        this.category = category;
     }
 
     public NameResponse getName() {
@@ -30,4 +32,11 @@ public class EventResponse {
         this.id = id;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

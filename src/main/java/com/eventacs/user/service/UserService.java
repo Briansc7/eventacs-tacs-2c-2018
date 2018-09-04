@@ -10,14 +10,14 @@ import java.util.List;
 public class UserService {
 
     public UserInfoDTO getUser(String userId) {
-        return new UserInfoDTO(userId, "testname");
+        return new UserInfoDTO(userId, "testname", "lastName", new ArrayList<>());
     }
 
     public List<UserInfoDTO> getUsers() {
 
         List<UserInfoDTO> users = new ArrayList<>();
-        users.add(new UserInfoDTO("testname1", "testpassword1"));
-        users.add(new UserInfoDTO("testname2", "testpassword2"));
+        users.add(new UserInfoDTO("testname1", "testpassword1", "lastName", new ArrayList<>()));
+        users.add(new UserInfoDTO("testname2", "testpassword2", "lastName", new ArrayList<>()));
 
         return users;
 
