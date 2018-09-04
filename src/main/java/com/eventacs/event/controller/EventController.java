@@ -26,41 +26,35 @@ public class EventController {
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getEvents(@RequestParam("criteria") List<String> criterias) {
-        return eventService.getEvents(criterias);
+        return this.eventService.getEvents(criterias);
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
     public String createEventList(@RequestBody CreateEventDTO createEventDTO){
-        LOGGER.info("/eventacs/event-lists [POST]");
-        LOGGER.info("User id: {}, listName : {}", createEventDTO.getUserId(), createEventDTO.getListName());
-
-        return eventService.createEventList(createEventDTO.getUserId(), createEventDTO.getListName());
+        LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", createEventDTO.getUserId(), createEventDTO.getListName());
+        return this.eventService.createEventList(createEventDTO.getUserId(), createEventDTO.getListName());
     }
-
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
     public void addEvent(@PathVariable String listId, @PathVariable String eventId) {
         LOGGER.info("/eventacs/event-lists/{}/{} [PUT]", listId, eventId);
-
-        eventService.addEvent(listId, eventId);
+        this.eventService.addEvent(listId, eventId);
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
     public String changeListName(@PathVariable String listId, @RequestBody String listName) {
-        LOGGER.info("/eventacs/event-lists/{} with listName: {} [PUT]", listId, listName);
-
-        return eventService.changeListName(listId, listName);
+        LOGGER.info("/eventacs/event-lists/{} With listName: {} [PUT]", listId, listName);
+        return this.eventService.changeListName(listId, listName);
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.DELETE)
     @ResponseBody
     public String deleteEventList(@PathVariable String listId) {
         LOGGER.info("/eventacs/event-lists/{} [DELETE]", listId);
-
-        return eventService.deleteEventList(listId);
+        return this.eventService.deleteEventList(listId);
     }
 
 

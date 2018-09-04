@@ -9,11 +9,11 @@ public class AccountService {
 
     // TODO Cambiarle el nombre de newUserDTO
     public UserInfoDTO createUser(UserAccountDTO userAccountDTO) {
-        return new UserInfoDTO("testid", userAccountDTO.getName(), "testLastName", new ArrayList<>());
+        return new UserInfoDTO("testid", userAccountDTO.getName(), userAccountDTO.getLastName(), new ArrayList<>());
     }
 
-    public UserInfoDTO login(UserAccountDTO userAccountDTO) {
-        return new UserInfoDTO("testid", userAccountDTO.getName(),  "testLastName", new ArrayList<>());
+    public UserInfoDTO login(String name, String encryptedPassword) {
+        return new UserInfoDTO("testid", name,  "lastName", new ArrayList<>());
     }
 
     public UserInfoDTO logout(String sessionCookieId) {

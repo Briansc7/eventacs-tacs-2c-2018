@@ -30,9 +30,9 @@ public class AccountController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public UserInfoDTO login(@RequestBody UserAccountDTO userAccountDTO) {
+    public UserInfoDTO login(@RequestBody String name, @RequestBody String encryptedPassword) {
         LOGGER.info("/eventacs/login [POST]");
-        return this.accountService.login(userAccountDTO);
+        return this.accountService.login(name, encryptedPassword);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
