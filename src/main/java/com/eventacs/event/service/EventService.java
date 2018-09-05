@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(List<String> criterias) {
-        return this.eventbriteFacade.getEvents(criterias);
+    public List<Event> getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
+        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
     }
 
     public String createEventList(String userId, String listName) {

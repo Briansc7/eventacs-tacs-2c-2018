@@ -6,6 +6,7 @@ import com.eventacs.external.eventbrite.model.EventResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class EventbriteClient {
         this.restClient = restClient;
     }
 
-    public List<EventResponse> getEvents(List<String> criterias) {
+    public List<EventResponse> getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
 
         // TODO aca hay que armar un request y llamar via REST con el restClient
         ArrayList<EventResponse> events = new ArrayList<>();

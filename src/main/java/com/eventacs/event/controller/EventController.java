@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -25,8 +26,12 @@ public class EventController {
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getEvents(@RequestParam("criteria") List<String> criterias) {
-        return this.eventService.getEvents(criterias);
+    public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) String keyWord,
+                                 @RequestParam(name = "categories", required = false) List<String> categories,
+                                 @RequestParam(name = "startDate", required = false) LocalDate startDate,
+                                 @RequestParam(name = "startDate", required = false) LocalDate endDate) {
+
+        return this.eventService.getEvents(keyWord, categories, startDate, endDate);
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
