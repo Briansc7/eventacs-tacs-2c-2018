@@ -79,6 +79,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Method: GET
 - Rol: User
 - URI: /events?criteria={someCriteria}
+
 `Criterias = Any keyword`
 
 **Get Watchers**
