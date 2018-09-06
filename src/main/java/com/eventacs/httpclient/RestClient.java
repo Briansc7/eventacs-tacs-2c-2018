@@ -5,6 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import org.eclipse.jetty.http.MetaData;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,9 +17,13 @@ public class RestClient {
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory(request -> request.setParser(new JsonObjectParser(JSON_FACTORY)));
 
-    public HttpResponse get(String url) {
+    public HttpResponse get(GetRequest request) {
 
-        GenericUrl requestUrl = new GenericUrl(url);
+
+        GenericUrl asd = new GenericUrl(request.performUrl());
+
+
+
 
         HttpResponse response = null;
 
