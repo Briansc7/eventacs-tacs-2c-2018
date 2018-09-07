@@ -1,5 +1,6 @@
 package com.eventacs.server;
 
+import com.eventacs.external.telegram.client.mainTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Server;
@@ -23,7 +24,10 @@ public class AppInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
 
     public static void main(String[] args) {
+
+        new mainTelegram().algo(args);
         new AppInitializer().startJetty(getPortFromArgs(args));
+
     }
 
     private static int getPortFromArgs(String[] args) {
