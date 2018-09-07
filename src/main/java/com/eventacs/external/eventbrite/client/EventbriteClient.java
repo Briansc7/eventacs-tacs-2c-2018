@@ -1,13 +1,12 @@
 package com.eventacs.external.eventbrite.client;
 
-import com.eventacs.external.eventbrite.model.NameResponse;
 import com.eventacs.httpclient.RestClient;
-import com.eventacs.external.eventbrite.model.EventResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -16,21 +15,22 @@ public class EventbriteClient {
     @Autowired
     private RestClient restClient;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventbriteClient.class);
     private static final String BASE_PATH = "https://www.eventbriteapi.com/v3";
 
     public EventbriteClient(RestClient restClient) {
         this.restClient = restClient;
     }
 
-    public List<EventResponse> getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
+    public String getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate, Integer page) {
 
-        // TODO aca hay que armar un request y llamar via REST con el restClient
-        ArrayList<EventResponse> events = new ArrayList<>();
+        String url = BASE_PATH + "/events/search?" + "q=" + keyWord + "&categories=" +
+                     categories + "&start_date.range_start=" + startDate +
+                     "&start_date.range_end=" + endDate;
 
-        events.add(new EventResponse(new NameResponse("nametest1"), "idtest1", "CINE", "someCategory", "someStartDate", "someendDate","logoUrl"));
-        events.add(new EventResponse(new NameResponse("nametest2"), "idtest2", "TEATRO", "someCategory", "someStartDate", "someendDate","logoUrl"));
+        LOGGER.info("Retrieving events from: " + url);
 
-        return events;
+        return restClient.getallPaginatedItems(url, page);
 
     }
 
