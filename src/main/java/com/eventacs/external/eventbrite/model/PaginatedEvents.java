@@ -36,9 +36,7 @@ public class PaginatedEvents {
         this.eventsResponse = eventsResponse;
     }
 
-    public PaginatedEvents(Pagination pagination) {
-
-        this.pagination = pagination;
+    public PaginatedEvents() {
     }
 
     public Boolean getHasMoreItems() {

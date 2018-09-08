@@ -3,16 +3,10 @@ package com.eventacs.external.eventbrite.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NameResponse {
-
+public class DescriptionResponse {
     private String text;
 
-    public NameResponse() {
-
-    }
-
-    public NameResponse(String text) {
-        this.text = text;
+    public DescriptionResponse() {
     }
 
     public String getText() {
@@ -22,5 +16,4 @@ public class NameResponse {
     public void setText(String text) {
         this.text = text;
     }
-
 }

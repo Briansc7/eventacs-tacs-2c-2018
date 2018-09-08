@@ -49,7 +49,7 @@ public class EventbriteFacade {
             return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
 
         } catch (IOException e) {
-            throw new ConectionErrorException("Ocurrió un error al conectarse con el cliente", e);
+            throw new ConectionErrorException("Error mapping events", e);
         }
     }
 
@@ -59,16 +59,22 @@ public class EventbriteFacade {
 
             if (paginatedEvents.getHasMoreItems() || paginatedEvents.getPage() < paginatedEvents.getPageCount()) {
 
-                String json = this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate, paginatedEvents.getPage() + 1);
+                Integer page = paginatedEvents.getPage();
 
-                PaginatedEvents paginatedEventsResponse = mapper.readValue(json, new TypeReference<PaginatedEvents>() {});
+                String json = this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate, page + 1);
+
+                PaginatedEvents paginatedEventsResponse = mapper.readValue(json, new TypeReference<PaginatedEvents>() {
+                });
                 paginatedEventsResponse.getEventsResponse().addAll(eventResponses);
 
-                checkIfResponseHasMoreItems(paginatedEvents, keyWord, categories, startDate, endDate);
+                checkIfResponseHasMoreItems(paginatedEventsResponse, keyWord, categories, startDate, endDate);
+
+                return paginatedEventsResponse;
+            } else {
+                return paginatedEvents;
             }
-            return paginatedEvents;
         } catch (IOException e) {
-                throw new ConectionErrorException("Ocurrió un error al conectarse con el cliente", e);
+                throw new ConectionErrorException("Error conecting to the client.", e);
         }
     }
 

@@ -24,25 +24,7 @@ public class RestClient {
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory(request -> request.setParser(new JsonObjectParser(JSON_FACTORY)));
 
-    public HttpResponse get(String url) {
-
-        GenericUrl requestUrl = new GenericUrl(url);
-
-        HttpResponse response = null;
-
-        try {
-            response =  REQUEST_FACTORY.buildGetRequest(requestUrl).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // aca cerrar conexion
-        }
-
-        return response;
-
-    }
-
-    public String getAsJson(String url) {
+    public String get(String url) {
 
         try {
             HttpClient client = HttpClientBuilder.create().build();
@@ -59,13 +41,17 @@ public class RestClient {
             return rd.readLine();
 
         } catch (IOException e) {
-            LOGGER.error("Error al conectarse", e);
+            LOGGER.error("Error conecting to the client", e);
             throw new IllegalArgumentException(e);
+        } finally {
+            //cerrame la conexion sebi que no me acuerdo como era
         }
     }
 
 
     public String getallPaginatedItems(String url, Integer page) {
-        return getAsJson(url + "&page=" + page);
+
+        LOGGER.info("Retreving events from" + url + "&page=" + page);
+        return get(url + "&page=" + page);
     }
 }

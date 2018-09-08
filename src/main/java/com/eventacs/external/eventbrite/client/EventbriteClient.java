@@ -24,14 +24,22 @@ public class EventbriteClient {
 
     public String getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate, Integer page) {
 
-        String url = BASE_PATH + "/events/search?" + "q=" + keyWord + "&categories=" +
-                     categories + "&start_date.range_start=" + startDate +
-                     "&start_date.range_end=" + endDate;
-
-        LOGGER.info("Retrieving events from: " + url);
-
+        String url = BASE_PATH + "/events/search?" + addQueryParams(keyWord, categories, startDate, endDate);
         return restClient.getallPaginatedItems(url, page);
 
+    }
+
+    private String addQueryParams(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
+
+        String qs = "";
+
+        if (keyWord != null) qs += "q=" + keyWord;
+        if (categories != null) qs += "&categories=" + categories;
+        if (startDate != null) qs += "&start_date.range_start=" + startDate;
+        if (endDate != null) qs += "&start_date.range_end=" + endDate;
+
+        LOGGER.info("Query params:" + qs);
+        return qs;
     }
 
 }

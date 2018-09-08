@@ -1,19 +1,21 @@
 package com.eventacs.event.model;
 
+import java.util.Date;
+
 public class Event {
 
     private String id; //ES EL ID DE EVENTBRITE (ver si en futuro manejar 1 nuestro y uno de eventbrite)
     private String name;
     private String description;
     private String category;
-    private String start;
-    private String end;
+    private Date start;
+    private Date end;
     private String logoUrl;
 
     public Event() {
     }
 
-    public Event(String id, String name, String description, String category, String start, String end, String logoUrl) {
+    public Event(String id, String name, String description, String category, Date start, Date end, String logoUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -55,19 +57,19 @@ public class Event {
         this.category = category;
     }
 
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public String getEnd() {
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
+    public void setEnd(Date end) {
         this.end = end;
     }
 

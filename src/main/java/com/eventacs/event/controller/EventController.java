@@ -66,21 +66,21 @@ public class EventController {
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
     public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
-        LOGGER.info("/eventacs/events/count [GET] Timelapse: {}", timelapse.getValue());
+        LOGGER.info("/eventacs/events/count [get] Timelapse: {}", timelapse.getValue());
         return this.eventService.count(timelapse);
     }
 
     @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserInfoDTO> getWatchers(@PathVariable String eventId) {
-        LOGGER.info("/eventacs/{}/watchers [GET]", eventId);
+        LOGGER.info("/eventacs/{}/watchers [get]", eventId);
         return this.eventService.getWatchers(eventId);
     }
 
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
-        LOGGER.info("/eventacs/event-lists/shared-events [GET] Lists IDs: {}, {}", listId, anotherListId);
+        LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
 
