@@ -9,10 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class EventService {
@@ -70,8 +69,8 @@ public class EventService {
         // TODO buscar cada lista y encontrar eventos en comun
 
         List<Event> events = new ArrayList<>();
-        events.add(new Event("id1", "name1", "someDesc", "someCategory",new Date(), new Date(), "logoUrl"));
-        events.add(new Event("id2", "name2", "someDesc", "someCategory", new Date(), new Date(),"logoUrl"));
+        events.add(new Event("id1", "name1", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(), "logoUrl"));
+        events.add(new Event("id2", "name2", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(),"logoUrl"));
 
         return events;
     }

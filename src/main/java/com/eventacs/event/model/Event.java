@@ -1,5 +1,6 @@
 package com.eventacs.event.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Event {
@@ -8,14 +9,14 @@ public class Event {
     private String name;
     private String description;
     private String category;
-    private Date start;
-    private Date end;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private String logoUrl;
 
     public Event() {
     }
 
-    public Event(String id, String name, String description, String category, Date start, Date end, String logoUrl) {
+    public Event(String id, String name, String description, String category, LocalDateTime start, LocalDateTime end, String logoUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -57,19 +58,19 @@ public class Event {
         this.category = category;
     }
 
-    public Date getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public Date getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 

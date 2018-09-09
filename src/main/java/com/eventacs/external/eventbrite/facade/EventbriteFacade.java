@@ -36,46 +36,8 @@ public class EventbriteFacade {
 
     public List<Event> getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
 
-        try {
-
-            String jsonPaginatedEvents = this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate, 1);
-
-            PaginatedEvents paginatedEvent = mapper.readValue(jsonPaginatedEvents, new TypeReference<PaginatedEvents>() {});
-
-            PaginatedEvents paginatedEvents = checkIfResponseHasMoreItems(paginatedEvent, keyWord, categories, startDate, endDate);
-
-            List<EventResponse> eventResponses = paginatedEvents.getEventsResponse();
-
-            return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
-
-        } catch (IOException e) {
-            throw new ConectionErrorException("Error mapping events", e);
-        }
-    }
-
-    private PaginatedEvents checkIfResponseHasMoreItems(PaginatedEvents paginatedEvents, String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
-        try {
-            List<EventResponse> eventResponses = paginatedEvents.getEventsResponse();
-
-            if (paginatedEvents.getHasMoreItems() || paginatedEvents.getPage() < paginatedEvents.getPageCount()) {
-
-                Integer page = paginatedEvents.getPage();
-
-                String json = this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate, page + 1);
-
-                PaginatedEvents paginatedEventsResponse = mapper.readValue(json, new TypeReference<PaginatedEvents>() {
-                });
-                paginatedEventsResponse.getEventsResponse().addAll(eventResponses);
-
-                checkIfResponseHasMoreItems(paginatedEventsResponse, keyWord, categories, startDate, endDate);
-
-                return paginatedEventsResponse;
-            } else {
-                return paginatedEvents;
-            }
-        } catch (IOException e) {
-                throw new ConectionErrorException("Error conecting to the client.", e);
-        }
+        List<EventResponse> eventResponses = this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate, 1).getEventsResponse();
+        return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
     }
 
 }

@@ -2,8 +2,10 @@ package com.eventacs.external.eventbrite.mapping;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.external.eventbrite.model.EventResponse;
-import com.eventacs.external.eventbrite.model.Logo;
 import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Component
 public class EventMapper {
@@ -13,9 +15,13 @@ public class EventMapper {
                          eventResponse.getName().getText(),
                          eventResponse.getDescription().getText(),
                          eventResponse.getCategory(),
-                         eventResponse.getStart().getLocal(),
-                         eventResponse.getEnd().getLocal(),
+                         getLocalDates(eventResponse.getStart().getLocal()),
+                         getLocalDates(eventResponse.getEnd().getLocal()),
                          getLogoUrl(eventResponse));
+    }
+
+    private LocalDateTime getLocalDates(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     private String getLogoUrl(EventResponse eventResponse) {

@@ -49,7 +49,7 @@ public class RestClient {
     }
 
 
-    public String getallPaginatedItems(String url, Integer page) {
+    public String getAllPaginatedItems(String url, Integer page) {
 
         LOGGER.info("Retreving events from" + url + "&page=" + page);
         return get(url + "&page=" + page);
