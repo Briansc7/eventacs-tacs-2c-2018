@@ -29,7 +29,7 @@ public class EventController {
     public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) String keyWord,
                                  @RequestParam(name = "categories", required = false) List<String> categories,
                                  @RequestParam(name = "startDate", required = false) LocalDate startDate,
-                                 @RequestParam(name = "startDate", required = false) LocalDate endDate) {
+                                 @RequestParam(name = "endDate", required = false) LocalDate endDate) {
 
         return this.eventService.getEvents(keyWord, categories, startDate, endDate);
     }
