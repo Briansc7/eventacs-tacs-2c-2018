@@ -28,14 +28,14 @@ public class UserController {
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ResponseBody
     public UserInfoDTO getUser(@PathVariable String userId) {
-        LOGGER.info("/users/{} [GET]", userId);
+        LOGGER.info("/users/{} [get]", userId);
         return this.userService.getUser(userId);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     @ResponseBody
     public List<UserInfoDTO> getUsers() {
-        LOGGER.info("/users [GET]");
+        LOGGER.info("/users [get]");
         return this.userService.getUsers();
     }
 
