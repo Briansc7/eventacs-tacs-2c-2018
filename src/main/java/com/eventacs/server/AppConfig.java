@@ -1,6 +1,7 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
+import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
@@ -31,15 +32,18 @@ public class AppConfig {
     public EventService eventService() { return new EventService(eventbriteFacade()); }
 
     @Bean
-    public EventbriteFacade eventbriteFacade() { return new EventbriteFacade(eventbriteClient(), eventMapper()); }
+    public EventbriteFacade eventbriteFacade() { return new EventbriteFacade(eventbriteClient(), eventMapper(), categoryMapper()); }
 
     @Bean
     public EventbriteClient eventbriteClient() { return new EventbriteClient(restClient()); }
 
     @Bean
-    public RestClient restClient() { return new RestClient(); }
+    public EventMapper eventMapper() { return new EventMapper(); }
 
     @Bean
-    public EventMapper eventMapper() { return new EventMapper(); }
+    public CategoryMapper categoryMapper() { return new CategoryMapper(); }
+
+    @Bean
+    public RestClient restClient() { return new RestClient(); }
 
 }
