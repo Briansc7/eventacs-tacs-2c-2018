@@ -8,11 +8,17 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PaginatedEvents {
 
-
     private Pagination pagination;
 
     @JsonProperty("events")
     private List<EventResponse> eventsResponse;
+
+    public PaginatedEvents() { }
+
+    public PaginatedEvents(Pagination pagination, List<EventResponse> eventsResponse) {
+        this.pagination = pagination;
+        this.eventsResponse = eventsResponse;
+    }
 
     public Pagination getPagination() {
         return pagination;
@@ -30,15 +36,6 @@ public class PaginatedEvents {
         this.eventsResponse = eventsResponse;
     }
 
-    public PaginatedEvents(Pagination pagination, List<EventResponse> eventsResponse) {
-
-        this.pagination = pagination;
-        this.eventsResponse = eventsResponse;
-    }
-
-    public PaginatedEvents() {
-    }
-
     public Boolean getHasMoreItems() {
         return pagination.getHasMoreItems();
     }
@@ -50,4 +47,5 @@ public class PaginatedEvents {
     public Integer getPage() {
         return pagination.getPage();
     }
+
 }
