@@ -7,13 +7,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Pagination {
 
     @JsonProperty("page_number")
-    private Integer page;
+    private Integer page = 0;
 
     @JsonProperty("page_count")
     private Integer pageCount;
 
     @JsonProperty("has_more_items")
-    private Boolean hasMoreItems;
+    private Boolean hasMoreItems = false;
+
+    public Pagination() {
+
+    }
+
+    public Pagination(Integer page, Integer pageCount, Boolean hasMoreItems) {
+        this.page = page;
+        this.pageCount = pageCount;
+        this.hasMoreItems = hasMoreItems;
+    }
 
     public Integer getPage() {
         return page;
@@ -39,14 +49,4 @@ public class Pagination {
         this.hasMoreItems = hasMoreItems;
     }
 
-    public Pagination(Integer page, Integer pageCount, Boolean hasMoreItems) {
-
-        this.page = page;
-        this.pageCount = pageCount;
-        this.hasMoreItems = hasMoreItems;
-    }
-
-    public Pagination() {
-
-    }
 }
