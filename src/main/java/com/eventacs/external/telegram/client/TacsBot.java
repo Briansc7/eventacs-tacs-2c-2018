@@ -6,6 +6,8 @@ import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.server.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,15 +18,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TacsBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
 
+    @Autowired
     private EventService eventService;
+
+    public TacsBot(EventService service){this.eventService = eventService;}
+
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public EventService getEventService() {
+        return eventService;
+    }
+
+    public void setEventService(EventService eventService) {
+        this.eventService = eventService;
+    }
+
+    private int numero = 0;
 
     @Override
     public void onUpdateReceived(final Update update) {
         // Esta función se invocará cuando nuestro bot reciba un mensaje
+
+        Thread mythread;
 
         LOGGER.info("MENSAJE  RECIIDO"+update);
 
@@ -34,7 +56,7 @@ public class TacsBot extends TelegramLongPollingBot {
         LOGGER.info("MENSAJE "+messageTextReceived);
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
-
+/*
         Optional<String> keyword = Optional.of("party");
         Optional<List<String>> categories = Optional.of(new ArrayList<String>());
         categories.map(c -> c.add("Music"));
@@ -45,8 +67,34 @@ public class TacsBot extends TelegramLongPollingBot {
 
         String primerEventoNombre = listaEventos.get(1).getName();
 
-        // Se crea un objeto mensaje
-        SendMessage message = new SendMessage().setChatId(chatId).setText(primerEventoNombre);
+        // Se crea un objeto mensaje*/
+
+        LOGGER.info("Contenido "+update.getMessage().getFrom().getFirstName());
+
+        String nombreUsuario = update.getMessage().getFrom().getFirstName();
+
+        String mensajeAEnviar = "";
+
+        String[] parts = messageTextReceived.split(" ");
+
+        switch (parts[0]){
+            case "/start":  mensajeAEnviar = "Bienvenido "+ nombreUsuario;
+                break;
+            case "/buscar-evento":
+                mensajeAEnviar += "Keyword= "+parts[1];
+                mensajeAEnviar += " Categoria= "+parts[2];
+                mensajeAEnviar += " Fecha Inicio= "+parts[3];
+                mensajeAEnviar += " Fecha Fin= "+parts[4];
+                break;
+            case "/agregar-evento": mensajeAEnviar = "Ingrese el evento a agregar";
+                break;
+            case "/revisar-eventos": mensajeAEnviar = "Ingrese la lista de eventos";
+                break;
+            default: mensajeAEnviar = "opción no válida";
+            break;
+        }
+
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar);
 
         try {
             // Se envía el mensaje

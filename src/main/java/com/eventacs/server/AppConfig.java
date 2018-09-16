@@ -6,6 +6,7 @@ import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
+import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
 import com.eventacs.user.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -45,5 +46,8 @@ public class AppConfig {
 
     @Bean
     public RestClient restClient() { return new RestClient(); }
+
+    @Bean
+    public TacsBot tacsBot() { return new TacsBot(eventService()); }
 
 }

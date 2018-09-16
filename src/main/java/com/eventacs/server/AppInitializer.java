@@ -25,7 +25,7 @@ public class AppInitializer {
 
     public static void main(String[] args) {
 
-        new mainTelegram().algo(args);
+        new mainTelegram().inicializarBot(args);
         new AppInitializer().startJetty(getPortFromArgs(args));
 
     }
