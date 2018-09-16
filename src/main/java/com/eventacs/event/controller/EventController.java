@@ -1,6 +1,7 @@
 package com.eventacs.event.controller;
 
 import com.eventacs.event.model.CreateEventDTO;
+import com.eventacs.event.model.EventListCreationDTO;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.event.model.Event;
@@ -36,9 +37,9 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
-    public String createEventList(@RequestBody CreateEventDTO createEventDTO){
-        LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", createEventDTO.getUserId(), createEventDTO.getListName());
-        return this.eventService.createEventList(createEventDTO.getUserId(), createEventDTO.getListName());
+    public String createEventList(@RequestBody EventListCreationDTO eventListCreation){
+        LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", eventListCreation.getUserId(), eventListCreation.getListName());
+        return this.eventService.createEventList(eventListCreation);
     }
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
