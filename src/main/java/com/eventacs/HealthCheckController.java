@@ -16,7 +16,7 @@ public class HealthCheckController {
     @RequestMapping(value = "/health-check" , method = RequestMethod.GET)
     @ResponseBody
     public String getHealthState() {
-        LOGGER.info("/eventacs/health-check [GET]");
+        LOGGER.info("/eventacs/health-check [get]");
         return "Status: Ok, App online.";
     }
 

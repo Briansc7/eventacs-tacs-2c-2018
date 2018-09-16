@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -25,8 +26,12 @@ public class EventController {
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getEvents(@RequestParam("criteria") List<String> criterias) {
-        return this.eventService.getEvents(criterias);
+    public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) String keyWord,
+                                 @RequestParam(name = "categories", required = false) List<String> categories,
+                                 @RequestParam(name = "startDate", required = false) LocalDate startDate,
+                                 @RequestParam(name = "endDate", required = false) LocalDate endDate) {
+
+        return this.eventService.getEvents(keyWord, categories, startDate, endDate);
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
@@ -61,21 +66,21 @@ public class EventController {
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
     public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
-        LOGGER.info("/eventacs/events/count [GET] Timelapse: {}", timelapse.getValue());
+        LOGGER.info("/eventacs/events/count [get] Timelapse: {}", timelapse.getValue());
         return this.eventService.count(timelapse);
     }
 
     @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
     @ResponseBody
     public List<UserInfoDTO> getWatchers(@PathVariable String eventId) {
-        LOGGER.info("/eventacs/{}/watchers [GET]", eventId);
+        LOGGER.info("/eventacs/{}/watchers [get]", eventId);
         return this.eventService.getWatchers(eventId);
     }
 
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
-        LOGGER.info("/eventacs/event-lists/shared-events [GET] Lists IDs: {}, {}", listId, anotherListId);
+        LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
 

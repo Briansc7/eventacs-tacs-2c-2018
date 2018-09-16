@@ -1,27 +1,22 @@
 package com.eventacs.external.eventbrite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class EventResponse {
 
     private NameResponse name;
     private String id;
-    private String description;
+    private DescriptionResponse description;
+    @JsonProperty("category_id")
     private String category;
-    private String start;
-    private String end;
-    private String logoUrl;
+    private EventDate start;
+    private EventDate end;
+    private Logo logo;
 
     public EventResponse() {
 
-    }
-
-    public EventResponse(NameResponse name, String id, String description, String category, String start, String end, String logoUrl) {
-        this.name = name;
-        this.id = id;
-        this.description = description;
-        this.category = category;
-        this.start = start;
-        this.end = end;
-        this.logoUrl = logoUrl;
     }
 
     public NameResponse getName() {
@@ -40,11 +35,11 @@ public class EventResponse {
         this.id = id;
     }
 
-    public String getDescription() {
+    public DescriptionResponse getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(DescriptionResponse description) {
         this.description = description;
     }
 
@@ -56,27 +51,38 @@ public class EventResponse {
         this.category = category;
     }
 
-    public String getStart() {
+    public EventDate getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(EventDate start) {
         this.start = start;
     }
 
-    public String getEnd() {
+    public EventDate getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
+    public void setEnd(EventDate end) {
         this.end = end;
     }
 
-    public String getLogoUrl() {
-        return logoUrl;
+    public Logo getLogo() {
+        return logo;
     }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setLogo(Logo logo) {
+        this.logo = logo;
+    }
+
+    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo) {
+
+        this.name = name;
+        this.id = id;
+        this.description = description;
+        this.category = category;
+        this.start = start;
+        this.end = end;
+        this.logo = logo;
     }
 }
