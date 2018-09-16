@@ -1,5 +1,8 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.model.Event;
+import com.eventacs.event.service.EventService;
+import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.server.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +11,15 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 public class TacsBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
+
+    private EventService eventService;
 
     @Override
     public void onUpdateReceived(final Update update) {
@@ -25,8 +34,18 @@ public class TacsBot extends TelegramLongPollingBot {
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
 
+        String keyword = "party";
+        List<String> categories = new ArrayList<String>();
+        categories.add("Music");
+        LocalDate startDate = LocalDate.now().minusDays(7);
+        LocalDate endDate = LocalDate.now();
+
+        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
+
+        String primerEventoNombre = listaEventos.get(1).getName();
+
         // Se crea un objeto mensaje
-        SendMessage message = new SendMessage().setChatId(chatId).setText(messageTextReceived);
+        SendMessage message = new SendMessage().setChatId(chatId).setText(primerEventoNombre);
 
         try {
             // Se envía el mensaje
