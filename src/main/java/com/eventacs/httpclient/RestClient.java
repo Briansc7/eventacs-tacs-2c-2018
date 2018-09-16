@@ -1,13 +1,15 @@
 package com.eventacs.httpclient;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,43 +17,36 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 
 @Component
 public class RestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestClient.class);
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-    private static final HttpRequestFactory REQUEST_FACTORY = HTTP_TRANSPORT.createRequestFactory(request -> request.setParser(new JsonObjectParser(JSON_FACTORY)));
 
-    public String get(String url) {
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
+    private CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+
+    public <T> T get(URI url, Class<T> clazz) {
+
+        T response = null;
 
         try {
-            HttpClient client = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet(url);
-
-            request.addHeader("Authorization", "Bearer AA5PBW6TGCUULJPPZURJ"); //TODO SACAR A VARIABLES TIPO Q SE MANDE X CONF
-
-            org.apache.http.HttpResponse response = client.execute(request);
-
-            LOGGER.info("Response Code : " + response.getStatusLine().getStatusCode());
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-            return rd.readLine();
-
+            request.setHeader("Authorization", "Bearer AA5PBW6TGCUULJPPZURJ");
+            response = this.objectMapper.readValue(httpClient.execute(request).getEntity().getContent(), clazz);
+            LOGGER.info("Perform [GET] URL: {} Headers: {}", url, request.getAllHeaders());
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+            LOGGER.error("Parse error", e);
         } catch (IOException e) {
-            LOGGER.error("Error conecting to the client", e);
-            throw new IllegalArgumentException(e);
-        } finally {
-            //cerrame la conexion sebi que no me acuerdo como era
+            e.printStackTrace();
+            LOGGER.error("Error connecting to client", e);
         }
+
+        return response;
+
     }
 
-
-    public String getAllPaginatedItems(String url, Integer page) {
-
-        LOGGER.info("Retreving events from" + url + "&page=" + page);
-        return get(url + "&page=" + page);
-    }
 }
