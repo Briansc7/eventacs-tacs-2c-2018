@@ -14,6 +14,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TacsBot extends TelegramLongPollingBot {
 
@@ -34,11 +35,11 @@ public class TacsBot extends TelegramLongPollingBot {
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
 
-        String keyword = "party";
-        List<String> categories = new ArrayList<String>();
-        categories.add("Music");
-        LocalDate startDate = LocalDate.now().minusDays(7);
-        LocalDate endDate = LocalDate.now();
+        Optional<String> keyword = Optional.of("party");
+        Optional<List<String>> categories = Optional.of(new ArrayList<String>());
+        categories.map(c -> c.add("Music"));
+        Optional<LocalDate> startDate = Optional.of(LocalDate.now().minusDays(7));
+        Optional<LocalDate> endDate = Optional.of(LocalDate.now());
 
         List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
 
