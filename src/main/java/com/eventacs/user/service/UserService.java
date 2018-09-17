@@ -1,5 +1,7 @@
 package com.eventacs.user.service;
 
+import com.eventacs.event.model.Event;
+import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.EventListCreationDTO;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
@@ -9,6 +11,7 @@ import com.eventacs.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserService {
@@ -35,15 +38,23 @@ public class UserService {
     }
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
+        //to have some users
         users.add(new User("1", "figo", "figo", new ArrayList<>()));
         users.add(new User("2", "figo", "figo", new ArrayList<>()));
 
-        Stream<User> filteredUsers = users.stream().filter(u -> u.getId().contains(eventListCreation.getUserId()));
+        List<User> filteredUsers = users.stream().filter(u -> u.getId().contains(eventListCreation.getUserId())).collect(Collectors.toList());
 
-        if(filteredUsers.count() == 0) {
+        if(filteredUsers.size() > 0) {
             filteredUsers.forEach(user -> user.addEventList(eventListCreation.getListName(), listId));
         } else {
-           throw new UserNotFound("User " + eventListCreation.getUserId() + "not found");
+           throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
         }
+    }
+
+    public void addEvent(String listId, Event event, String userId) {
+        List<EventList> eventListsList = users.stream().filter(u -> u.getId().contains(userId))
+                                        .flatMap(user -> user.getEvents().stream()).collect(Collectors.toList());
+
+        eventListsList.stream().filter(el -> el.getId().contains(listId)).forEach(el -> el.getEvents().add(event));
     }
 }

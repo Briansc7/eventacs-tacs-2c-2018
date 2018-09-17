@@ -46,8 +46,9 @@ public class EventService {
         }
     }
 
-    public void addEvent(String listId, String eventId) {
-        //TODO agregar el evento ese en la lista esa.
+    public void addEvent(String listId, String eventId, String userId) {
+        Event event = getEvent(eventId);
+        userService.addEvent(listId, event, userId);
     }
 
     public String changeListName(String listId, String listName) {
@@ -89,7 +90,10 @@ public class EventService {
     private String listIdGenerator(String userId) {
         //TODO Esto debería primero ir a la base para ver cual es el último id para darselo a ésta lista
         String id = (autoIncrementalListId ++).toString();
-        return "U" + userId + id;
+        return "U" + userId + "L" + id;
     }
 
+    public Event getEvent(String eventId) {
+        return this.eventbriteFacade.getEvent(eventId);
+    }
 }

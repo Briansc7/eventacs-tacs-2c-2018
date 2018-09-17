@@ -81,4 +81,15 @@ public class EventbriteClient {
             throw new ConectionErrorException("Error conecting to the client.", e);
         }
     }
+
+    public EventResponse getEvent(String eventId) {
+        String url = BASE_PATH + "/events/" + eventId;
+        String response = restClient.get(url);
+        try {
+            return mapper.readValue(response, new TypeReference<EventResponse>() {});
+        } catch (IOException e) {
+            LOGGER.error("Error mapping this events: " + response);
+            throw new IllegalArgumentException(e);
+        }
+    }
 }

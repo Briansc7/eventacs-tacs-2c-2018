@@ -40,4 +40,8 @@ public class EventbriteFacade {
         return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
     }
 
+    public Event getEvent(String eventId) {
+        EventResponse eventResponse = this.eventbriteClient.getEvent(eventId);
+        return eventMapper.fromResponseToModel(eventResponse);
+    }
 }

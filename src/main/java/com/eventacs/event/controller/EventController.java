@@ -44,9 +44,9 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void addEvent(@PathVariable String listId, @PathVariable String eventId) {
-        LOGGER.info("/eventacs/event-lists/{}/{} [PUT]", listId, eventId);
-        this.eventService.addEvent(listId, eventId);
+    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody String userId) {
+        LOGGER.info("/eventacs/event-lists/{}/{} [PUT] for this userId: {}", listId, eventId, userId);
+        this.eventService.addEvent(listId, eventId, userId);
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
@@ -85,4 +85,11 @@ public class EventController {
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
 
+
+    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    @ResponseBody
+    public Event getEvent(@PathVariable String eventId) {
+
+        return this.eventService.getEvent(eventId);
+    }
 }
