@@ -1,6 +1,5 @@
 package com.eventacs.server;
 
-import com.eventacs.external.telegram.client.MainTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Server;
@@ -9,6 +8,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.telegram.telegrambots.ApiContextInitializer;
 
 /**
  * Esta clase es la encargada de iniciar la aplicación
@@ -23,7 +23,12 @@ public class AppInitializer {
     private static final String MAPPING_URL = "/";
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
 
-    public static void main(String[] args) { new AppInitializer().startJetty(getPortFromArgs(args)); }
+    public static void main(String[] args) {
+        // Se inicializa el contexto de la API Telegram
+        ApiContextInitializer.init();
+
+        new AppInitializer().startJetty(getPortFromArgs(args));
+    }
 
     private static int getPortFromArgs(String[] args) {
         if (args.length > 0) {

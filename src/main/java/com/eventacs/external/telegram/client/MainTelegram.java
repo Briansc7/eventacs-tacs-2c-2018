@@ -22,9 +22,6 @@ public class MainTelegram {
     }
 
     private void initBot() {
-        // Se inicializa el contexto de la API
-        ApiContextInitializer.init();
-
         // Se crea un nuevo Bot API
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
