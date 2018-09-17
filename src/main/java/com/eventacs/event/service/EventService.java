@@ -96,4 +96,8 @@ public class EventService {
     public Event getEvent(String eventId) {
         return this.eventbriteFacade.getEvent(eventId);
     }
+
+    public List<Category> getCategories() {
+        return this.eventbriteFacade.getCategories();
+    }
 }

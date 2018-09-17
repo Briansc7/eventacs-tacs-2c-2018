@@ -1,5 +1,6 @@
 package com.eventacs.external.eventbrite.client;
 
+import com.eventacs.event.model.Event;
 import com.eventacs.exception.ConectionErrorException;
 import com.eventacs.external.eventbrite.model.*;
 import com.eventacs.httpclient.RestClient;
@@ -117,17 +118,14 @@ public class EventbriteClient {
 
     }
 
-<<<<<<< HEAD
     public EventResponse getEvent(String eventId) {
-        String url = BASE_PATH + "/events/" + eventId;
-        String response = restClient.get(url);
-        try {
-            return mapper.readValue(response, new TypeReference<EventResponse>() {});
-        } catch (IOException e) {
-            LOGGER.error("Error mapping this events: " + response);
-            throw new IllegalArgumentException(e);
-        }
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+        pathParts.add("/v3");
+        pathParts.add("/events/" + eventId);
+
+        EventResponse response = restClient.get(this.buildURI(pathParts, parameters),
+                                        EventResponse.class);
+        return response;
     }
-=======
->>>>>>> cde28761a6d87f1e6cb69fe58bf65d85b05fa1d8
 }
