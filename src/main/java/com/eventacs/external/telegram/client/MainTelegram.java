@@ -1,6 +1,5 @@
 package com.eventacs.external.telegram.client;
 
-import com.eventacs.server.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,47 +10,44 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 @Component
 public class MainTelegram {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MainTelegram.class);
 
     @Autowired
-    private static TacsBot tacsbot;
-
-    public MainTelegram(TacsBot tacsbot) {
-        MainTelegram.tacsbot = tacsbot;
-        inicializarBot();
-
-    }
-
-    public static Logger getLOGGER() {
-        return LOGGER;
-    }
-
-    public TacsBot getTacsbot() {
-        return tacsbot;
-    }
-
-    public void setTacsbot(TacsBot tacsbot) {
-        this.tacsbot = tacsbot;
-    }
+    private TacsBot tacsBot;
 
     public MainTelegram() {
+
     }
 
+    public MainTelegram(TacsBot tacsBot) {
+        this.tacsBot = tacsBot;
+        initBot();
+    }
 
-    public static void inicializarBot() {
+    private void initBot() {
         // Se inicializa el contexto de la API
         ApiContextInitializer.init();
 
         // Se crea un nuevo Bot API
-        final TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
         try {
             // Se registra el bot
-            telegramBotsApi.registerBot(tacsbot);
+            telegramBotsApi.registerBot(this.tacsBot);
             LOGGER.info("BOT REGISTRADO");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
+
+    public TacsBot getTacsBot() {
+        return tacsBot;
+    }
+
+    public void setTacsBot(TacsBot tacsBot) {
+        this.tacsBot = tacsBot;
+    }
+
 }
 

@@ -6,8 +6,8 @@ import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.external.telegram.client.MainTelegram;
+import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
 import com.eventacs.user.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -21,14 +21,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class AppConfig {
 
     @Bean
-    public AccountService accountService() {
-        return new AccountService();
-    }
+    public AccountService accountService() { return new AccountService(); }
 
     @Bean
-    public UserService userService() {
-        return new UserService();
-    }
+    public UserService userService() { return new UserService(); }
 
     @Bean
     public EventService eventService() { return new EventService(eventbriteFacade()); }
@@ -52,6 +48,6 @@ public class AppConfig {
     public TacsBot tacsBot() { return new TacsBot(eventService()); }
 
     @Bean
-    public MainTelegram maintelegram() { return new MainTelegram(tacsBot()); }
+    public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
 }

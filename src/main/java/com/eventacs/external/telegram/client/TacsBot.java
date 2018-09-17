@@ -1,9 +1,6 @@
 package com.eventacs.external.telegram.client;
 
-import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
-import com.eventacs.external.eventbrite.client.EventbriteClient;
-import com.eventacs.server.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +10,17 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Component
 public class TacsBot extends TelegramLongPollingBot {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
 
     @Autowired
     private EventService eventService;
+    private int numero = 0;
 
-    public TacsBot(EventService service){this.eventService = eventService;}
-
-    public static Logger getLOGGER() {
-        return LOGGER;
+    public TacsBot(EventService eventService) {
+        this.eventService = eventService;
     }
 
     public EventService getEventService() {
@@ -40,20 +31,18 @@ public class TacsBot extends TelegramLongPollingBot {
         this.eventService = eventService;
     }
 
-    private int numero = 0;
-
     @Override
     public void onUpdateReceived(final Update update) {
         // Esta función se invocará cuando nuestro bot reciba un mensaje
 
         Thread mythread;
 
-        LOGGER.info("MENSAJE  RECIIDO"+update);
+        LOGGER.info("MENSAJE  RECIIDO" + update);
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
 
-        LOGGER.info("MENSAJE "+messageTextReceived);
+        LOGGER.info("MENSAJE " + messageTextReceived);
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
 /*
@@ -69,7 +58,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         // Se crea un objeto mensaje*/
 
-        LOGGER.info("Contenido "+update.getMessage().getFrom().getFirstName());
+        LOGGER.info("Contenido " + update.getMessage().getFrom().getFirstName());
 
         String nombreUsuario = update.getMessage().getFrom().getFirstName();
 
@@ -77,21 +66,25 @@ public class TacsBot extends TelegramLongPollingBot {
 
         String[] parts = messageTextReceived.split(" ");
 
-        switch (parts[0]){
-            case "/start":  mensajeAEnviar = "Bienvenido "+ nombreUsuario;
+        switch (parts[0]) {
+            case "/start":
+                mensajeAEnviar = "Bienvenido " + nombreUsuario;
                 break;
             case "/buscar-evento":
-                mensajeAEnviar += "Keyword= "+parts[1];
-                mensajeAEnviar += " Categoria= "+parts[2];
-                mensajeAEnviar += " Fecha Inicio= "+parts[3];
-                mensajeAEnviar += " Fecha Fin= "+parts[4];
+                mensajeAEnviar += "Keyword= " + parts[1];
+                mensajeAEnviar += " Categoria= " + parts[2];
+                mensajeAEnviar += " Fecha Inicio= " + parts[3];
+                mensajeAEnviar += " Fecha Fin= " + parts[4];
                 break;
-            case "/agregar-evento": mensajeAEnviar = "Ingrese el evento a agregar";
+            case "/agregar-evento":
+                mensajeAEnviar = "Ingrese el evento a agregar";
                 break;
-            case "/revisar-eventos": mensajeAEnviar = "Ingrese la lista de eventos";
+            case "/revisar-eventos":
+                mensajeAEnviar = "Ingrese la lista de eventos";
                 break;
-            default: mensajeAEnviar = "opción no válida";
-            break;
+            default:
+                mensajeAEnviar = "opción no válida";
+                break;
         }
 
         SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar);
