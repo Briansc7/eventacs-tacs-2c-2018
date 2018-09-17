@@ -3,28 +3,41 @@ package com.eventacs.user.service;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.repository.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Component
 public class UserService {
 
-    public UserInfoDTO getUser(String userId) {
-        return new UserInfoDTO(userId, "testname", "lastName", new ArrayList<>());
+    @Autowired
+    private UsersRepository repository;
+
+    public UserService(UsersRepository repository) {
+        this.repository = repository;
+    }
+
+    public Optional<UserInfoDTO> getUser(String userId) {
+        return this.repository.getByUserId(userId);
     }
 
     public List<UserInfoDTO> getUsers() {
-
-        List<UserInfoDTO> users = new ArrayList<>();
-        users.add(new UserInfoDTO("testname1", "testpassword1", "lastName", new ArrayList<>()));
-        users.add(new UserInfoDTO("testname2", "testpassword2", "lastName", new ArrayList<>()));
-
-        return users;
-
+        return this.repository.getUsers();
     }
 
     public AlarmDTO createAlarm(String userId, SearchDTO searchDTO) {
         return new AlarmDTO("testid", userId, searchDTO);
+    }
+
+    public UsersRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(UsersRepository repository) {
+        this.repository = repository;
     }
 
 }

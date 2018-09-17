@@ -1,12 +1,13 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
-import com.eventacs.external.eventbrite.mapping.CategoryMapper;
-import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
+import com.eventacs.external.eventbrite.mapping.CategoryMapper;
+import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.httpclient.RestClient;
+import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,25 +26,42 @@ public class AppConfig {
 
     @Bean
     public UserService userService() {
-        return new UserService();
+        return new UserService(usersRepository());
     }
 
     @Bean
-    public EventService eventService() { return new EventService(eventbriteFacade()); }
+    public UsersRepository usersRepository() {
+        return new UsersRepository();
+    }
 
     @Bean
-    public EventbriteFacade eventbriteFacade() { return new EventbriteFacade(eventbriteClient(), eventMapper(), categoryMapper()); }
+    public EventService eventService() {
+        return new EventService(eventbriteFacade());
+    }
 
     @Bean
-    public EventbriteClient eventbriteClient() { return new EventbriteClient(restClient()); }
+    public EventbriteFacade eventbriteFacade() {
+        return new EventbriteFacade(eventbriteClient(), eventMapper(), categoryMapper());
+    }
 
     @Bean
-    public EventMapper eventMapper() { return new EventMapper(); }
+    public EventbriteClient eventbriteClient() {
+        return new EventbriteClient(restClient());
+    }
 
     @Bean
-    public CategoryMapper categoryMapper() { return new CategoryMapper(); }
+    public EventMapper eventMapper() {
+        return new EventMapper();
+    }
 
     @Bean
-    public RestClient restClient() { return new RestClient(); }
+    public CategoryMapper categoryMapper() {
+        return new CategoryMapper();
+    }
+
+    @Bean
+    public RestClient restClient() {
+        return new RestClient();
+    }
 
 }
