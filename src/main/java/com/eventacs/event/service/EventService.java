@@ -1,6 +1,7 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.model.EventListCreationDTO;
+import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.event.model.Event;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class EventService {
@@ -31,7 +33,7 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(String keyWord, List<String> categories, LocalDate startDate, LocalDate endDate) {
+    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
         return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
     }
 

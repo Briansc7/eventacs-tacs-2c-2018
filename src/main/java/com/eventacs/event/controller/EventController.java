@@ -1,5 +1,6 @@
 package com.eventacs.event.controller;
 
+import com.eventacs.event.model.Category;
 import com.eventacs.event.model.CreateEventDTO;
 import com.eventacs.event.model.EventListCreationDTO;
 import com.eventacs.event.model.Timelapse;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/eventacs")
@@ -28,12 +30,19 @@ public class EventController {
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) String keyWord,
-                                 @RequestParam(name = "categories", required = false) List<String> categories,
-                                 @RequestParam(name = "startDate", required = false) LocalDate startDate,
-                                 @RequestParam(name = "endDate", required = false) LocalDate endDate) {
-
+    public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) Optional<String> keyWord,
+                                 @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
+                                 @RequestParam(name = "startDate", required = false) Optional<LocalDate> startDate,
+                                 @RequestParam(name = "endDate", required = false) Optional<LocalDate> endDate) {
+        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {}", keyWord, categories, startDate, endDate);
         return this.eventService.getEvents(keyWord, categories, startDate, endDate);
+    }
+
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Category> getCategories() {
+        LOGGER.info("/eventacs/categories [GET]");
+        return this.eventService.getCategories();
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
