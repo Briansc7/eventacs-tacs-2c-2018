@@ -3,6 +3,7 @@ package com.eventacs.external.telegram.client;
 import com.eventacs.server.AppInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
@@ -13,7 +14,28 @@ import com.eventacs.server.AppConfig;
 public class mainTelegram {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
 
-    public static void inicializarBot(String[] args) {
+    @Autowired
+    private TacsBot tacsbot;
+
+    public mainTelegram(TacsBot tacsbot) {
+        this.tacsbot = tacsbot;
+        inicializarBot();
+
+    }
+
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    public static TacsBot getTacsbot() {
+        return tacsbot;
+    }
+
+    public static void setTacsbot(TacsBot tacsbot) {
+        mainTelegram.tacsbot = tacsbot;
+    }
+
+    public static void inicializarBot() {
         // Se inicializa el contexto de la API
         ApiContextInitializer.init();
 
@@ -22,7 +44,7 @@ public class mainTelegram {
 
         try {
             // Se registra el bot
-            telegramBotsApi.registerBot(new AppConfig().tacsBot());
+            telegramBotsApi.registerBot(tacsbot);
             LOGGER.info("BOT REGISTRADO");
         } catch (TelegramApiException e) {
             e.printStackTrace();
