@@ -52,9 +52,7 @@ public class EventService {
     }
 
     public String changeListName(String listId, String listName) {
-        //TODO a este listId cambiarle el nombre por listName
-
-        return listId;
+        return userService.changeListName(listId, listName);
     }
 
     public String deleteEventList(String listId) {

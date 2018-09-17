@@ -6,6 +6,7 @@ import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,9 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody String userId) {
+    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody UserId userId) {
         LOGGER.info("/eventacs/event-lists/{}/{} [PUT] for this userId: {}", listId, eventId, userId);
-        this.eventService.addEvent(listId, eventId, userId);
+        this.eventService.addEvent(listId, eventId, userId.getUserId());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
@@ -83,13 +84,5 @@ public class EventController {
     public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
         LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
-    }
-
-
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
-    @ResponseBody
-    public Event getEvent(@PathVariable String eventId) {
-
-        return this.eventService.getEvent(eventId);
     }
 }

@@ -20,7 +20,17 @@ public class UserService {
     public List<User> users = new ArrayList<>();
 
     public UserInfoDTO getUser(String userId) {
-        return new UserInfoDTO(userId, "testname", "lastName", new ArrayList<>());
+        List<User>  filteredUsers = users.stream().filter(u -> u.getId().contains(userId)).collect(Collectors.toList());
+
+        if(filteredUsers.size() != 0){
+            return toUserModel(filteredUsers.get(0));
+        } else {
+            throw new UserNotFound("User " + userId + " not found");
+        }
+    }
+
+    private UserInfoDTO toUserModel(User user) {
+        return new UserInfoDTO(user.getId(), user.getName(), user.getLastName(), user.getEvents());
     }
 
     public List<UserInfoDTO> getUsers() {
@@ -56,5 +66,12 @@ public class UserService {
                                         .flatMap(user -> user.getEvents().stream()).collect(Collectors.toList());
 
         eventListsList.stream().filter(el -> el.getId().contains(listId)).forEach(el -> el.getEvents().add(event));
+    }
+
+    public String changeListName(String listId, String listName) {
+        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
+
+        users.stream().flatMap(user -> user.getEvents().stream().filter(el -> el.getId().contains(listId))).forEach(list -> list.setListName(listName));
+        return listId;
     }
 }
