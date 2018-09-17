@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
-        //to have some users
+        //to have some users, in the future this will not exist. We will create users using UserService methods.
         users.add(new User("1", "figo", "figo", new ArrayList<>()));
         users.add(new User("2", "figo", "figo", new ArrayList<>()));
 
@@ -74,4 +74,18 @@ public class UserService {
         users.stream().flatMap(user -> user.getEvents().stream().filter(el -> el.getId().contains(listId))).forEach(list -> list.setListName(listName));
         return listId;
     }
+
+    public String deleteEventList(String listId) {
+        List<User> filteredUsers = users.stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getId().contains(listId))).collect(Collectors.toList());
+        List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getId().contains(listId))).collect(Collectors.toList());
+
+        if(filteredUsers.size() == 0 || eventListsToBeRemoved.size() == 0){
+            throw new UserNotFound("User not found for this event list Id" + listId);
+        } else {
+            filteredUsers.get(0).getEvents().remove(eventListsToBeRemoved.get(0));
+            return eventListsToBeRemoved.get(0).getId();
+        }
+    }
+
+
 }

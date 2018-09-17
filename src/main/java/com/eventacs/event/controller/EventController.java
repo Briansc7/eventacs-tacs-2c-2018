@@ -1,11 +1,7 @@
 package com.eventacs.event.controller;
 
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.CreateEventDTO;
-import com.eventacs.event.model.EventListCreationDTO;
-import com.eventacs.event.model.Timelapse;
+import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
-import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
@@ -61,9 +57,9 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
-    public String changeListName(@PathVariable String listId, @RequestBody String listName) {
+    public String changeListName(@PathVariable String listId, @RequestBody ListName listName) {
         LOGGER.info("/eventacs/event-lists/{} [PUT] With listName: {} ", listId, listName);
-        return this.eventService.changeListName(listId, listName);
+        return this.eventService.changeListName(listId, listName.getListName());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.DELETE)

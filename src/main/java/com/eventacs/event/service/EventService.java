@@ -58,7 +58,7 @@ public class EventService {
     }
 
     public String deleteEventList(String listId) {
-        return listId;
+        return userService.deleteEventList(listId);
     }
 
     public BigDecimal count(Timelapse timelapse) {
