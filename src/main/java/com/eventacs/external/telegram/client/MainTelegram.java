@@ -8,17 +8,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
-import com.eventacs.server.AppConfig;
 
 @Component
-public class mainTelegram {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
+public class MainTelegram {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainTelegram.class);
 
     @Autowired
-    private TacsBot tacsbot;
+    private static TacsBot tacsbot;
 
-    public mainTelegram(TacsBot tacsbot) {
-        this.tacsbot = tacsbot;
+    public MainTelegram(TacsBot tacsbot) {
+        MainTelegram.tacsbot = tacsbot;
         inicializarBot();
 
     }
@@ -27,13 +26,17 @@ public class mainTelegram {
         return LOGGER;
     }
 
-    public static TacsBot getTacsbot() {
+    public TacsBot getTacsbot() {
         return tacsbot;
     }
 
-    public static void setTacsbot(TacsBot tacsbot) {
-        mainTelegram.tacsbot = tacsbot;
+    public void setTacsbot(TacsBot tacsbot) {
+        this.tacsbot = tacsbot;
     }
+
+    public MainTelegram() {
+    }
+
 
     public static void inicializarBot() {
         // Se inicializa el contexto de la API

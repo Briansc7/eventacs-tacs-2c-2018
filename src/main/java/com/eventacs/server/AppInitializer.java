@@ -1,6 +1,5 @@
 package com.eventacs.server;
 
-import com.eventacs.external.telegram.client.mainTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.jetty.server.Server;
