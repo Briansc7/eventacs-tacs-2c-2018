@@ -16,10 +16,6 @@ public class MainTelegram {
     @Autowired
     private TacsBot tacsBot;
 
-    public MainTelegram() {
-
-    }
-
     public MainTelegram(TacsBot tacsBot) {
         this.tacsBot = tacsBot;
         initBot();
@@ -39,14 +35,6 @@ public class MainTelegram {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-    }
-
-    public TacsBot getTacsBot() {
-        return tacsBot;
-    }
-
-    public void setTacsBot(TacsBot tacsBot) {
-        this.tacsBot = tacsBot;
     }
 
 }
