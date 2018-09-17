@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,11 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class TacsBot extends TelegramLongPollingBot {
@@ -45,18 +51,18 @@ public class TacsBot extends TelegramLongPollingBot {
         LOGGER.info("MENSAJE " + messageTextReceived);
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
-/*
+
         Optional<String> keyword = Optional.of("party");
-        Optional<List<String>> categories = Optional.of(new ArrayList<String>());
-        categories.map(c -> c.add("Music"));
-        Optional<LocalDate> startDate = Optional.of(LocalDate.now().minusDays(7));
-        Optional<LocalDate> endDate = Optional.of(LocalDate.now());
+        Optional<List<String>> categories = Optional.of(new ArrayList<>());
+        categories.map(c -> c.add("105"));
+        Optional<LocalDateTime> startDate = Optional.of(LocalDateTime.now().minusDays(7));
+        Optional<LocalDateTime> endDate = Optional.of(LocalDateTime.now());
 
         List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
 
         String primerEventoNombre = listaEventos.get(1).getName();
 
-        // Se crea un objeto mensaje*/
+        // Se crea un objeto mensaje
 
         LOGGER.info("Contenido " + update.getMessage().getFrom().getFirstName());
 
@@ -70,16 +76,16 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/start":
                 mensajeAEnviar = "Bienvenido " + nombreUsuario;
                 break;
-            case "/buscar-evento":
+            case "/buscarevento":
                 mensajeAEnviar += "Keyword= " + parts[1];
                 mensajeAEnviar += " Categoria= " + parts[2];
                 mensajeAEnviar += " Fecha Inicio= " + parts[3];
                 mensajeAEnviar += " Fecha Fin= " + parts[4];
                 break;
-            case "/agregar-evento":
+            case "/agregarevento":
                 mensajeAEnviar = "Ingrese el evento a agregar";
                 break;
-            case "/revisar-eventos":
+            case "/revisareventos":
                 mensajeAEnviar = "Ingrese la lista de eventos";
                 break;
             default:

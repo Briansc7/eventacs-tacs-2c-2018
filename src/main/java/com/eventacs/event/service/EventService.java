@@ -25,7 +25,7 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
         return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
     }
 

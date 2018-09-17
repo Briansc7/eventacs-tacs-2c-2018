@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
@@ -31,7 +33,7 @@ public class EventbriteClient {
         this.restClient = restClient;
     }
 
-    public List<EventResponse> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+    public List<EventResponse> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
 
         Pagination pagination = new Pagination();
 
@@ -43,9 +45,9 @@ public class EventbriteClient {
         pathParts.add("/search");
 
         keyWord.map(k -> parameters.put("q", k));
-        categories.map(c -> parameters.put("categories", c.toString()));
-        startDate.map(s -> parameters.put("start_date.range_start", s.toString()));
-        endDate.map(e -> parameters.put("start_date.range_end", e.toString()));
+        categories.map(c -> parameters.put("categories", String.join(",", c)));
+        startDate.map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        endDate.map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
 
         List<EventResponse> events = new ArrayList<>();
 
