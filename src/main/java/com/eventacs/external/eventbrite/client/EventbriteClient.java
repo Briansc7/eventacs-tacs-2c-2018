@@ -1,5 +1,6 @@
 package com.eventacs.external.eventbrite.client;
 
+import com.eventacs.event.model.Event;
 import com.eventacs.exception.ConectionErrorException;
 import com.eventacs.external.eventbrite.model.*;
 import com.eventacs.httpclient.RestClient;
@@ -119,4 +120,14 @@ public class EventbriteClient {
 
     }
 
+    public EventResponse getEvent(String eventId) {
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+        pathParts.add("/v3");
+        pathParts.add("/events/" + eventId);
+
+        EventResponse response = restClient.get(this.buildURI(pathParts, parameters),
+                                        EventResponse.class);
+        return response;
+    }
 }

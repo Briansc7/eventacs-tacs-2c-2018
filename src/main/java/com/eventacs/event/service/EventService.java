@@ -1,10 +1,16 @@
 package com.eventacs.event.service;
 
+import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
+import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
+import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.exception.UserNotFound;
+import com.eventacs.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +23,11 @@ import java.util.Optional;
 
 @Component
 public class EventService {
+    //TODO por ahora esto es para suplantar el tema de tener que buscar en base el último id.
+    public Integer autoIncrementalListId = 1;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private EventbriteFacade eventbriteFacade;
@@ -29,30 +40,28 @@ public class EventService {
         return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
     }
 
-    public List<Category> getCategories() {
-        return this.eventbriteFacade.getCategories();
+    public String createEventList(EventListCreationDTO eventListCreation) {
+        String listId = listIdGenerator(eventListCreation.getUserId());
+        try {
+        userService.addEventList(eventListCreation, listId);
+        return listId;
+        } catch (UserNotFound e){
+            autoIncrementalListId --;
+            throw e;
+        }
     }
 
-    public String createEventList(String userId, String listName) {
-
-        //TODO agregar un list generator para ver que id de lista darle y voclarlo en la base.
-        //TODO hacerle un add al userId que vien esta listId con ese listName
-
-        return "U" + userId + "L1";
-    }
-
-    public void addEvent(String listId, String eventId) {
-        //TODO agregar el evento ese en la lista esa.
+    public void addEvent(String listId, String eventId, String userId) {
+        Event event = getEvent(eventId);
+        userService.addEvent(listId, event, userId);
     }
 
     public String changeListName(String listId, String listName) {
-        //TODO a este listId cambiarle el nombre por listName
-
-        return listId;
+        return userService.changeListName(listId, listName);
     }
 
     public String deleteEventList(String listId) {
-        return listId;
+        return userService.deleteEventList(listId);
     }
 
     public BigDecimal count(Timelapse timelapse) {
@@ -79,6 +88,30 @@ public class EventService {
         events.add(new Event("id2", "name2", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(),"logoUrl"));
 
         return events;
+    }
+
+    private String listIdGenerator(String userId) {
+        //TODO Esto debería primero ir a la base para ver cual es el último id para darselo a ésta lista
+        String id = (autoIncrementalListId ++).toString();
+        return "U" + userId + "L" + id;
+    }
+
+    public Event getEvent(String eventId) {
+        return this.eventbriteFacade.getEvent(eventId);
+    }
+
+    public List<Category> getCategories() {
+        return this.eventbriteFacade.getCategories();
+    }
+
+    public EventList getEventList(String listId) {
+
+        String sessionId = "1";
+
+        UserInfoDTO user = this.userService.getUser(sessionId);
+
+        return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+
     }
 
 }
