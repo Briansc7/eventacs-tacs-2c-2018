@@ -123,7 +123,7 @@ public class TacsBot extends TelegramLongPollingBot {
                         mensajeAEnviar.append("Ejemplo de uso: /agregarevento IdLista IdEvento 1");
                         break;
                     case 3:
-                        this.eventService.addEvent(parts[1], parts[2]);
+                        this.eventService.addEvent(parts[1], parts[2], "testname1");
                         mensajeAEnviar.append("Evento Agregado");
                         break;
                 }
@@ -135,8 +135,13 @@ public class TacsBot extends TelegramLongPollingBot {
                         mensajeAEnviar.append("Ejemplo de uso: /revisareventos IdLista");
                         break;
                     case 2:
-                        //listaEventos = this.eventService.getEventsFromList(parts[1]);
-                        //mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+                        listaEventos = this.eventService.getEventList(parts[1]).getEvents();
+                        if(listaEventos.isEmpty()){
+                            mensajeAEnviar.append("No se encontraron eventos");
+                        }
+                        else{
+                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+                        }
                         break;
                 }
                 break;
