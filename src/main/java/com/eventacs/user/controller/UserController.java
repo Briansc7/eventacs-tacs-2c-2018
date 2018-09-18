@@ -39,11 +39,11 @@ public class UserController {
         return this.userService.getUsers();
     }
 
-    @RequestMapping(value = "/users/{userId}/alarms", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public AlarmDTO createAlarm(@PathVariable String userId, @RequestBody (required = false) SearchDTO searchDTO) {
-        LOGGER.info("/users/{}/alarms [POST] {}", userId, searchDTO);
-        return this.userService.createAlarm(userId, searchDTO);
+    public AlarmDTO createAlarm(@RequestBody (required = false) SearchDTO searchDTO) {
+        LOGGER.info("/users/alarms [POST] {}", searchDTO);
+        return this.userService.createAlarm(searchDTO);
     }
 
 }

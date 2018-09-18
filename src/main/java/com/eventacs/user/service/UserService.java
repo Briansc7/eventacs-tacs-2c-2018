@@ -53,8 +53,10 @@ public class UserService {
         return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
     }
 
-    public AlarmDTO createAlarm(String userId, SearchDTO searchDTO) {
-        return this.alarmsMapper.fromModelToApi(this.alarmsRepository.createAlarm(userId, searchDTO).orElseThrow(() -> new AlarmCreationError("Error occurred while creating alarm for User " + userId)));
+    public AlarmDTO createAlarm(SearchDTO searchDTO) {
+        // TODO luego utilizar el id de la session del user para saber de quien es la nueva alarma
+        UserInfoDTO user = this.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Users repository without users"));
+        return this.alarmsMapper.fromModelToApi(this.alarmsRepository.createAlarm(user.getId(), searchDTO).orElseThrow(() -> new AlarmCreationError("Error occurred while creating alarm for User " + user.getId())));
     }
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
