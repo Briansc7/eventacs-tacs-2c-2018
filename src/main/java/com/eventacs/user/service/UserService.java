@@ -2,7 +2,7 @@ package com.eventacs.user.service;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventListCreationDTO;
+import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;

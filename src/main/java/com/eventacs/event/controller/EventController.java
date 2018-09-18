@@ -1,5 +1,7 @@
 package com.eventacs.event.controller;
 
+import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -39,6 +41,13 @@ public class EventController {
     public List<Category> getCategories() {
         LOGGER.info("/eventacs/categories [GET]");
         return this.eventService.getCategories();
+    }
+
+    @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.GET)
+    @ResponseBody
+    public EventList getEventList(@PathVariable String listId) {
+        LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
+        return this.eventService.getEventList(listId);
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)

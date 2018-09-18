@@ -1,9 +1,15 @@
-package com.eventacs.event.model;
+package com.eventacs.event.dto;
 
-public class EventListCreationDTO {
-
+public class CreateEventDTO {
     private String userId;
     private String listName;
+
+    public CreateEventDTO(){}
+
+    public CreateEventDTO(String userId, String listName) {
+        this.userId = userId;
+        this.listName = listName;
+    }
 
     public String getUserId() {
         return userId;
@@ -20,15 +26,4 @@ public class EventListCreationDTO {
     public void setListName(String listName) {
         this.listName = listName;
     }
-
-    public EventListCreationDTO(String userId, String listName) {
-
-        this.userId = userId;
-        this.listName = listName;
-    }
-
-    public EventListCreationDTO() {
-
-    }
-
 }

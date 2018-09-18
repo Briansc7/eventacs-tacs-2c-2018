@@ -1,5 +1,11 @@
 package com.eventacs.event.service;
 
+import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
+import com.eventacs.event.exception.EventListNotFound;
+import com.eventacs.event.model.Category;
+import com.eventacs.event.model.EventList;
+import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -106,4 +112,15 @@ public class EventService {
     public List<Category> getCategories() {
         return this.eventbriteFacade.getCategories();
     }
+
+    public EventList getEventList(String listId) {
+
+        String sessionId = "1";
+
+        UserInfoDTO user = this.userService.getUser(sessionId);
+
+        return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+
+    }
+
 }
