@@ -70,7 +70,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         switch (parts[0]) {
             case "/start":
-                mensajeAEnviar.append("Bienvenido ").append(nombreUsuario);
+                mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n");
             case "/ayuda":
                 mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
                 mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
@@ -106,11 +106,7 @@ public class TacsBot extends TelegramLongPollingBot {
                             mensajeAEnviar.append("No se encontraron eventos");
                         }
                         else{
-                            listaEventos = listaEventos.subList(0,10);//me quedo con los primeros 10. Luego se va a implementar paginación
-                            mensajeAEnviar.append("Eventos encontrados:\n");
-                            StringBuilder finalMensajeAEnviar = mensajeAEnviar;
-                            listaEventos.forEach(e->agregarDatosEvento(e, finalMensajeAEnviar));
-                            mensajeAEnviar = finalMensajeAEnviar;
+                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
                         }
                         break;
                     case 1:
@@ -123,7 +119,8 @@ public class TacsBot extends TelegramLongPollingBot {
                 mensajeAEnviar.append("Evento Agregado");
                 break;
             case "/revisareventos":
-                //listaEventos = this.eventService.;
+                //listaEventos = this.eventService.getEventsFromList(parts[1]);
+                mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
                 mensajeAEnviar.append("Ingrese la lista de eventos");
                 break;
             default:
@@ -139,6 +136,15 @@ public class TacsBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    private StringBuilder getIdNombreEventosEncontrados(List<Event> listaEventos, StringBuilder mensajeAEnviar) {
+        listaEventos = listaEventos.subList(0, 10);//me quedo con los primeros 10. Luego se va a implementar paginación
+        mensajeAEnviar.append("Eventos encontrados:\n");
+        StringBuilder finalMensajeAEnviar = mensajeAEnviar;
+        listaEventos.forEach(e -> agregarDatosEvento(e, finalMensajeAEnviar));
+        mensajeAEnviar = finalMensajeAEnviar;
+        return mensajeAEnviar;
     }
 
     @Override
