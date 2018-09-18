@@ -79,7 +79,6 @@ public class EventController {
         return this.eventService.deleteEventList(listId);
     }
 
-
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
     public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {

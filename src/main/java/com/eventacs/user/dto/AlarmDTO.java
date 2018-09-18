@@ -1,8 +1,10 @@
 package com.eventacs.user.dto;
 
+import java.util.Optional;
+
 public class AlarmDTO {
 
-    private String id;
+    private Optional<String> id;
     private String userId;
     private SearchDTO searchDTO;
 
@@ -10,17 +12,22 @@ public class AlarmDTO {
 
     }
 
-    public AlarmDTO(String id, String userId, SearchDTO searchDTO) {
+    public AlarmDTO(String userId, SearchDTO searchDTO) {
+        this.userId = userId;
+        this.searchDTO = searchDTO;
+    }
+
+    public AlarmDTO(Optional<String> id, String userId, SearchDTO searchDTO) {
         this.id = id;
         this.userId = userId;
         this.searchDTO = searchDTO;
     }
 
-    public String getId() {
+    public Optional<String> getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Optional<String> id) {
         this.id = id;
     }
 

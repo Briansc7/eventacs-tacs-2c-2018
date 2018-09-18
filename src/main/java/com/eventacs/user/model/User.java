@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
+
     private String id;
     private String name;
     private String lastName;
@@ -54,4 +55,5 @@ public class User {
     public void addEventList(String listName, String listId) {
         getEvents().add(new EventList(listId, listName, new ArrayList<>()));
     }
+
 }

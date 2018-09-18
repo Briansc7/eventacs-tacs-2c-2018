@@ -1,13 +1,12 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
+import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.service.UserService;
@@ -20,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class EventService {
@@ -43,8 +43,8 @@ public class EventService {
     public String createEventList(EventListCreationDTO eventListCreation) {
         String listId = listIdGenerator(eventListCreation.getUserId());
         try {
-        userService.addEventList(eventListCreation, listId);
-        return listId;
+            userService.addEventList(eventListCreation, listId);
+            return listId;
         } catch (UserNotFound e){
             autoIncrementalListId --;
             throw e;
@@ -66,8 +66,16 @@ public class EventService {
 
     public BigDecimal count(Timelapse timelapse) {
         // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
+        // TODO falta filtrar por TIMELAPSE
 
-        return new BigDecimal(50);
+        List<UserInfoDTO> users = this.userService.getUsers();
+
+        List<EventList> eventLists = users.stream().map(user -> user.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+
+        List<Event> events = eventLists.stream().map(eventList -> eventList.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+
+        return BigDecimal.valueOf(events.size());
+
     }
 
     public List<UserInfoDTO> getWatchers(String eventId) {
@@ -96,7 +104,7 @@ public class EventService {
         return "U" + userId + "L" + id;
     }
 
-    public Event getEvent(String eventId) {
+    private Event getEvent(String eventId) {
         return this.eventbriteFacade.getEvent(eventId);
     }
 
@@ -105,10 +113,9 @@ public class EventService {
     }
 
     public EventList getEventList(String listId) {
+        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
 
-        String sessionId = "1";
-
-        UserInfoDTO user = this.userService.getUser(sessionId);
+        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
 

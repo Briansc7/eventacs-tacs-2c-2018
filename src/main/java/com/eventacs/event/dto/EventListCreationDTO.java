@@ -1,6 +1,7 @@
 package com.eventacs.event.dto;
 
 public class EventListCreationDTO {
+
     private String userId;
     private String listName;
 
@@ -29,4 +30,5 @@ public class EventListCreationDTO {
     public EventListCreationDTO() {
 
     }
+
 }
