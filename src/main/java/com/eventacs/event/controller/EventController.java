@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +31,8 @@ public class EventController {
     @ResponseBody
     public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) Optional<String> keyWord,
                                  @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
-                                 @RequestParam(name = "startDate", required = false) Optional<LocalDate> startDate,
-                                 @RequestParam(name = "endDate", required = false) Optional<LocalDate> endDate) {
+                                 @RequestParam(name = "startDate", required = false) Optional<LocalDateTime> startDate,
+                                 @RequestParam(name = "endDate", required = false) Optional<LocalDateTime> endDate) {
         LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {}", keyWord, categories, startDate, endDate);
         return this.eventService.getEvents(keyWord, categories, startDate, endDate);
     }

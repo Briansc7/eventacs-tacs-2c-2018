@@ -6,13 +6,14 @@ import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
+import com.eventacs.external.telegram.client.MainTelegram;
+import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.UsersMapper;
 import com.eventacs.user.repository.AlarmsRepository;
 import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -29,9 +30,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class AppConfig {
 
     @Bean
-    public AccountService accountService() {
-        return new AccountService();
-    }
+    public AccountService accountService() { return new AccountService(); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(), alarmsMapper()); }
@@ -89,5 +88,11 @@ public class AppConfig {
                 .registerModule(new JavaTimeModule());
         return mapper;
     }
+
+    @Bean
+    public TacsBot tacsBot() { return new TacsBot(eventService()); }
+
+    @Bean
+    public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
 }

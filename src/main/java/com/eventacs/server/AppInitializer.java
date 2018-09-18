@@ -8,6 +8,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.telegram.telegrambots.ApiContextInitializer;
 
 /**
  * Esta clase es la encargada de iniciar la aplicación
@@ -23,6 +24,9 @@ public class AppInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppInitializer.class);
 
     public static void main(String[] args) {
+        // Se inicializa el contexto de la API Telegram
+        ApiContextInitializer.init();
+
         new AppInitializer().startJetty(getPortFromArgs(args));
     }
 
