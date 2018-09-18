@@ -1,7 +1,6 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
@@ -10,7 +9,6 @@ import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
-import com.eventacs.user.model.User;
 import com.eventacs.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -68,15 +66,16 @@ public class EventService {
 
     public BigDecimal count(Timelapse timelapse) {
         // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
+        // TODO falta filtrar por TIMELAPSE
 
-        /*
         List<UserInfoDTO> users = this.userService.getUsers();
-        List<EventList> eventLists = users.stream().flatMap(user -> user.getEvents()).collect(Collectors.toList());
 
+        List<EventList> eventLists = users.stream().map(user -> user.getEvents()).flatMap(List::stream).collect(Collectors.toList());
 
-        return this.userService.getUsers().stream().map(u -> u.getEvents()).collect(Collectors.toList()).size();
-        */
-        return BigDecimal.ONE;
+        List<Event> events = eventLists.stream().map(eventList -> eventList.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+
+        return BigDecimal.valueOf(events.size());
+
     }
 
     public List<UserInfoDTO> getWatchers(String eventId) {

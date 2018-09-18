@@ -1,8 +1,11 @@
 package com.eventacs.user.repository;
 
+import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.user.model.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +30,12 @@ public class UsersRepository {
 
         this.users = new ArrayList<>();
 
-        EventList eventListOne = new EventList("id1", "name1", new ArrayList<>());
+        Event eventOne = new Event("id1", "name", "description", "category", LocalDateTime.now(), LocalDateTime.now(), "logo url");
+
+        List<Event> eventsOne = new ArrayList<>();
+        eventsOne.add(eventOne);
+
+        EventList eventListOne = new EventList("id1", "name1", eventsOne);
         EventList eventListTwo = new EventList("id1", "name1", new ArrayList<>());
 
         List<EventList> eventListListOne = new ArrayList<>();
