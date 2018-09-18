@@ -1,4 +1,4 @@
-package com.eventacs.event.model;
+package com.eventacs.event.dto;
 
 public class CreateEventDTO {
     private String userId;
