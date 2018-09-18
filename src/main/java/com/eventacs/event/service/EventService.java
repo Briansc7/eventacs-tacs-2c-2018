@@ -114,10 +114,9 @@ public class EventService {
     }
 
     public EventList getEventList(String listId) {
+        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
 
-        String sessionId = "1";
-
-        UserInfoDTO user = this.userService.getUser(sessionId);
+        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
 
