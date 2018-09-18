@@ -123,7 +123,7 @@ public class TacsBot extends TelegramLongPollingBot {
                         mensajeAEnviar.append("Ejemplo de uso: /agregarevento IdLista IdEvento 1");
                         break;
                     case 3:
-                        this.eventService.addEvent(parts[1], parts[2], "testname1");
+                        this.eventService.addEvent(parts[1], parts[2], "id1");
                         mensajeAEnviar.append("Evento Agregado");
                         break;
                 }
@@ -161,7 +161,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     private StringBuilder getIdNombreEventosEncontrados(List<Event> listaEventos, StringBuilder mensajeAEnviar) {
-        listaEventos = listaEventos.subList(0, 10);//me quedo con los primeros 10. Luego se va a implementar paginación
+        listaEventos = listaEventos.size() > 10 ? listaEventos.subList(0, 10):listaEventos.subList(0, listaEventos.size());//me quedo con los primeros 10. Luego se va a implementar paginación
         mensajeAEnviar.append("Eventos encontrados:\n");
         StringBuilder finalMensajeAEnviar = mensajeAEnviar;
         listaEventos.forEach(e -> agregarDatosEvento(e, finalMensajeAEnviar));
