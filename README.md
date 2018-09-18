@@ -80,7 +80,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Rol: User
 - URI: /events?criteria={someCriteria}
 
-`Criterias = Any keyword`
+`Parameters = keyWord, endDate, startDate, categories (or nothing!)`
 
 **Get Watchers**
 - Method: GET
@@ -99,6 +99,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Method: PUT
 - Rol: User
 - URI: /event-lists/:listId/:eventId
+- Body: userId
 
 **Create event list**
 - Method: POST

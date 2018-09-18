@@ -1,5 +1,6 @@
 package com.eventacs.external.eventbrite.client;
 
+import com.eventacs.event.model.Event;
 import com.eventacs.exception.ConectionErrorException;
 import com.eventacs.external.eventbrite.model.*;
 import com.eventacs.httpclient.RestClient;
@@ -43,7 +44,7 @@ public class EventbriteClient {
         pathParts.add("/search");
 
         keyWord.map(k -> parameters.put("q", k));
-        categories.map(c -> parameters.put("categories", c.toString()));
+        categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(s -> parameters.put("start_date.range_start", s.toString()));
         endDate.map(e -> parameters.put("start_date.range_end", e.toString()));
 
@@ -117,4 +118,14 @@ public class EventbriteClient {
 
     }
 
+    public EventResponse getEvent(String eventId) {
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+        pathParts.add("/v3");
+        pathParts.add("/events/" + eventId);
+
+        EventResponse response = restClient.get(this.buildURI(pathParts, parameters),
+                                        EventResponse.class);
+        return response;
+    }
 }

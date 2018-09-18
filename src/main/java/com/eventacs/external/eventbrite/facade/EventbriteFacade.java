@@ -41,6 +41,11 @@ public class EventbriteFacade {
         return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
     }
 
+    public Event getEvent(String eventId) {
+        EventResponse eventResponse = this.eventbriteClient.getEvent(eventId);
+        return eventMapper.fromResponseToModel(eventResponse);
+    }
+
     public List<Category> getCategories() {
         List<CategoryResponse> categories = this.eventbriteClient.getCategories();
         return categories.stream().map(category -> this.categoryMapper.fromResponseToModel(category)).collect(Collectors.toList());

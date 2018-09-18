@@ -1,26 +1,16 @@
-package com.eventacs.user.dto;
+package com.eventacs.user.model;
 
 import com.eventacs.event.model.EventList;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class UserInfoDTO {
+public class User {
 
     private String id;
     private String name;
     private String lastName;
     private List<EventList> events;
-
-    public UserInfoDTO() {
-
-    }
-
-    public UserInfoDTO(String id, String name, String lastName, List<EventList> events) {
-        this.id = id;
-        this.name = name;
-        this.lastName = lastName;
-        this.events = events;
-    }
 
     public String getId() {
         return id;
@@ -53,4 +43,17 @@ public class UserInfoDTO {
     public void setEvents(List<EventList> events) {
         this.events = events;
     }
+
+    public User(String id, String name, String lastName, List<EventList> events) {
+
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.events = events;
+    }
+
+    public void addEventList(String listName, String listId) {
+        getEvents().add(new EventList(listId, listName, new ArrayList<>()));
+    }
+
 }

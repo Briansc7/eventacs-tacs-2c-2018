@@ -1,11 +1,9 @@
 package com.eventacs.event.controller;
 
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.CreateEventDTO;
-import com.eventacs.event.model.Timelapse;
+import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
-import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,23 +43,23 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
-    public String createEventList(@RequestBody CreateEventDTO createEventDTO){
-        LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", createEventDTO.getUserId(), createEventDTO.getListName());
-        return this.eventService.createEventList(createEventDTO.getUserId(), createEventDTO.getListName());
+    public String createEventList(@RequestBody EventListCreationDTO eventListCreation){
+        LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", eventListCreation.getUserId(), eventListCreation.getListName());
+        return this.eventService.createEventList(eventListCreation);
     }
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void addEvent(@PathVariable String listId, @PathVariable String eventId) {
-        LOGGER.info("/eventacs/event-lists/{}/{} [PUT]", listId, eventId);
-        this.eventService.addEvent(listId, eventId);
+    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody UserId userId) {
+        LOGGER.info("/eventacs/event-lists/{}/{} [PUT] for this userId: {}", listId, eventId, userId);
+        this.eventService.addEvent(listId, eventId, userId.getUserId());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
-    public String changeListName(@PathVariable String listId, @RequestBody String listName) {
+    public String changeListName(@PathVariable String listId, @RequestBody ListName listName) {
         LOGGER.info("/eventacs/event-lists/{} [PUT] With listName: {} ", listId, listName);
-        return this.eventService.changeListName(listId, listName);
+        return this.eventService.changeListName(listId, listName.getListName());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.DELETE)
@@ -70,7 +68,6 @@ public class EventController {
         LOGGER.info("/eventacs/event-lists/{} [DELETE]", listId);
         return this.eventService.deleteEventList(listId);
     }
-
 
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
@@ -92,5 +89,4 @@ public class EventController {
         LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
-
 }

@@ -29,7 +29,7 @@ public class UserController {
     @ResponseBody
     public UserInfoDTO getUser(@PathVariable String userId) {
         LOGGER.info("/users/{} [GET]", userId);
-        this.userService.getUser(userId);
+        return this.userService.getUser(userId);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -41,8 +41,8 @@ public class UserController {
 
     @RequestMapping(value = "/users/{userId}/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public AlarmDTO createAlarm(@PathVariable String userId, @RequestBody SearchDTO searchDTO) {
-        LOGGER.info("/users/{}/alarms [POST]", userId);
+    public AlarmDTO createAlarm(@PathVariable String userId, @RequestBody (required = false) SearchDTO searchDTO) {
+        LOGGER.info("/users/{}/alarms [POST] {}", userId, searchDTO);
         return this.userService.createAlarm(userId, searchDTO);
     }
 
