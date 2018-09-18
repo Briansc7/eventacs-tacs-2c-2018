@@ -70,7 +70,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         switch (parts[0]) {
             case "/start":
-                mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n");
+                mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
             case "/ayuda":
                 mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
                 mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
@@ -115,13 +115,28 @@ public class TacsBot extends TelegramLongPollingBot {
                 }
                 break;
             case "/agregarevento":
-                this.eventService.addEvent(parts[1], parts[2]);
-                mensajeAEnviar.append("Evento Agregado");
+                switch (parts.length) {
+                    default:
+                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
+                        mensajeAEnviar.append("Ejemplo de uso: /agregarevento IdLista IdEvento 1");
+                        break;
+                    case 3:
+                        this.eventService.addEvent(parts[1], parts[2]);
+                        mensajeAEnviar.append("Evento Agregado");
+                        break;
+                }
                 break;
             case "/revisareventos":
-                //listaEventos = this.eventService.getEventsFromList(parts[1]);
-                mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
-                mensajeAEnviar.append("Ingrese la lista de eventos");
+                switch (parts.length) {
+                    default:
+                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
+                        mensajeAEnviar.append("Ejemplo de uso: /revisareventos IdLista");
+                        break;
+                    case 2:
+                        //listaEventos = this.eventService.getEventsFromList(parts[1]);
+                        //mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+                        break;
+                }
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
