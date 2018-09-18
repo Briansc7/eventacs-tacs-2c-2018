@@ -72,6 +72,8 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/start":
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
             case "/ayuda":
+                mensajeAEnviar.append("Comandos disponibles:\n\n");
+                mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
                 mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
                 mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
                 mensajeAEnviar.append("Agregar eventos a una lista de eventos con /agregarevento IdLista IdEvento\n");
