@@ -44,7 +44,7 @@ public class EventbriteClient {
         pathParts.add("/search");
 
         keyWord.map(k -> parameters.put("q", k));
-        categories.map(c -> parameters.put("categories", c.toString()));
+        categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(s -> parameters.put("start_date.range_start", s.toString()));
         endDate.map(e -> parameters.put("start_date.range_end", e.toString()));
 

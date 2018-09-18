@@ -6,10 +6,11 @@ import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
+import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.event.model.Event;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
+import com.eventacs.user.model.User;
 import com.eventacs.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class EventService {
@@ -43,8 +45,8 @@ public class EventService {
     public String createEventList(EventListCreationDTO eventListCreation) {
         String listId = listIdGenerator(eventListCreation.getUserId());
         try {
-        userService.addEventList(eventListCreation, listId);
-        return listId;
+            userService.addEventList(eventListCreation, listId);
+            return listId;
         } catch (UserNotFound e){
             autoIncrementalListId --;
             throw e;
@@ -67,7 +69,14 @@ public class EventService {
     public BigDecimal count(Timelapse timelapse) {
         // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
 
-        return new BigDecimal(50);
+        /*
+        List<UserInfoDTO> users = this.userService.getUsers();
+        List<EventList> eventLists = users.stream().flatMap(user -> user.getEvents()).collect(Collectors.toList());
+
+
+        return this.userService.getUsers().stream().map(u -> u.getEvents()).collect(Collectors.toList()).size();
+        */
+        return BigDecimal.ONE;
     }
 
     public List<UserInfoDTO> getWatchers(String eventId) {
@@ -96,7 +105,7 @@ public class EventService {
         return "U" + userId + "L" + id;
     }
 
-    public Event getEvent(String eventId) {
+    private Event getEvent(String eventId) {
         return this.eventbriteFacade.getEvent(eventId);
     }
 
