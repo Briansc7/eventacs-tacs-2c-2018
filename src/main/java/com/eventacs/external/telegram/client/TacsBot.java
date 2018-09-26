@@ -13,13 +13,20 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+enum estados{
+    ayuda
+}
 
 @Component
 public class TacsBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
+
+    private static HashMap<Integer, estados> userStates = new HashMap<Integer, estados>();
 
     @Autowired
     private EventService eventService;
