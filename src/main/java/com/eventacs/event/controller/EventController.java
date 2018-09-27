@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/eventacs")
+@RequestMapping("/")
 public class EventController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
@@ -90,4 +90,10 @@ public class EventController {
         LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
+
+    @RequestMapping(value = "/react-test", method = RequestMethod.GET)
+    public String reactTest() {
+        return "index";
+    }
+
 }
