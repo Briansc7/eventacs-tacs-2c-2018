@@ -17,8 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static com.eventacs.external.telegram.client.estados.ayuda;
+import static com.eventacs.external.telegram.client.estados.inicio;
+
 enum estados{
-    ayuda
+    inicio, ayuda
 }
 
 @Component
@@ -26,7 +29,9 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
 
-    private static HashMap<Integer, estados> userStates = new HashMap<Integer, estados>();
+    private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
+
+    ComandoAyuda comandoAyuda = new ComandoAyuda();
 
     @Autowired
     private EventService eventService;
@@ -58,6 +63,13 @@ public class TacsBot extends TelegramLongPollingBot {
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
 
+        if(!chatStates.containsKey(chatId)){
+            chatStates.put(chatId, inicio);
+        }
+
+
+
+
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
         Optional<LocalDateTime> startDate = Optional.of(LocalDateTime.now());
@@ -68,27 +80,60 @@ public class TacsBot extends TelegramLongPollingBot {
 
         LOGGER.info("Contenido " + update.getMessage().getFrom().getFirstName());
 
-        String nombreUsuario = update.getMessage().getFrom().getFirstName();
+
 
         //String mensajeAEnviar = "";
         StringBuilder mensajeAEnviar = new StringBuilder ();
 
         String[] parts = messageTextReceived.split(" ");
 
+        switch (chatStates.get(chatId)){
+            case inicio:
+                mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
+                break;
+            case ayuda:
+                comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
+                break;
+            default:
+                //mostrar_mensaje_opcion_no_valida();
+                break;
+
+        }
+
+
+
+       /* SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
+
+        final long chatId = update.getMessage().getChatId();
+
         switch (parts[0]) {
             case "/start":
+                String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
             case "/ayuda":
-                mensajeAEnviar.append("Comandos disponibles:\n\n");
+                TacsBot.chatStates.put(chatId, ayuda);
+                comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
+                TacsBot.chatStates.put(chatId, inicio);
+                /*mensajeAEnviar.append("Comandos disponibles:\n\n");
                 mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
                 mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
                 mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
                 mensajeAEnviar.append("Agregar eventos a una lista de eventos con /agregarevento IdLista IdEvento\n");
                 mensajeAEnviar.append("Ej.: /agregarevento 1 50399583511\n\n");
                 mensajeAEnviar.append("Ver eventos de una lista de eventos con /revisareventos IdLista\n");
-                mensajeAEnviar.append("Ej.: /revisareventos 1\n\n");
+                mensajeAEnviar.append("Ej.: /revisareventos 1\n\n");*/
                 break;
-            case "/buscarevento":
+            /*case "/buscarevento":
                 SendMessage message = new SendMessage().setChatId(chatId).setText("Procesando...");
                 try {
                     // Se envía el mensaje
@@ -151,19 +196,10 @@ public class TacsBot extends TelegramLongPollingBot {
                         }
                         break;
                 }
-                break;
+                break;*/
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
-        }
-
-        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
-
-        try {
-            // Se envía el mensaje
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
         }
     }
 
