@@ -20,7 +20,7 @@ import java.util.Optional;
 import static com.eventacs.external.telegram.client.estados.*;
 
 enum estados{
-    inicio, ayuda, agregarevento, revisareventos
+    inicio, agregarevento, revisareventos
 }
 
 @Component
@@ -92,9 +92,6 @@ public class TacsBot extends TelegramLongPollingBot {
             case inicio:
                 mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
                 break;
-            case ayuda:
-                comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
-                break;
             case agregarevento:
                 comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
                 break;
@@ -107,16 +104,6 @@ public class TacsBot extends TelegramLongPollingBot {
 
         }
 
-
-
-       /* SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
-
-        try {
-            // Se envía el mensaje
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }*/
     }
 
     private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
@@ -128,17 +115,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
             case "/ayuda":
-                TacsBot.chatStates.put(chatId, ayuda);
                 comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
-                TacsBot.chatStates.put(chatId, inicio);
-                /*mensajeAEnviar.append("Comandos disponibles:\n\n");
-                mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
-                mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
-                mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
-                mensajeAEnviar.append("Agregar eventos a una lista de eventos con /agregarevento IdLista IdEvento\n");
-                mensajeAEnviar.append("Ej.: /agregarevento 1 50399583511\n\n");
-                mensajeAEnviar.append("Ver eventos de una lista de eventos con /revisareventos IdLista\n");
-                mensajeAEnviar.append("Ej.: /revisareventos 1\n\n");*/
                 break;
             case "/agregarevento":
                 TacsBot.chatStates.put(chatId, agregarevento);
@@ -183,35 +160,7 @@ public class TacsBot extends TelegramLongPollingBot {
                         break;
                 }
                 break;
-            case "/agregarevento":
-                switch (parts.length) {
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /agregarevento IdLista IdEvento 1");
-                        break;
-                    case 3:
-                        this.eventService.addEvent(parts[1], parts[2], "id1");
-                        mensajeAEnviar.append("Evento Agregado");
-                        break;
-                }
-                break;
-            case "/revisareventos":
-                switch (parts.length) {
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /revisareventos IdLista");
-                        break;
-                    case 2:
-                        listaEventos = this.eventService.getEventList(parts[1]).getEvents();
-                        if(listaEventos.isEmpty()){
-                            mensajeAEnviar.append("No se encontraron eventos");
-                        }
-                        else{
-                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
-                        }
-                        break;
-                }
-                break;*/
+            */
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
