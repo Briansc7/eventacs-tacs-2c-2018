@@ -11,17 +11,16 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import javax.naming.ldap.Rdn;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.eventacs.external.telegram.client.estados.ayuda;
-import static com.eventacs.external.telegram.client.estados.inicio;
+import static com.eventacs.external.telegram.client.estados.*;
 
 enum estados{
-    inicio, ayuda
+    inicio, ayuda, agregarevento, revisareventos
 }
 
 @Component
@@ -32,6 +31,8 @@ public class TacsBot extends TelegramLongPollingBot {
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
     ComandoAyuda comandoAyuda = new ComandoAyuda();
+    ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
+    ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
 
     @Autowired
     private EventService eventService;
@@ -94,6 +95,12 @@ public class TacsBot extends TelegramLongPollingBot {
             case ayuda:
                 comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
+            case agregarevento:
+                comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
+                break;
+            case revisareventos:
+                comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
+                break;
             default:
                 //mostrar_mensaje_opcion_no_valida();
                 break;
@@ -132,6 +139,14 @@ public class TacsBot extends TelegramLongPollingBot {
                 mensajeAEnviar.append("Ej.: /agregarevento 1 50399583511\n\n");
                 mensajeAEnviar.append("Ver eventos de una lista de eventos con /revisareventos IdLista\n");
                 mensajeAEnviar.append("Ej.: /revisareventos 1\n\n");*/
+                break;
+            case "/agregarevento":
+                TacsBot.chatStates.put(chatId, agregarevento);
+                comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
+                break;
+            case "/revisareventos":
+                TacsBot.chatStates.put(chatId, revisareventos);
+                comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
                 break;
             /*case "/buscarevento":
                 SendMessage message = new SendMessage().setChatId(chatId).setText("Procesando...");
@@ -228,4 +243,34 @@ public class TacsBot extends TelegramLongPollingBot {
         mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
     }
+
+    public void enviarMensaje(StringBuilder mensajeAEnviar, long chatId){
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void agregarEvento(String idLista, String idEvento){
+        this.eventService.addEvent(idLista, idEvento, "id1");
+    }
+
+    public void revisarEventos(String idLista, long chatId){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<Event> listaEventos = this.eventService.getEventList(idLista).getEvents();
+
+        if(listaEventos.isEmpty()){
+            mensajeAEnviar.append("No se encontraron eventos");
+        }
+        else{
+            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+        }
+
+        enviarMensaje(mensajeAEnviar, chatId);
+    }
+
 }
