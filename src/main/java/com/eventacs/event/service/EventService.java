@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,8 +37,8 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
-        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
+    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate, page);
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
@@ -114,11 +115,11 @@ public class EventService {
 
     public EventList getEventList(String listId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
+        //TODO ya teniendo el id hacer un getById directo
 
         UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
-
     }
 
 }

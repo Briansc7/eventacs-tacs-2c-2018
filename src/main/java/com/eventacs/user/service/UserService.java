@@ -61,7 +61,13 @@ public class UserService {
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
         Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
-        user.orElseThrow(() -> new UserNotFound("User " + eventListCreation.getUserId() + " not found")).addEventList(eventListCreation.getListName(), listId);
+
+        if (user.isPresent()) {
+            user.get().addEventList(eventListCreation.getListName(), listId);
+            this.usersRepository.update(user.get());
+        } else {
+            throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
+        }
     }
 
     public void addEvent(String listId, Event event, String userId) {

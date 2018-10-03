@@ -9,10 +9,12 @@ import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,10 +33,11 @@ public class EventController {
     @ResponseBody
     public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) Optional<String> keyWord,
                                  @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
-                                 @RequestParam(name = "startDate", required = false) Optional<LocalDateTime> startDate,
-                                 @RequestParam(name = "endDate", required = false) Optional<LocalDateTime> endDate) {
-        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {}", keyWord, categories, startDate, endDate);
-        return this.eventService.getEvents(keyWord, categories, startDate, endDate);
+                                 @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
+                                 @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate,
+                                 @RequestParam(name = "page", required = false) Optional<BigInteger> page) {
+        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {} page: {}", keyWord, categories, startDate, endDate, page);
+        return this.eventService.getEvents(keyWord, categories, startDate, endDate, page);
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)

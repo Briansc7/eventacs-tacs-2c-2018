@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -34,7 +36,7 @@ public class EventbriteClient {
         this.restClient = restClient;
     }
 
-    public List<EventResponse> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
+    public List<EventResponse> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
 
         Pagination pagination = new Pagination();
 
@@ -47,8 +49,8 @@ public class EventbriteClient {
 
         keyWord.map(k -> parameters.put("q", k));
         categories.map(c -> parameters.put("categories", String.join(",", c)));
-        startDate.map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
-        endDate.map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
 
         List<EventResponse> events = new ArrayList<>();
 
@@ -56,8 +58,7 @@ public class EventbriteClient {
 
             parameters.put("page", String.valueOf(pagination.getPage() + 1));
 
-            PaginatedEvents paginatedEvents = this.restClient.get(this.buildURI(pathParts, parameters),
-                                                                       PaginatedEvents.class);
+            PaginatedEvents paginatedEvents = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
 
             events.addAll(paginatedEvents.getEventsResponse());
 
@@ -66,6 +67,27 @@ public class EventbriteClient {
         } while (pagination.getHasMoreItems());
 
         return events;
+
+    }
+
+    public List<EventResponse> getEventsByPage(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, BigInteger page) {
+
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+
+        pathParts.add("/v3");
+        pathParts.add("/events");
+        pathParts.add("/search");
+
+        keyWord.map(k -> parameters.put("q", k));
+        categories.map(c -> parameters.put("categories", String.join(",", c)));
+        startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        parameters.put("page", String.valueOf(page));
+
+        PaginatedEvents events = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
+
+        return events.getEventsResponse();
 
     }
 
@@ -98,6 +120,17 @@ public class EventbriteClient {
 
     }
 
+    public EventResponse getEvent(String eventId) {
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+        pathParts.add("/v3");
+        pathParts.add("/events/" + eventId);
+
+        EventResponse response = restClient.get(this.buildURI(pathParts, parameters),
+                                        EventResponse.class);
+        return response;
+    }
+
     private URI buildURI(List<String> pathParts, Map<String, String> parameters) {
 
         URI uri = null;
@@ -105,8 +138,8 @@ public class EventbriteClient {
         try {
 
             URIBuilder uriBuilder = new URIBuilder().setScheme(PROTOCOL)
-                                                    .setHost(HOST)
-                                                    .setPath(pathParts.stream().reduce("", (sem, part) -> sem.concat(part)));
+                    .setHost(HOST)
+                    .setPath(pathParts.stream().reduce("", (sem, part) -> sem.concat(part)));
 
             parameters.forEach((parameter, value) -> uriBuilder.setParameter(parameter, value));
 
@@ -120,14 +153,8 @@ public class EventbriteClient {
 
     }
 
-    public EventResponse getEvent(String eventId) {
-        List<String> pathParts = new ArrayList<>();
-        Map<String, String> parameters = new HashMap<>();
-        pathParts.add("/v3");
-        pathParts.add("/events/" + eventId);
-
-        EventResponse response = restClient.get(this.buildURI(pathParts, parameters),
-                                        EventResponse.class);
-        return response;
+    private LocalDateTime toLocalDateTime(LocalDate localDate) {
+        return LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
     }
+
 }
