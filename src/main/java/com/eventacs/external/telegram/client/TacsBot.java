@@ -20,7 +20,7 @@ import java.util.Optional;
 import static com.eventacs.external.telegram.client.estados.*;
 
 enum estados{
-    inicio, agregarevento, revisareventos
+    inicio, agregarevento, revisareventos, buscarevento
 }
 
 @Component
@@ -33,6 +33,7 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoAyuda comandoAyuda = new ComandoAyuda();
     ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
     ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
+    ComandoBuscarEvento comandoBuscarEvento = new ComandoBuscarEvento();
 
     @Autowired
     private EventService eventService;
@@ -55,14 +56,16 @@ public class TacsBot extends TelegramLongPollingBot {
         // Esta función se invocará cuando nuestro bot reciba un mensaje
 
 
-        LOGGER.info("MENSAJE  RECIIDO" + update);
+        LOGGER.info("Mensaje completo recibido: " + update);
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
 
-        LOGGER.info("MENSAJE " + messageTextReceived);
+        LOGGER.info("Texto recibido: " + messageTextReceived);
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
+
+        LOGGER.info("ID de chat: " + chatId);
 
         if(!chatStates.containsKey(chatId)){
             chatStates.put(chatId, inicio);
@@ -79,7 +82,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         // Se crea un objeto mensaje
 
-        LOGGER.info("Contenido " + update.getMessage().getFrom().getFirstName());
+        LOGGER.info("Nombre de Usuario: " + update.getMessage().getFrom().getFirstName());
 
 
 
@@ -97,6 +100,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case revisareventos:
                 comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
+                break;
+            case buscarevento:
+                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
                 break;
             default:
                 //mostrar_mensaje_opcion_no_valida();
@@ -125,42 +131,10 @@ public class TacsBot extends TelegramLongPollingBot {
                 TacsBot.chatStates.put(chatId, revisareventos);
                 comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
                 break;
-            /*case "/buscarevento":
-                SendMessage message = new SendMessage().setChatId(chatId).setText("Procesando...");
-                try {
-                    // Se envía el mensaje
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-                switch (parts.length){
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00");
-                        break;
-                    case 5:
-                        endDate = Optional.of(LocalDateTime.parse(parts[4]));
-                    case 4:
-                        startDate = Optional.of(LocalDateTime.parse(parts[3]));
-                    case 3:
-                        categories = Optional.of(new ArrayList<>());
-                        categories.map(c -> c.add(parts[2])); //105 es Música
-                    case 2:
-                        keyword = Optional.of(parts[1]);
-                        listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
-                        if(listaEventos.isEmpty()){
-                            mensajeAEnviar.append("No se encontraron eventos");
-                        }
-                        else{
-                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
-                        }
-                        break;
-                    case 1:
-                        mensajeAEnviar.append("Debe agregar los argumentos de búsqueda en el comando");
-                        break;
-                }
+            case "/buscarevento":
+                TacsBot.chatStates.put(chatId, buscarevento);
+                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
                 break;
-            */
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
@@ -220,6 +194,21 @@ public class TacsBot extends TelegramLongPollingBot {
         }
 
         enviarMensaje(mensajeAEnviar, chatId);
+    }
+
+    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
+
+        if(listaEventos.isEmpty()){
+            mensajeAEnviar.append("No se encontraron eventos");
+        }
+        else{
+            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+        }
+
+        return mensajeAEnviar;
     }
 
 }
