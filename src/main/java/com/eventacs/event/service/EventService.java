@@ -1,6 +1,7 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
@@ -17,9 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -91,12 +90,14 @@ public class EventService {
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
         // TODO buscar cada lista y encontrar eventos en comun
+        // TODO por ahora usar este user generico
+        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        List<Event> events = new ArrayList<>();
-        events.add(new Event("id1", "name1", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(), "logoUrl"));
-        events.add(new Event("id2", "name2", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(),"logoUrl"));
+        List<Event> events = this.userService.getEventList(listId, user.getId()).getEvents();
+        List<Event> moreEvents = this.userService.getEventList(anotherListId, user.getId()).getEvents();
 
-        return events;
+        return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
+
     }
 
     private String listIdGenerator(String userId) {
