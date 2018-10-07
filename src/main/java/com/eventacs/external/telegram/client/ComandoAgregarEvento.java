@@ -36,7 +36,7 @@ public class ComandoAgregarEvento {
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                 break;
             case esperaIdEvento:
-                tacsBot.agregarEvento(idListaGuardado.get(chatId),parts[0]);
+                tacsBot.agregarEvento(idListaGuardado.get(chatId),parts[0], chatId);
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);

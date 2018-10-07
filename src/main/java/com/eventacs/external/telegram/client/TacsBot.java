@@ -91,7 +91,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         String[] parts = messageTextReceived.split(" ");
 
-        
+
         switch (chatStates.get(chatId)){
             case inicio:
                 mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
@@ -106,7 +106,6 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
                 break;
             default:
-                //mostrar_mensaje_opcion_no_valida();
                 break;
 
         }
@@ -178,8 +177,9 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
-    public void agregarEvento(String idLista, String idEvento){
-        this.eventService.addEvent(idLista, idEvento, "id1");
+    public void agregarEvento(String idLista, String idEvento, long chatId){
+        String userID = getUserId(chatId); //se identifica al usuario a partir del chatid
+        this.eventService.addEvent(idLista, idEvento, userID);
     }
 
     public void revisarEventos(String idLista, long chatId){
@@ -210,6 +210,10 @@ public class TacsBot extends TelegramLongPollingBot {
         }
 
         return mensajeAEnviar;
+    }
+
+    public String getUserId(long chatId){
+        return "id1";
     }
 
 }
