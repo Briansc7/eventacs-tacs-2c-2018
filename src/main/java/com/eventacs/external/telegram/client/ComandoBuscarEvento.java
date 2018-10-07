@@ -1,5 +1,8 @@
 package com.eventacs.external.telegram.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +12,10 @@ import java.util.Optional;
 public class ComandoBuscarEvento {
 
     enum estadosBuscarEvento{
-        inicio, esperaKeyword, esperaCategoria, esperaFechaInicio, esperaFechaFin
+        inicio, esperaKeyword, esperaCategoria, esperaOtraCategoria, esperaFechaInicio, esperaFechaFin
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComandoBuscarEvento.class);
 
     private static HashMap<Long, estadosBuscarEvento> buscarEventoStates = new HashMap<Long, estadosBuscarEvento>();
 
@@ -49,12 +54,38 @@ public class ComandoBuscarEvento {
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
                 break;
             case esperaCategoria:
-                categories = Optional.of(new ArrayList<>());
+                if(categoriasGuardadas.containsKey(chatId))
+                    categories = categoriasGuardadas.get(chatId);
+                else
+                    categories = Optional.of(new ArrayList<>());
+
                 categories.map(c -> c.add(parts[0])); //105 es Música
+                LOGGER.info("Lista de categorias: "+categories);
                 categoriasGuardadas.put(chatId, categories);
-                mensajeAEnviar.append("Ingrese la fecha de inicio");
+                mensajeAEnviar.append("Desea agregar otra categoría?\nIngrese Si/No");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaOtraCategoria);
+                break;
+            case esperaOtraCategoria:
+                switch (parts[0]){
+                    case "si":
+                    case "Si":
+                    case "SI":
+                        mensajeAEnviar.append("Ingrese el id de la categoría");
+                        tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                        buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
+                        break;
+                    case "no":
+                    case "No":
+                    case "NO":
+                        mensajeAEnviar.append("Ingrese la fecha de inicio");
+                        tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                        buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
+                        break;
+                    default:
+                        mensajeAEnviar.append("Opción inválida.\nDesea agregar otra categoría?\nIngrese Si/No");
+                        tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                }
                 break;
             case esperaFechaInicio:
                 fechaInicioGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0])));

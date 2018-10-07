@@ -91,6 +91,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         String[] parts = messageTextReceived.split(" ");
 
+        
         switch (chatStates.get(chatId)){
             case inicio:
                 mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
