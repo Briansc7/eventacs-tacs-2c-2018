@@ -10,4 +10,4 @@ $(document).ready(function () {
     conection.init(keyWord, startDate, endDate, categories);
 
     searchButton.on('click', validaciones.validateAll)
-});
+})

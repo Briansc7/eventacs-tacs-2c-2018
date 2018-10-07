@@ -31,8 +31,8 @@ var conection = (function() {
     }
 
     return {
-        init: init,
+        init: init(),
         searchEvents: searchEvents()
     }
 
-})();
+})()
