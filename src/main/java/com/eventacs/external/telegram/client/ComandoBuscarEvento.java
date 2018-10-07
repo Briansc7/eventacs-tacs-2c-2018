@@ -78,7 +78,7 @@ public class ComandoBuscarEvento {
                     case "no":
                     case "No":
                     case "NO":
-                        mensajeAEnviar.append("Ingrese la fecha de inicio");
+                        mensajeAEnviar.append("Ingrese la fecha de inicio en formato AAAA-MM-DD");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
                         break;
@@ -88,13 +88,13 @@ public class ComandoBuscarEvento {
                 }
                 break;
             case esperaFechaInicio:
-                fechaInicioGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0])));
-                mensajeAEnviar.append("Ingrese ingrese la fecha de fin");
+                fechaInicioGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T00:00:00")));
+                mensajeAEnviar.append("Ingrese ingrese la fecha de fin en formato AAAA-MM-DD");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaFin);
                 break;
             case esperaFechaFin:
-                fechaFinGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0])));
+                fechaFinGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T23:59:59")));
                 mensajeAEnviar.append("Buscando...");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
