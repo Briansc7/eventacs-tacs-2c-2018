@@ -91,7 +91,7 @@ public class EventController {
         return this.eventService.getSharedEvents(listId, anotherListId);
     }
 
-    @RequestMapping(value = "/react-test", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String reactTest() {
         return "index";
     }
