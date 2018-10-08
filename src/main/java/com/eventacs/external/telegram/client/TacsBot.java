@@ -20,7 +20,7 @@ import java.util.Optional;
 import static com.eventacs.external.telegram.client.estados.*;
 
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento
+    inicio, agregarevento, revisareventos, buscarevento, login
 }
 
 @Component
@@ -30,10 +30,13 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
+    private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
+
     ComandoAyuda comandoAyuda = new ComandoAyuda();
     ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
     ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
     ComandoBuscarEvento comandoBuscarEvento = new ComandoBuscarEvento();
+    ComandoLogin comandoLogin = new ComandoLogin();
 
     @Autowired
     private EventService eventService;
@@ -70,9 +73,6 @@ public class TacsBot extends TelegramLongPollingBot {
         if(!chatStates.containsKey(chatId)){
             chatStates.put(chatId, inicio);
         }
-
-
-
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
@@ -134,6 +134,10 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/buscarevento":
                 TacsBot.chatStates.put(chatId, buscarevento);
                 comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                break;
+            case "/login":
+                TacsBot.chatStates.put(chatId, login);
+                comandoLogin.login(parts, chatStates, chatId, this);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
@@ -212,7 +216,12 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
+    public static void guardarCuentaTelegram(long chatId, String username) {
+        usuarios.put(chatId, username);
+    }
+
     public String getUserId(long chatId){
+        //return usuarios.get(chatId);
         return "id1";
     }
 

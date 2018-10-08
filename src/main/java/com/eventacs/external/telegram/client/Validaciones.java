@@ -28,4 +28,8 @@ public class Validaciones {
     public static boolean idEventoValido(String part, StringBuilder mensajeDeError) {
         return true;
     }
+
+    public static boolean userPwValido(String username, String pw) {
+        return true;
+    }
 }
