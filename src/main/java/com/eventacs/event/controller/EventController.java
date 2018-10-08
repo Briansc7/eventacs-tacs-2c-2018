@@ -1,5 +1,7 @@
 package com.eventacs.event.controller;
 
+import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -7,11 +9,14 @@ import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +33,11 @@ public class EventController {
     @ResponseBody
     public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) Optional<String> keyWord,
                                  @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
-                                 @RequestParam(name = "startDate", required = false) Optional<LocalDate> startDate,
-                                 @RequestParam(name = "endDate", required = false) Optional<LocalDate> endDate) {
-        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {}", keyWord, categories, startDate, endDate);
-        return this.eventService.getEvents(keyWord, categories, startDate, endDate);
+                                 @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
+                                 @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate,
+                                 @RequestParam(name = "page", required = false) Optional<BigInteger> page) {
+        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {} page: {}", keyWord, categories, startDate, endDate, page);
+        return this.eventService.getEvents(keyWord, categories, startDate, endDate, page);
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
@@ -39,6 +45,13 @@ public class EventController {
     public List<Category> getCategories() {
         LOGGER.info("/eventacs/categories [GET]");
         return this.eventService.getCategories();
+    }
+
+    @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.GET)
+    @ResponseBody
+    public EventList getEventList(@PathVariable String listId) {
+        LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
+        return this.eventService.getEventList(listId);
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
@@ -68,7 +81,6 @@ public class EventController {
         LOGGER.info("/eventacs/event-lists/{} [DELETE]", listId);
         return this.eventService.deleteEventList(listId);
     }
-
 
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody

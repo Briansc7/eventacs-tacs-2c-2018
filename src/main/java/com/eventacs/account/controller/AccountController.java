@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/eventacs")
 public class AccountController {
@@ -25,25 +27,22 @@ public class AccountController {
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ResponseBody
     public UserInfoDTO signup(@RequestBody UserAccountDTO userAccountDTO) {
-        LOGGER.info("/eventacs/signup [POST]");
-        LOGGER.info("With user name:" + userAccountDTO.getName());
-
+        LOGGER.info("/eventacs/signup [POST] Username: {}", userAccountDTO.getName());
         return this.accountService.createUser(userAccountDTO);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public UserInfoDTO login(@RequestBody UserLoginDTO userLoginDTO) {
-        LOGGER.info("/eventacs/login [POST]");
-
+        LOGGER.info("/eventacs/login [POST] Username: {}", userLoginDTO.getName());
         return this.accountService.login(userLoginDTO);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public UserInfoDTO logout(@RequestBody String sessionCookieId) {
-        LOGGER.info("/eventacs/logout [POST] With SessionCookie: {}", sessionCookieId);
-        return this.accountService.logout(sessionCookieId);
+    public UserInfoDTO logout(@RequestBody Map<String, String> sessionCookieId) {
+        LOGGER.info("/eventacs/logout [POST] SessionCookie: {}", sessionCookieId.get("sessionCookieId"));
+        return this.accountService.logout(sessionCookieId.get("sessionCookieId"));
     }
 
 }

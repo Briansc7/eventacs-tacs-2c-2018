@@ -10,7 +10,9 @@ import com.eventacs.external.eventbrite.model.EventResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,11 +35,9 @@ public class EventbriteFacade {
         this.categoryMapper = categoryMapper;
     }
 
-    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
-        List<EventResponse> eventResponses = this.eventbriteClient.getEvents(keyWord,
-                                                                             categories,
-                                                                             startDate,
-                                                                             endDate);
+    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+        List<EventResponse> eventResponses = page.map(p -> this.eventbriteClient.getEventsByPage(keyWord, categories, startDate, endDate, p))
+                                                                .orElseGet(() -> this.eventbriteClient.getEvents(keyWord, categories, startDate, endDate));
         return eventResponses.stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList());
     }
 

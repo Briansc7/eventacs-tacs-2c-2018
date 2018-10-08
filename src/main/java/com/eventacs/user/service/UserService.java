@@ -2,81 +2,111 @@ package com.eventacs.user.service;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventListCreationDTO;
+import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.exception.AlarmCreationError;
+import com.eventacs.user.exception.EventListNotFound;
+import com.eventacs.user.mapping.AlarmsMapper;
+import com.eventacs.user.mapping.EventListsMapper;
+import com.eventacs.user.mapping.UsersMapper;
+import com.eventacs.user.repository.AlarmsRepository;
+import com.eventacs.user.repository.UsersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.model.User;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 public class UserService {
 
-    //TODO para suplantar base de usuarios por el momento
-    public List<User> users = new ArrayList<>();
+    @Autowired
+    private UsersRepository usersRepository;
 
-    public UserInfoDTO getUser(String userId) {
-        List<User>  filteredUsers = users.stream().filter(u -> u.getId().contains(userId)).collect(Collectors.toList());
+    @Autowired
+    private AlarmsRepository alarmsRepository;
 
-        if(filteredUsers.size() != 0){
-            return toUserModel(filteredUsers.get(0));
-        } else {
-            throw new UserNotFound("User " + userId + " not found");
-        }
+    @Autowired
+    private UsersMapper usersMapper;
+
+    @Autowired
+    private EventListsMapper eventListsMapper;
+
+    @Autowired
+    private AlarmsMapper alarmsMapper;
+
+    public UserService(UsersRepository usersRepository, UsersMapper usersMapper, AlarmsRepository alarmsRepository, AlarmsMapper alarmsMapper, EventListsMapper eventListsMapper) {
+        this.usersRepository = usersRepository;
+        this.usersMapper = usersMapper;
+        this.alarmsRepository = alarmsRepository;
+        this.alarmsMapper = alarmsMapper;
+        this.eventListsMapper = eventListsMapper;
     }
 
-    private UserInfoDTO toUserModel(User user) {
-        return new UserInfoDTO(user.getId(), user.getName(), user.getLastName(), user.getEvents());
+    public UserInfoDTO getUser(String userId) {
+        Optional<User> user = this.usersRepository.getByUserId(userId);
+        return user.map(u -> this.usersMapper.fromModelToApi(u)).orElseThrow(() -> new UserNotFound("User " + userId + " not found"));
     }
 
     public List<UserInfoDTO> getUsers() {
-
-        List<UserInfoDTO> users = new ArrayList<>();
-        users.add(new UserInfoDTO("testname1", "testpassword1", "lastName", new ArrayList<>()));
-        users.add(new UserInfoDTO("testname2", "testpassword2", "lastName", new ArrayList<>()));
-
-        return users;
-
+        return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
     }
 
-    public AlarmDTO createAlarm(String userId, SearchDTO searchDTO) {
-        return new AlarmDTO("testid", userId, searchDTO);
+    public EventList getEventList(String eventListId, String userId) {
+        Optional<User> user = this.usersRepository.getByUserId(userId);
+
+        List<EventList> eventLists = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
+
+        return eventLists.stream().filter(list -> list.getId().equals(eventListId)).findFirst().orElseThrow(() -> new EventListNotFound("ListID " + eventListId + " not found"));
+    }
+
+    public AlarmDTO createAlarm(SearchDTO searchDTO) {
+        // TODO luego utilizar el id de la session del user para saber de quien es la nueva alarma
+        UserInfoDTO user = this.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Users repository without users"));
+        return this.alarmsMapper.fromModelToApi(this.alarmsRepository.createAlarm(user.getId(), searchDTO).orElseThrow(() -> new AlarmCreationError("Error occurred while creating alarm for User " + user.getId())));
     }
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
-        //to have some users, in the future this will not exist. We will create users using UserService methods.
-        users.add(new User("1", "figo", "figo", new ArrayList<>()));
-        users.add(new User("2", "figo", "figo", new ArrayList<>()));
+        Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
 
-        List<User> filteredUsers = users.stream().filter(u -> u.getId().contains(eventListCreation.getUserId())).collect(Collectors.toList());
-
-        if(filteredUsers.size() > 0) {
-            filteredUsers.forEach(user -> user.addEventList(eventListCreation.getListName(), listId));
+        if (user.isPresent()) {
+            user.get().addEventList(eventListCreation.getListName(), listId);
+            this.usersRepository.update(user.get());
         } else {
-           throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
+            throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
         }
     }
 
     public void addEvent(String listId, Event event, String userId) {
-        List<EventList> eventListsList = users.stream().filter(u -> u.getId().contains(userId))
-                                        .flatMap(user -> user.getEvents().stream()).collect(Collectors.toList());
 
-        eventListsList.stream().filter(el -> el.getId().contains(listId)).forEach(el -> el.getEvents().add(event));
+        Optional<User> user = this.usersRepository.getByUserId(userId);
+
+        List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
+
+        Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getId().equals(listId)).findFirst();
+
+        eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
+
     }
 
     public String changeListName(String listId, String listName) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-
-        users.stream().flatMap(user -> user.getEvents().stream().filter(el -> el.getId().contains(listId))).forEach(list -> list.setListName(listName));
+        this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getId().equals(listId))).forEach(list -> list.setListName(listName));
         return listId;
     }
 
     public String deleteEventList(String listId) {
-        List<User> filteredUsers = users.stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getId().contains(listId))).collect(Collectors.toList());
+        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
+
+        List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getId().equals(listId))).collect(Collectors.toList());
+
         List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getId().contains(listId))).collect(Collectors.toList());
 
         if(filteredUsers.size() == 0 || eventListsToBeRemoved.size() == 0){
@@ -86,6 +116,5 @@ public class UserService {
             return eventListsToBeRemoved.get(0).getId();
         }
     }
-
 
 }

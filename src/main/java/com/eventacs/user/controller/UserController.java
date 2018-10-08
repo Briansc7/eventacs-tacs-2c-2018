@@ -28,22 +28,22 @@ public class UserController {
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ResponseBody
     public UserInfoDTO getUser(@PathVariable String userId) {
-        LOGGER.info("/users/{} [get]", userId);
+        LOGGER.info("/users/{} [GET]", userId);
         return this.userService.getUser(userId);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     @ResponseBody
     public List<UserInfoDTO> getUsers() {
-        LOGGER.info("/users [get]");
+        LOGGER.info("/users [GET]");
         return this.userService.getUsers();
     }
 
-    @RequestMapping(value = "/users/{userId}/alarms", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public AlarmDTO createAlarm(@PathVariable String userId, @RequestBody SearchDTO searchDTO) {
-        LOGGER.info("/users/{}/alarms [POST]", userId);
-        return this.userService.createAlarm(userId, searchDTO);
+    public AlarmDTO createAlarm(@RequestBody (required = false) SearchDTO searchDTO) {
+        LOGGER.info("/users/alarms [POST] {}", searchDTO);
+        return this.userService.createAlarm(searchDTO);
     }
 
 }

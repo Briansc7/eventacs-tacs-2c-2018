@@ -1,21 +1,17 @@
-package com.eventacs.user.dto;
+package com.eventacs.user.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class SearchDTO {
+public class Search {
 
     private Optional<String> keyword;
     private Optional<List<String>> categories;
     private Optional<LocalDateTime> startDate;
     private Optional<LocalDateTime> endDate;
 
-    public SearchDTO() {
-
-    }
-
-    public SearchDTO(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
+    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
         this.keyword = keyword;
         this.categories = categories;
         this.startDate = startDate;
