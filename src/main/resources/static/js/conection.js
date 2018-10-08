@@ -16,7 +16,7 @@ var conection = (function() {
     function searchEvents() {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/eventacs/events",
+            url: "http://localhost:9000/eventacs/events",
             data: {
                 keyWord: keyWordSearch.val(),
                 startDate: startDateSearch.val(),
