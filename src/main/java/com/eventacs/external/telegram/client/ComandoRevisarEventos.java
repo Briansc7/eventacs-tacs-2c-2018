@@ -13,6 +13,7 @@ public class ComandoRevisarEventos {
     public void revisarEventos(String[] parts, HashMap<Long, estados> chatStates, long chatId, TacsBot tacsBot) {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
+        StringBuilder mensajeDeError = new StringBuilder ();
 
         if(!revisarEventosStates.containsKey(chatId)){
             revisarEventosStates.put(chatId, estadosRevisarEventos.inicio);
@@ -25,6 +26,15 @@ public class ComandoRevisarEventos {
                 revisarEventosStates.put(chatId, estadosRevisarEventos.esperaIdLista);
                 break;
             case esperaIdLista:
+
+                if(!Validaciones.idListaValida(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    revisarEventosStates.put(chatId, estadosRevisarEventos.esperaIdLista);
+                    break;
+                }
+
                 tacsBot.revisarEventos(parts[0],chatId);
                 revisarEventosStates.put(chatId, estadosRevisarEventos.inicio);
                 chatStates.put(chatId,estados.inicio);

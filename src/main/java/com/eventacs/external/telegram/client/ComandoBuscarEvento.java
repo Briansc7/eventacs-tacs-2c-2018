@@ -33,6 +33,7 @@ public class ComandoBuscarEvento {
     public void buscarEventos(String[] parts, HashMap<Long, estados> chatStates, long chatId, TacsBot tacsBot) {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
+        StringBuilder mensajeDeError = new StringBuilder ();
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
@@ -61,10 +62,12 @@ public class ComandoBuscarEvento {
                 else
                     categories = Optional.of(new ArrayList<>());
 
-                if(!Validaciones.categoriaValida(parts[0])){
-                    mensajeAEnviar.append("La categoría ingresada no es válida.\nIngrese el id de la categoría");
+                if(!Validaciones.categoriaValida(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese el id de la categoría");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
+                    break;
                 }
 
                 categories.map(c -> c.add(parts[0])); //105 es Música
@@ -97,10 +100,12 @@ public class ComandoBuscarEvento {
                 break;
             case esperaFechaInicio:
 
-                if(!Validaciones.fechainicioValida(parts[0])){
-                    mensajeAEnviar.append("El valor ingresado no es válido.\nIngrese la fecha de inicio en formato AAAA-MM-DD");
+                if(!Validaciones.fechainicioValida(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese la fecha de inicio en formato AAAA-MM-DD");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
+                    break;
                 }
 
                 fechaInicioGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T00:00:00")));
@@ -110,10 +115,12 @@ public class ComandoBuscarEvento {
                 break;
             case esperaFechaFin:
 
-                if(!Validaciones.fechafinValida(parts[0])){
-                    mensajeAEnviar.append("El valor ingresado no es válido.\nIngrese la fecha de fin en formato AAAA-MM-DD");
+                if(!Validaciones.fechafinValida(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese la fecha de fin en formato AAAA-MM-DD");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaFin);
+                    break;
                 }
 
                 fechaFinGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T23:59:59")));
@@ -129,6 +136,10 @@ public class ComandoBuscarEvento {
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
                 buscarEventoStates.remove(chatId);
+                keywordGuardado.remove(chatId);
+                categoriasGuardadas.remove(chatId);
+                fechaInicioGuardada.remove(chatId);
+                fechaFinGuardada.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
             default:

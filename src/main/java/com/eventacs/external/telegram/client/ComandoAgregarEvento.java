@@ -18,6 +18,7 @@ public class ComandoAgregarEvento {
     public void agregarEvento(String[] parts, HashMap<Long, estados> chatStates, long chatId, TacsBot tacsBot) {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
+        StringBuilder mensajeDeError = new StringBuilder ();
 
         if(!agregarEventoStates.containsKey(chatId)){
             agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);
@@ -30,12 +31,30 @@ public class ComandoAgregarEvento {
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdLista);
                 break;
             case esperaIdLista:
+
+                if(!Validaciones.idListaValida(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdLista);
+                    break;
+                }
+
                 idListaGuardado.put(chatId,parts[0]);
                 mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                 break;
             case esperaIdEvento:
+
+                if(!Validaciones.idEventoValido(parts[0], mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
+                    break;
+                }
+
                 tacsBot.agregarEvento(idListaGuardado.get(chatId),parts[0], chatId);
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
