@@ -121,8 +121,8 @@ var validaciones = (function () {
     }
 
     return {
-        init: init(),
-        validateAll: validateAll()
+        init: init,
+        validateAll: validateAll
     }
 
 

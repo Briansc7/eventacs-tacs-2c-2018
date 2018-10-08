@@ -31,8 +31,8 @@ var conection = (function() {
     }
 
     return {
-        init: init(),
-        searchEvents: searchEvents()
+        init: init,
+        searchEvents: searchEvents
     }
 
 })()
