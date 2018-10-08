@@ -9,8 +9,8 @@ import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.AlarmCreationError;
 import com.eventacs.user.exception.EventListNotFound;
 import com.eventacs.user.mapping.AlarmsMapper;
+import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
-import com.eventacs.user.model.Alarm;
 import com.eventacs.user.repository.AlarmsRepository;
 import com.eventacs.user.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,11 @@ import org.springframework.stereotype.Component;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.model.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class UserService {
@@ -35,13 +37,17 @@ public class UserService {
     private UsersMapper usersMapper;
 
     @Autowired
+    private EventListsMapper eventListsMapper;
+
+    @Autowired
     private AlarmsMapper alarmsMapper;
 
-    public UserService(UsersRepository usersRepository, UsersMapper usersMapper, AlarmsRepository alarmsRepository, AlarmsMapper alarmsMapper) {
+    public UserService(UsersRepository usersRepository, UsersMapper usersMapper, AlarmsRepository alarmsRepository, AlarmsMapper alarmsMapper, EventListsMapper eventListsMapper) {
         this.usersRepository = usersRepository;
         this.usersMapper = usersMapper;
         this.alarmsRepository = alarmsRepository;
         this.alarmsMapper = alarmsMapper;
+        this.eventListsMapper = eventListsMapper;
     }
 
     public UserInfoDTO getUser(String userId) {
@@ -53,6 +59,14 @@ public class UserService {
         return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
     }
 
+    public EventList getEventList(String eventListId, String userId) {
+        Optional<User> user = this.usersRepository.getByUserId(userId);
+
+        List<EventList> eventLists = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
+
+        return eventLists.stream().filter(list -> list.getId().equals(eventListId)).findFirst().orElseThrow(() -> new EventListNotFound("ListID " + eventListId + " not found"));
+    }
+
     public AlarmDTO createAlarm(SearchDTO searchDTO) {
         // TODO luego utilizar el id de la session del user para saber de quien es la nueva alarma
         UserInfoDTO user = this.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Users repository without users"));
@@ -61,7 +75,13 @@ public class UserService {
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
         Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
-        user.orElseThrow(() -> new UserNotFound("User " + eventListCreation.getUserId() + " not found")).addEventList(eventListCreation.getListName(), listId);
+
+        if (user.isPresent()) {
+            user.get().addEventList(eventListCreation.getListName(), listId);
+            this.usersRepository.update(user.get());
+        } else {
+            throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
+        }
     }
 
     public void addEvent(String listId, Event event, String userId) {

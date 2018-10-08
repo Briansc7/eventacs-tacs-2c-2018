@@ -1,22 +1,28 @@
 package com.eventacs.external.eventbrite.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventDate {
 
-     private Date local;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime local;
 
-    public Date getLocal() {
+    public EventDate() { }
+
+    public LocalDateTime getLocal() {
         return local;
     }
 
-    public void setLocal(Date local) {
+    public void setLocal(LocalDateTime local) {
         this.local = local;
     }
 
-    public EventDate() {
-
-    }
 }

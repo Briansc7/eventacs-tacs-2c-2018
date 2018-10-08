@@ -15,13 +15,9 @@ public class EventMapper {
                          eventResponse.getName().getText(),
                          eventResponse.getDescription().getText(),
                          eventResponse.getCategory(),
-                         getLocalDates(eventResponse.getStart().getLocal()),
-                         getLocalDates(eventResponse.getEnd().getLocal()),
+                         eventResponse.getStart().getLocal(),
+                         eventResponse.getEnd().getLocal(),
                          getLogoUrl(eventResponse));
-    }
-
-    private LocalDateTime getLocalDates(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     private String getLogoUrl(EventResponse eventResponse) {

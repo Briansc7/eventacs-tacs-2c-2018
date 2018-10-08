@@ -11,6 +11,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
-        Optional<LocalDateTime> startDate = Optional.of(LocalDateTime.now());
-        Optional<LocalDateTime> endDate = Optional.of(LocalDateTime.now().plusDays(1));
+        Optional<LocalDate> startDate = Optional.of(LocalDate.now());
+        Optional<LocalDate> endDate = Optional.of(LocalDate.now().plusDays(1));
         List<Event> listaEventos;
 
         // Se crea un objeto mensaje
@@ -95,15 +96,15 @@ public class TacsBot extends TelegramLongPollingBot {
                         mensajeAEnviar.append("Ejemplo de uso: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00");
                         break;
                     case 5:
-                        endDate = Optional.of(LocalDateTime.parse(parts[4]));
+                        endDate = Optional.of(LocalDate.parse(parts[4]));
                     case 4:
-                        startDate = Optional.of(LocalDateTime.parse(parts[3]));
+                        startDate = Optional.of(LocalDate.parse(parts[3]));
                     case 3:
                         categories = Optional.of(new ArrayList<>());
                         categories.map(c -> c.add(parts[2])); //105 es Música
                     case 2:
                         keyword = Optional.of(parts[1]);
-                        listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
+                        listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate, Optional.empty());
                         if(listaEventos.isEmpty()){
                             mensajeAEnviar.append("No se encontraron eventos");
                         }
