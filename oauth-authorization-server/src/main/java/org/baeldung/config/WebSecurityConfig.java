@@ -30,10 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	  .withUser("admin1").password(passwordEncoder.encode("111")).roles("ADMIN").and()
 	  .withUser("usuario2").password(passwordEncoder.encode("clave")).roles("USER").and()
 	  .withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN");
-      /*  .withUser("usuario").password("clave").roles("USER").and()
-                .withUser("admin1").password("111").roles("ADMIN").and()
-                .withUser("usuario2").password("clave").roles("USER").and()
-                .withUser("admin").password("admin").roles("ADMIN");*/
     }// @formatter:on
 
     @Override
