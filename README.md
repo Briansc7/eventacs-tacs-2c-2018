@@ -7,7 +7,9 @@ Para levantar la aplicacion ejecutar desde una consola:
 $- mvn clean compile exec:java
 
 ### Telegram
-Para realizar las pruebas, se tiene los siguientes usuarios:
+El bot de telegram implementado es **@TacsBot**. 
+
+Para realizar las pruebas, se tienen los siguientes usuarios:
 
 **Usuario 1:**``username: User1, password: Pw1, IdlistaEventos: Id1``
 
