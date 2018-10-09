@@ -114,11 +114,13 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public EventList getEventList(String listId) {
+    public EventList getEventList(String listId, String userId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
         //TODO ya teniendo el id hacer un getById directo
 
-        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
+        //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
+
+        UserInfoDTO user = this.userService.getUser(userId);
 
         return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
     }

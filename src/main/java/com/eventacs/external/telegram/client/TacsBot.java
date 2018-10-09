@@ -1,7 +1,9 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
+import com.eventacs.user.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +13,33 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+
+import static com.eventacs.external.telegram.client.estados.*;
+
+enum estados{
+    inicio, agregarevento, revisareventos, buscarevento, login
+}
 
 @Component
 public class TacsBot extends TelegramLongPollingBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
+
+    private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
+
+    private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
+
+    ComandoAyuda comandoAyuda = new ComandoAyuda();
+    ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
+    ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
+    ComandoBuscarEvento comandoBuscarEvento = new ComandoBuscarEvento();
+    ComandoLogin comandoLogin = new ComandoLogin();
 
     @Autowired
     private EventService eventService;
@@ -43,14 +62,22 @@ public class TacsBot extends TelegramLongPollingBot {
         // Esta función se invocará cuando nuestro bot reciba un mensaje
 
 
-        LOGGER.info("MENSAJE  RECIIDO" + update);
+        LOGGER.info("Mensaje completo recibido: " + update);
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
 
-        LOGGER.info("MENSAJE " + messageTextReceived);
+        LOGGER.info("Texto recibido: " + messageTextReceived);
         // Se obtiene el id de chat del usuario
         final long chatId = update.getMessage().getChatId();
+
+        LOGGER.info("ID de chat: " + chatId);
+
+        if(!chatStates.containsKey(chatId)){
+            chatStates.put(chatId, inicio);
+        }
+
+        LOGGER.info("Estado: " + chatStates.get(chatId));
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
@@ -60,109 +87,74 @@ public class TacsBot extends TelegramLongPollingBot {
 
         // Se crea un objeto mensaje
 
-        LOGGER.info("Contenido " + update.getMessage().getFrom().getFirstName());
+        LOGGER.info("Nombre de Usuario: " + update.getMessage().getFrom().getFirstName());
 
-        String nombreUsuario = update.getMessage().getFrom().getFirstName();
+
 
         //String mensajeAEnviar = "";
         StringBuilder mensajeAEnviar = new StringBuilder ();
 
         String[] parts = messageTextReceived.split(" ");
 
+
+        switch (chatStates.get(chatId)){
+            case inicio:
+                mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
+                break;
+            case agregarevento:
+                comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
+                break;
+            case revisareventos:
+                comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
+                break;
+            case buscarevento:
+                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                break;
+            case login:
+                comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            default:
+                break;
+
+        }
+
+    }
+
+    private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
+
+        final long chatId = update.getMessage().getChatId();
+
         switch (parts[0]) {
             case "/start":
+                String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
             case "/ayuda":
-                mensajeAEnviar.append("Comandos disponibles:\n\n");
-                mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
-                mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n");
-                mensajeAEnviar.append("Ej.: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00\n\n");
-                mensajeAEnviar.append("Agregar eventos a una lista de eventos con /agregarevento IdLista IdEvento\n");
-                mensajeAEnviar.append("Ej.: /agregarevento 1 50399583511\n\n");
-                mensajeAEnviar.append("Ver eventos de una lista de eventos con /revisareventos IdLista\n");
-                mensajeAEnviar.append("Ej.: /revisareventos 1\n\n");
-                break;
-            case "/buscarevento":
-                SendMessage message = new SendMessage().setChatId(chatId).setText("Procesando...");
-                try {
-                    // Se envía el mensaje
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-                switch (parts.length){
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /buscarevento party 105 2018-09-18T00:00:00 2018-09-19T00:00:00");
-                        break;
-                    case 5:
-                        endDate = Optional.of(LocalDate.parse(parts[4]));
-                    case 4:
-                        startDate = Optional.of(LocalDate.parse(parts[3]));
-                    case 3:
-                        categories = Optional.of(new ArrayList<>());
-                        categories.map(c -> c.add(parts[2])); //105 es Música
-                    case 2:
-                        keyword = Optional.of(parts[1]);
-                        listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate, Optional.empty());
-                        if(listaEventos.isEmpty()){
-                            mensajeAEnviar.append("No se encontraron eventos");
-                        }
-                        else{
-                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
-                        }
-                        break;
-                    case 1:
-                        mensajeAEnviar.append("Debe agregar los argumentos de búsqueda en el comando");
-                        break;
-                }
+                comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
             case "/agregarevento":
-                switch (parts.length) {
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /agregarevento IdLista IdEvento 1");
-                        break;
-                    case 3:
-                        this.eventService.addEvent(parts[1], parts[2], "id1");
-                        mensajeAEnviar.append("Evento Agregado");
-                        break;
-                }
+                TacsBot.chatStates.put(chatId, agregarevento);
+                comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
                 break;
             case "/revisareventos":
-                switch (parts.length) {
-                    default:
-                        mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                        mensajeAEnviar.append("Ejemplo de uso: /revisareventos IdLista");
-                        break;
-                    case 2:
-                        listaEventos = this.eventService.getEventList(parts[1]).getEvents();
-                        if(listaEventos.isEmpty()){
-                            mensajeAEnviar.append("No se encontraron eventos");
-                        }
-                        else{
-                            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
-                        }
-                        break;
-                }
+                TacsBot.chatStates.put(chatId, revisareventos);
+                comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
+                break;
+            case "/buscarevento":
+                TacsBot.chatStates.put(chatId, buscarevento);
+                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                break;
+            case "/login":
+                TacsBot.chatStates.put(chatId, login);
+                comandoLogin.login(parts, chatStates, chatId, this);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
         }
-
-        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
-
-        try {
-            // Se envía el mensaje
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
     }
 
     private StringBuilder getIdNombreEventosEncontrados(List<Event> listaEventos, StringBuilder mensajeAEnviar) {
-        listaEventos = listaEventos.size() > 10 ? listaEventos.subList(0, 10):listaEventos.subList(0, listaEventos.size());//me quedo con los primeros 10. Luego se va a implementar paginación
+        listaEventos = listaEventos.size() > 40 ? listaEventos.subList(0, 40):listaEventos.subList(0, listaEventos.size());//me quedo con los primeros 10. Luego se va a implementar paginación
         mensajeAEnviar.append("Eventos encontrados:\n");
         StringBuilder finalMensajeAEnviar = mensajeAEnviar;
         listaEventos.forEach(e -> agregarDatosEvento(e, finalMensajeAEnviar));
@@ -183,6 +175,93 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public void agregarDatosEvento(Event e, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
+        mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
+    }
+
+    public void enviarMensaje(StringBuilder mensajeAEnviar, long chatId){
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void agregarEvento(String idLista, String idEvento, long chatId){
+        String userID = getUserId(chatId); //se identifica al usuario a partir del chatid
+        this.eventService.addEvent(idLista, idEvento, userID);
+    }
+
+    public void revisarEventos(String idLista, long chatId){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        String userid = getUserId(chatId);
+        List<Event> listaEventos = this.eventService.getEventList(idLista, userid).getEvents();
+
+        if(listaEventos.isEmpty()){
+            mensajeAEnviar.append("No se encontraron eventos");
+        }
+        else{
+            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+        }
+
+        enviarMensaje(mensajeAEnviar, chatId);
+    }
+
+    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
+
+        if(listaEventos.isEmpty()){
+            mensajeAEnviar.append("No se encontraron eventos");
+        }
+        else{
+            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+        }
+
+        return mensajeAEnviar;
+    }
+
+    public static void guardarCuentaTelegram(long chatId, String username) {
+        usuarios.put(chatId, username);
+    }
+
+    public String getUserId(long chatId){
+        return usuarios.get(chatId);
+        //return "id1";
+    }
+
+    public boolean existeUserConChatID(long chatId) {
+        return usuarios.containsKey(chatId);
+    }
+
+    public StringBuilder categoriasDisponibles(){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<Category> listaCategorias = this.eventService.getCategories();
+
+        if(listaCategorias.isEmpty()){
+            mensajeAEnviar.append("No se encontraron categorias");
+        }
+        else{
+            mensajeAEnviar = getIdNombreCategoriasEncontradas(listaCategorias, mensajeAEnviar);
+        }
+
+        return mensajeAEnviar;
+    }
+
+    private StringBuilder getIdNombreCategoriasEncontradas(List<Category> listaCategorias, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("Categorías disponibles:\n");
+        StringBuilder finalMensajeAEnviar = mensajeAEnviar;
+        listaCategorias.forEach(e -> agregarCategoria(e, finalMensajeAEnviar));
+        mensajeAEnviar = finalMensajeAEnviar;
+        return mensajeAEnviar;
+    }
+
+    private void agregarCategoria(Category e, StringBuilder mensajeAEnviar) {
         mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
     }

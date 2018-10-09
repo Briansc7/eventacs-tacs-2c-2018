@@ -11,6 +11,15 @@ public class User {
     private String name;
     private String lastName;
     private List<EventList> events;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getId() {
         return id;
@@ -44,12 +53,13 @@ public class User {
         this.events = events;
     }
 
-    public User(String id, String name, String lastName, List<EventList> events) {
+    public User(String id, String name, String lastName, List<EventList> events, String password) {
 
         this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.events = events;
+        this.password = password;
     }
 
     public void addEventList(String listName, String listId) {
