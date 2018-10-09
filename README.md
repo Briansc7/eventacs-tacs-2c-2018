@@ -6,6 +6,25 @@ Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Con
 Para levantar la aplicacion ejecutar desde una consola:
 $- mvn clean compile exec:java
 
+### Telegram
+Para realizar las pruebas, se tiene los siguientes usuarios:
+
+**Usuario 1:**``username: User1, password: Pw1, IdlistaEventos: Id1``
+
+**Usuario 2:**``username: User2, password: Pw2, IdlistaEventos: Id1``
+
+### Comandos disponibles Telegram
+
+**/ayuda:** muestra los comandos disponibles
+
+**/buscarevento:** busca eventos en eventbrite. Pide de forma separada los siguientes parámetros: keyword, Id de categoría (muestra las categorías disponibles y pregunta si se desea agregar otra categoría), fecha de inicio (pide por separado día, mes y año), y fecha de fin. Retorna una lista de eventos con id y nombre. Se puede utilizar sin haber usado /login.
+
+**/agregarevento:** agrega un evento a una lista de eventos ya existente del usuario. Los parámetros que pide son Id de la lista de eventos, y Id del evento a agregar (primero usar /buscarevento para saber el id). Requiere que el usuario haya verificado su cuenta de telegram usando el comando /login.
+
+**/revisareventos:** muestra los eventos de una lista de eventos del usuario. Solamente pide el id de la lista de eventos a consultar. Requiere que el usuario haya verificado su cuenta de telegram usando el comando /login.
+
+**/login:** verifica a qué usuario de la app pertenece la cuenta de telegram. Sólo es necesario utilizarlo una vez. Pide Usuario y contraseña.
+
 ### Eventacs API
 ### Routes
 **Puerto:** 9000 **Basepath:** "/eventacs" 
