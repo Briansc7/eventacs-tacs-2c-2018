@@ -14,7 +14,9 @@ import java.util.Optional;
 public class ComandoBuscarEvento {
 
     enum estadosBuscarEvento{
-        inicio, esperaKeyword, esperaCategoria, esperaOtraCategoria, esperaFechaInicio, esperaFechaFin
+        inicio, esperaKeyword, esperaCategoria, esperaOtraCategoria, esperaFechaInicio, esperaFechaFin,
+        esperaDiaFechInic, esperaMesFechInic, esperaAnioFechInic,
+        esperaDiaFechFin, esperaMesFechFin, esperaAnioFechFin
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComandoBuscarEvento.class);
@@ -29,6 +31,10 @@ public class ComandoBuscarEvento {
 
     private static HashMap<Long, Optional<LocalDate>> fechaFinGuardada = new HashMap<Long, Optional<LocalDate>>();
 
+    private static HashMap<Long, String> fechaInicioParcial = new HashMap<Long, String>();
+
+    private static HashMap<Long, String> fechaFinParcial = new HashMap<Long, String>();
+
     private Validaciones validaciones = new Validaciones();
 
 
@@ -36,6 +42,8 @@ public class ComandoBuscarEvento {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
+
+        String fechaParcial;
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
@@ -92,41 +100,80 @@ public class ComandoBuscarEvento {
                     case "no":
                     case "No":
                     case "NO":
-                        mensajeAEnviar.append("Ingrese la fecha de inicio en formato AAAA-MM-DD");
+                        mensajeAEnviar.append("Ingrese el día de la fecha de inicio");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                        buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
+                        buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
                         break;
                     default:
                         mensajeAEnviar.append("Opción inválida.\nDesea agregar otra categoría?\nIngrese Si/No");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 }
                 break;
-            case esperaFechaInicio:
-
-                if(!Validaciones.fechainicioValida(parts[0], mensajeDeError)){
-                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
-                    mensajeAEnviar.append("Ingrese la fecha de inicio en formato AAAA-MM-DD");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaInicio);
-                    break;
-                }
-
-                fechaInicioGuardada.put(chatId, Optional.of(LocalDate.parse(parts[0])));
-                mensajeAEnviar.append("Ingrese ingrese la fecha de fin en formato AAAA-MM-DD");
+            case esperaDiaFechInic:
+                fechaInicioParcial.put(chatId,parts[0]);
+                mensajeAEnviar.append("Ingrese el mes de la fecha de inicio");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaFin);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechInic);
                 break;
-            case esperaFechaFin:
+            case esperaMesFechInic:
+                fechaParcial = fechaInicioParcial.get(chatId);
+                fechaParcial = parts[0]+"-"+fechaParcial;
+                fechaInicioParcial.put(chatId,fechaParcial);
+                mensajeAEnviar.append("Ingrese el año de la fecha de inicio");
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaAnioFechInic);
+                break;
+            case esperaAnioFechInic:
+                fechaParcial = fechaInicioParcial.get(chatId);
+                fechaParcial = parts[0]+"-"+fechaParcial;
 
-                if(!Validaciones.fechafinValida(parts[0], mensajeDeError)){
+
+                if(!Validaciones.fechainicioValida(fechaParcial, mensajeDeError)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
-                    mensajeAEnviar.append("Ingrese la fecha de fin en formato AAAA-MM-DD");
+                    mensajeAEnviar.append("La fecha ingresada no es válida.\nIngrese el día de la fecha de inicio");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaFin);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
                     break;
                 }
 
-                fechaFinGuardada.put(chatId, Optional.of(LocalDate.parse(parts[0])));
+                fechaInicioGuardada.put(chatId, Optional.of(LocalDate.parse(fechaParcial)));
+                LOGGER.info("Fecha inicio guardada: " + fechaInicioGuardada.get(chatId));
+                mensajeAEnviar.append("Ingrese el día de la fecha de fin");
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
+                break;
+
+
+            case esperaDiaFechFin:
+                fechaFinParcial.put(chatId,parts[0]);
+                mensajeAEnviar.append("Ingrese el mes de la fecha de fin");
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechFin);
+                break;
+            case esperaMesFechFin:
+                fechaParcial = fechaFinParcial.get(chatId);
+                fechaParcial = parts[0]+"-"+fechaParcial;
+                fechaFinParcial.put(chatId,fechaParcial);
+                mensajeAEnviar.append("Ingrese el año de la fecha de fin");
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                buscarEventoStates.put(chatId, estadosBuscarEvento.esperaAnioFechFin);
+                break;
+            case esperaAnioFechFin:
+                fechaParcial = fechaFinParcial.get(chatId);
+                fechaParcial = parts[0]+"-"+fechaParcial;
+
+
+                if(!Validaciones.fechafinValida(fechaParcial, mensajeDeError)){
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("La fecha ingresada no es válida.\nIngrese el día de la fecha de fin");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
+                    break;
+                }
+
+                fechaFinGuardada.put(chatId, Optional.of(LocalDate.parse(fechaParcial)));
+                LOGGER.info("Fecha inicio guardada: " + fechaFinGuardada.get(chatId));
+
                 mensajeAEnviar.append("Buscando...");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
