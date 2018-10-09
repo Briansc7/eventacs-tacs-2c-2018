@@ -11,7 +11,8 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-import javax.naming.ldap.Rdn;
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -76,8 +77,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
-        Optional<LocalDateTime> startDate = Optional.of(LocalDateTime.now());
-        Optional<LocalDateTime> endDate = Optional.of(LocalDateTime.now().plusDays(1));
+        Optional<LocalDate> startDate = Optional.of(LocalDate.now());
+        Optional<LocalDate> endDate = Optional.of(LocalDate.now().plusDays(1));
         List<Event> listaEventos;
 
         // Se crea un objeto mensaje
@@ -201,10 +202,10 @@ public class TacsBot extends TelegramLongPollingBot {
         enviarMensaje(mensajeAEnviar, chatId);
     }
 
-    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate){
+    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate);
+        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");

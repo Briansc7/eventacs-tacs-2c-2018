@@ -1,6 +1,7 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
@@ -14,11 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,8 +36,8 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
-        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate);
+    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate, page);
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
@@ -90,12 +90,14 @@ public class EventService {
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
         // TODO buscar cada lista y encontrar eventos en comun
+        // TODO por ahora usar este user generico
+        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        List<Event> events = new ArrayList<>();
-        events.add(new Event("id1", "name1", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(), "logoUrl"));
-        events.add(new Event("id2", "name2", "someDesc", "someCategory", LocalDateTime.now(), LocalDateTime.now(),"logoUrl"));
+        List<Event> events = this.userService.getEventList(listId, user.getId()).getEvents();
+        List<Event> moreEvents = this.userService.getEventList(anotherListId, user.getId()).getEvents();
 
-        return events;
+        return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
+
     }
 
     private String listIdGenerator(String userId) {
@@ -114,11 +116,11 @@ public class EventService {
 
     public EventList getEventList(String listId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
+        //TODO ya teniendo el id hacer un getById directo
 
         UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
-
     }
 
 }

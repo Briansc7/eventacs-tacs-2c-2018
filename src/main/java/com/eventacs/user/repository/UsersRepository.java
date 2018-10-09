@@ -18,14 +18,6 @@ public class UsersRepository {
         this.initRepository();
     }
 
-    public Optional<User> getByUserId(String userId) {
-        return this.users.stream().filter(user -> user.getId().equals(userId)).findFirst();
-    }
-
-    public List<User> getUsers() {
-        return this.users;
-    }
-
     private void initRepository() {
 
         this.users = new ArrayList<>();
@@ -47,6 +39,18 @@ public class UsersRepository {
         this.users.add(new User("id1", "name", "lastName", eventListListOne));
         this.users.add(new User("id2", "name", "lastName", eventListListTwo));
 
+    }
+
+    public Optional<User> getByUserId(String userId) {
+        return this.users.stream().filter(user -> user.getId().equals(userId)).findFirst();
+    }
+
+    public List<User> getUsers() {
+        return this.users;
+    }
+
+    public void update(User user) {
+        // TODO hacer el update a la base
     }
 
 }

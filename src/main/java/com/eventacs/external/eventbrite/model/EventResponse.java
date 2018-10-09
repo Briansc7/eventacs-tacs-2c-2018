@@ -9,6 +9,7 @@ public class EventResponse {
     private NameResponse name;
     private String id;
     private DescriptionResponse description;
+
     @JsonProperty("category_id")
     private String category;
     private EventDate start;

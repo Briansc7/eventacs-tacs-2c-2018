@@ -10,6 +10,7 @@ import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
 import com.eventacs.user.mapping.AlarmsMapper;
+import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
 import com.eventacs.user.repository.AlarmsRepository;
 import com.eventacs.user.repository.UsersRepository;
@@ -33,7 +34,10 @@ public class AppConfig {
     public AccountService accountService() { return new AccountService(); }
 
     @Bean
-    public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(), alarmsMapper()); }
+    public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(), alarmsMapper(), eventListsMapper()); }
+
+    @Bean
+    public EventListsMapper eventListsMapper() {return new EventListsMapper(); }
 
     @Bean
     public AlarmsMapper alarmsMapper() { return new AlarmsMapper(); }

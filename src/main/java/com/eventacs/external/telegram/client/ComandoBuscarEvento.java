@@ -3,6 +3,8 @@ package com.eventacs.external.telegram.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +25,9 @@ public class ComandoBuscarEvento {
 
     private static HashMap<Long, Optional<List<String>>> categoriasGuardadas = new HashMap<Long, Optional<List<String>>>();
 
-    private static HashMap<Long, Optional<LocalDateTime>> fechaInicioGuardada = new HashMap<Long, Optional<LocalDateTime>>();
+    private static HashMap<Long, Optional<LocalDate>> fechaInicioGuardada = new HashMap<Long, Optional<LocalDate>>();
 
-    private static HashMap<Long, Optional<LocalDateTime>> fechaFinGuardada = new HashMap<Long, Optional<LocalDateTime>>();
+    private static HashMap<Long, Optional<LocalDate>> fechaFinGuardada = new HashMap<Long, Optional<LocalDate>>();
 
     private Validaciones validaciones = new Validaciones();
 
@@ -37,8 +39,8 @@ public class ComandoBuscarEvento {
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
-        Optional<LocalDateTime> startDate = Optional.of(LocalDateTime.now());
-        Optional<LocalDateTime> endDate = Optional.of(LocalDateTime.now().plusDays(1));
+        Optional<LocalDate> startDate = Optional.of(LocalDate.now());
+        Optional<LocalDate> endDate = Optional.of(LocalDate.now().plusDays(1));
 
         if(!buscarEventoStates.containsKey(chatId)){
             buscarEventoStates.put(chatId, estadosBuscarEvento.inicio);
@@ -108,7 +110,7 @@ public class ComandoBuscarEvento {
                     break;
                 }
 
-                fechaInicioGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T00:00:00")));
+                fechaInicioGuardada.put(chatId, Optional.of(LocalDate.parse(parts[0])));
                 mensajeAEnviar.append("Ingrese ingrese la fecha de fin en formato AAAA-MM-DD");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaFechaFin);
@@ -123,7 +125,7 @@ public class ComandoBuscarEvento {
                     break;
                 }
 
-                fechaFinGuardada.put(chatId, Optional.of(LocalDateTime.parse(parts[0]+"T23:59:59")));
+                fechaFinGuardada.put(chatId, Optional.of(LocalDate.parse(parts[0])));
                 mensajeAEnviar.append("Buscando...");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
@@ -132,7 +134,9 @@ public class ComandoBuscarEvento {
                 startDate = fechaInicioGuardada.get(chatId);
                 endDate = fechaFinGuardada.get(chatId);
 
-                mensajeAEnviar = tacsBot.buscarEventos(keyword, categories, startDate, endDate);
+                Optional<BigInteger> page = Optional.of(BigInteger.ONE);
+
+                mensajeAEnviar = tacsBot.buscarEventos(keyword, categories, startDate, endDate, page);
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
                 buscarEventoStates.remove(chatId);
