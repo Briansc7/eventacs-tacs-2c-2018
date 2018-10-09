@@ -154,7 +154,6 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     private StringBuilder getIdNombreEventosEncontrados(List<Event> listaEventos, StringBuilder mensajeAEnviar) {
-        listaEventos = listaEventos.size() > 10 ? listaEventos.subList(0, 10):listaEventos.subList(0, listaEventos.size());//me quedo con los primeros 10. Luego se va a implementar paginación
         mensajeAEnviar.append("Eventos encontrados:\n");
         StringBuilder finalMensajeAEnviar = mensajeAEnviar;
         listaEventos.forEach(e -> agregarDatosEvento(e, finalMensajeAEnviar));
