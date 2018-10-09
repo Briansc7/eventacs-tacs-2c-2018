@@ -43,7 +43,7 @@ public class ComandoBuscarEvento {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
-        String fechaParcial;
+        String fechaParcial, dia, mes, anio;
 
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
@@ -110,14 +110,52 @@ public class ComandoBuscarEvento {
                 }
                 break;
             case esperaDiaFechInic:
-                fechaInicioParcial.put(chatId,parts[0]);
+
+                if(parts[0].length()>2){
+                    mensajeAEnviar.append("El día no puede ser de más de 2 dígitos\n");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de inicio\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
+                    break;
+                }
+
+                switch(parts[0].length()){
+                    case 1:
+                        dia = "0"+parts[0];
+                        break;
+                    case 2:
+                    default:
+                        dia = parts[0];
+                        break;
+                }
+
+                fechaInicioParcial.put(chatId,dia);
                 mensajeAEnviar.append("Ingrese el mes de la fecha de inicio");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechInic);
                 break;
             case esperaMesFechInic:
+
+                if(parts[0].length()>2){
+                    mensajeAEnviar.append("El mes no puede ser de más de 2 dígitos\n");
+                    mensajeAEnviar.append("Ingrese el mes de la fecha de inicio\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechInic);
+                    break;
+                }
+
+                switch(parts[0].length()){
+                    case 1:
+                        mes = "0"+parts[0];
+                        break;
+                    case 2:
+                    default:
+                        mes = parts[0];
+                        break;
+                }
+
                 fechaParcial = fechaInicioParcial.get(chatId);
-                fechaParcial = parts[0]+"-"+fechaParcial;
+                fechaParcial = mes+"-"+fechaParcial;
                 fechaInicioParcial.put(chatId,fechaParcial);
                 mensajeAEnviar.append("Ingrese el año de la fecha de inicio");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -145,14 +183,52 @@ public class ComandoBuscarEvento {
 
 
             case esperaDiaFechFin:
-                fechaFinParcial.put(chatId,parts[0]);
+
+                if(parts[0].length()>2){
+                    mensajeAEnviar.append("El día no puede ser de más de 2 dígitos\n");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de fin\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
+                    break;
+                }
+
+                switch(parts[0].length()){
+                    case 1:
+                        dia = "0"+parts[0];
+                        break;
+                    case 2:
+                    default:
+                        dia = parts[0];
+                        break;
+                }
+
+                fechaFinParcial.put(chatId,dia);
                 mensajeAEnviar.append("Ingrese el mes de la fecha de fin");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechFin);
                 break;
             case esperaMesFechFin:
+
+                if(parts[0].length()>2){
+                    mensajeAEnviar.append("El mes no puede ser de más de 2 dígitos\n");
+                    mensajeAEnviar.append("Ingrese el mes de la fecha de fin\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechFin);
+                    break;
+                }
+
+                switch(parts[0].length()){
+                    case 1:
+                        mes = "0"+parts[0];
+                        break;
+                    case 2:
+                    default:
+                        mes = parts[0];
+                        break;
+                }
+
                 fechaParcial = fechaFinParcial.get(chatId);
-                fechaParcial = parts[0]+"-"+fechaParcial;
+                fechaParcial = mes+"-"+fechaParcial;
                 fechaFinParcial.put(chatId,fechaParcial);
                 mensajeAEnviar.append("Ingrese el año de la fecha de fin");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
