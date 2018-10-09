@@ -54,7 +54,8 @@ public class ComandoBuscarEvento {
                 break;
             case esperaKeyword:
                 keywordGuardado.put(chatId, Optional.of(parts[0]));
-                mensajeAEnviar.append("Ingrese el id de la categoría");
+                mensajeAEnviar = tacsBot.categoriasDisponibles();
+                mensajeAEnviar.append("\nIngrese el id de la categoría");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
                 break;

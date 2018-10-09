@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
 import com.eventacs.user.repository.UsersRepository;
@@ -235,5 +236,33 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public boolean existeUserConChatID(long chatId) {
         return usuarios.containsKey(chatId);
+    }
+
+    public StringBuilder categoriasDisponibles(){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<Category> listaCategorias = this.eventService.getCategories();
+
+        if(listaCategorias.isEmpty()){
+            mensajeAEnviar.append("No se encontraron categorias");
+        }
+        else{
+            mensajeAEnviar = getIdNombreCategoriasEncontradas(listaCategorias, mensajeAEnviar);
+        }
+
+        return mensajeAEnviar;
+    }
+
+    private StringBuilder getIdNombreCategoriasEncontradas(List<Category> listaCategorias, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("Categorías disponibles:\n");
+        StringBuilder finalMensajeAEnviar = mensajeAEnviar;
+        listaCategorias.forEach(e -> agregarCategoria(e, finalMensajeAEnviar));
+        mensajeAEnviar = finalMensajeAEnviar;
+        return mensajeAEnviar;
+    }
+
+    private void agregarCategoria(Category e, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
+        mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
     }
 }
