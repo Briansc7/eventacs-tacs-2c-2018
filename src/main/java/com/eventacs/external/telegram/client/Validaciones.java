@@ -51,4 +51,8 @@ public class Validaciones {
             return pwreal.equals(pwEncriptado);
         }
     }
+
+    public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {
+        return tacsBot.existeUserConChatID(chatId);
+    }
 }

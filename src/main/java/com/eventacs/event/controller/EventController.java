@@ -51,7 +51,7 @@ public class EventController {
     @ResponseBody
     public EventList getEventList(@PathVariable String listId) {
         LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
-        return this.eventService.getEventList(listId);
+        return this.eventService.getEventList(listId, "User1");//obtener el userId de la sesión
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)

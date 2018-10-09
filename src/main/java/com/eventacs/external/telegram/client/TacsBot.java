@@ -2,6 +2,7 @@ package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
+import com.eventacs.user.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,7 +196,8 @@ public class TacsBot extends TelegramLongPollingBot {
     public void revisarEventos(String idLista, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        List<Event> listaEventos = this.eventService.getEventList(idLista).getEvents();
+        String userid = getUserId(chatId);
+        List<Event> listaEventos = this.eventService.getEventList(idLista, userid).getEvents();
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
@@ -227,8 +229,11 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public String getUserId(long chatId){
-        //return usuarios.get(chatId);
-        return "id1";
+        return usuarios.get(chatId);
+        //return "id1";
     }
 
+    public boolean existeUserConChatID(long chatId) {
+        return usuarios.containsKey(chatId);
+    }
 }

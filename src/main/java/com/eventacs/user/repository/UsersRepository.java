@@ -30,8 +30,8 @@ public class UsersRepository {
         List<Event> eventsOne = new ArrayList<>();
         eventsOne.add(eventOne);
 
-        EventList eventListOne = new EventList("id1", "name1", eventsOne);
-        EventList eventListTwo = new EventList("id1", "name1", new ArrayList<>());
+        EventList eventListOne = new EventList("Id1", "name1", eventsOne);
+        EventList eventListTwo = new EventList("Id1", "name1", new ArrayList<>());
 
         List<EventList> eventListListOne = new ArrayList<>();
         List<EventList> eventListListTwo = new ArrayList<>();

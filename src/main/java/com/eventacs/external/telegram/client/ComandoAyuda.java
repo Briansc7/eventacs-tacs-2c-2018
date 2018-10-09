@@ -19,11 +19,11 @@ public class ComandoAyuda{
             case 1:
                 mensajeAEnviar.append("Comandos disponibles:\n\n");
                 mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
-                mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n\n");
-                mensajeAEnviar.append("Agregar eventos a una lista de eventos con /agregarevento IdLista IdEvento\n\n");
-                mensajeAEnviar.append("Ver eventos de una lista de eventos con /revisareventos IdLista");
+                mensajeAEnviar.append("/buscarevento para buscar eventos\n\n");
+                mensajeAEnviar.append("/agregarevento para agregar eventos a una lista de eventos \n\n");
+                mensajeAEnviar.append("/revisareventos para ver eventos de una lista de eventos");
                 break;
-            case 2:
+            /*case 2:
                 switch (parts[1]){
                     case "buscarevento":
                         mensajeAEnviar.append("Buscar eventos con /buscarevento keyword IdCategoria fechaYhoraInicio fechaYhoraFin\n\n");
@@ -41,10 +41,10 @@ public class ComandoAyuda{
                         mensajeAEnviar.append("No existe el comando ").append(parts[1]).append("\n");
                         break;
                 }
-                break;
+                break;*/
             default:
-                mensajeAEnviar.append("Cantidad de argumentos inválido\n");
-                mensajeAEnviar.append("Utilizar /ayuda o /ayuda nombre-comando");
+                //mensajeAEnviar.append("Cantidad de argumentos inválido\n");
+                //mensajeAEnviar.append("Utilizar /ayuda o /ayuda nombre-comando");
                 break;
         }
 

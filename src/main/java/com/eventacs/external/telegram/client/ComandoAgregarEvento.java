@@ -20,6 +20,13 @@ public class ComandoAgregarEvento {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
+            mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
+            tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+            chatStates.put(chatId,estados.inicio);
+            return;
+        }
+
         if(!agregarEventoStates.containsKey(chatId)){
             agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);
         }
