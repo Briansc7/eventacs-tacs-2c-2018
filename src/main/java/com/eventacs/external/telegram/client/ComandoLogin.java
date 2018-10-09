@@ -1,5 +1,8 @@
 package com.eventacs.external.telegram.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 
 public class ComandoLogin {
@@ -7,6 +10,7 @@ public class ComandoLogin {
     enum estadosLogin{
         inicio, esperaUsername, esperaPw
     }
+    private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
 
     private static HashMap<Long, estadosLogin> loginStates = new HashMap<Long, estadosLogin>();
 
@@ -21,6 +25,8 @@ public class ComandoLogin {
         if(!loginStates.containsKey(chatId)){
             loginStates.put(chatId, estadosLogin.inicio);
         }
+
+        LOGGER.info("Estado login: " + loginStates.get(chatId));
 
         switch (loginStates.get(chatId)){
             case inicio:

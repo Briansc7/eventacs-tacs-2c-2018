@@ -75,6 +75,8 @@ public class TacsBot extends TelegramLongPollingBot {
             chatStates.put(chatId, inicio);
         }
 
+        LOGGER.info("Estado: " + chatStates.get(chatId));
+
         Optional<String> keyword = Optional.empty();
         Optional<List<String>> categories = Optional.empty();
         Optional<LocalDate> startDate = Optional.of(LocalDate.now());
@@ -105,6 +107,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case buscarevento:
                 comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                break;
+            case login:
+                comandoLogin.login(parts, chatStates, chatId, this);
                 break;
             default:
                 break;

@@ -2,6 +2,7 @@ package com.eventacs.user.repository;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
+import com.eventacs.external.telegram.client.Encriptador;
 import com.eventacs.user.model.User;
 
 import java.time.LocalDate;
@@ -22,6 +23,8 @@ public class UsersRepository {
 
         this.users = new ArrayList<>();
 
+        Encriptador encriptador = new Encriptador();
+
         Event eventOne = new Event("id1", "name", "description", "category", LocalDateTime.now(), LocalDateTime.now(), "logo url");
 
         List<Event> eventsOne = new ArrayList<>();
@@ -36,8 +39,11 @@ public class UsersRepository {
         eventListListOne.add(eventListOne);
         eventListListTwo.add(eventListTwo);
 
-        this.users.add(new User("id1", "name", "lastName", eventListListOne));
-        this.users.add(new User("id2", "name", "lastName", eventListListTwo));
+        String password1 = encriptador.toShae256("Pw1");
+        String password2 = encriptador.toShae256("Pw2");
+
+        this.users.add(new User("User1", "name", "lastName", eventListListOne, password1));
+        this.users.add(new User("User2", "name", "lastName", eventListListTwo, password2));
 
     }
 

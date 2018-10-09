@@ -1,12 +1,19 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.user.model.User;
+import com.eventacs.user.repository.UsersRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
+
 public class Validaciones {
 
     /*
     Clase para realizar las validaciones de los datos ingresados.
     En caso de que el dato no sea válido, se retorna false y se detalla el error en mensajeDeError
      */
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
 
     public static boolean categoriaValida(String idCategoria, StringBuilder mensajeDeError) {
         return true;
@@ -30,6 +37,18 @@ public class Validaciones {
     }
 
     public static boolean userPwValido(String username, String pw) {
-        return true;
+
+        UsersRepository repo = new UsersRepository();
+        Encriptador encriptador = new Encriptador();
+        String pwEncriptado = encriptador.toShae256(pw);
+
+        Optional<User> usuario = repo.getByUserId(username);
+        if(!usuario.isPresent()){
+            return false;
+        }
+        else{
+            String pwreal = usuario.get().getPassword();
+            return pwreal.equals(pwEncriptado);
+        }
     }
 }
