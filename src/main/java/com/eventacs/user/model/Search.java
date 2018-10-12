@@ -1,6 +1,6 @@
 package com.eventacs.user.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,10 +8,10 @@ public class Search {
 
     private Optional<String> keyword;
     private Optional<List<String>> categories;
-    private Optional<LocalDateTime> startDate;
-    private Optional<LocalDateTime> endDate;
+    private Optional<LocalDate> startDate;
+    private Optional<LocalDate> endDate;
 
-    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDateTime> startDate, Optional<LocalDateTime> endDate) {
+    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
         this.keyword = keyword;
         this.categories = categories;
         this.startDate = startDate;
@@ -34,19 +34,19 @@ public class Search {
         this.categories = categories;
     }
 
-    public Optional<LocalDateTime> getStartDate() {
+    public Optional<LocalDate> getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Optional<LocalDateTime> startDate) {
+    public void setStartDate(Optional<LocalDate> startDate) {
         this.startDate = startDate;
     }
 
-    public Optional<LocalDateTime> getEndDate() {
+    public Optional<LocalDate> getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Optional<LocalDateTime> endDate) {
+    public void setEndDate(Optional<LocalDate> endDate) {
         this.endDate = endDate;
     }
 
