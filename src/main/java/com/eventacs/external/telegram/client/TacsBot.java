@@ -3,19 +3,21 @@ package com.eventacs.external.telegram.client;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
-import com.eventacs.user.repository.UsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -128,6 +130,8 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/start":
                 String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
+                mensajeAEnviar.append("Elija uno de los siguientes comandos");
+                mostrarMenuComandos(mensajeAEnviar, chatId);
             case "/ayuda":
                 comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
@@ -146,6 +150,11 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case "/test":
+
+                mensajeAEnviar.append("prueba");
+                mostrarMenuComandos(mensajeAEnviar, chatId);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
@@ -181,6 +190,47 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void enviarMensaje(StringBuilder mensajeAEnviar, long chatId){
         SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mostrarMenuComandos(StringBuilder mensajeAEnviar, long chatId){
+
+
+        KeyboardButton keyboardButton1 = new KeyboardButton();
+        keyboardButton1.setText("/ayuda");
+
+        KeyboardButton keyboardButton2 = new KeyboardButton();
+        keyboardButton2.setText("/buscarevento");
+
+        KeyboardButton keyboardButton3 = new KeyboardButton();
+        keyboardButton3.setText("/revisareventos");
+
+        //List<KeyboardButton> keyboardButtonList = new ArrayList<>();
+        //keyboardButtonList.add(keyboardButton);
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(keyboardButton1);
+
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow2.add(keyboardButton2);
+        keyboardRow2.add(keyboardButton3);
+
+        List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
+        keyboardRowArrayList.add(keyboardRow);
+        keyboardRowArrayList.add(keyboardRow2);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+
+
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        message.setReplyMarkup(replyKeyboardMarkup);
+
         try {
             // Se envía el mensaje
             execute(message);
