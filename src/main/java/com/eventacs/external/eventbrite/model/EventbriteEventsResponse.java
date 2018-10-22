@@ -1,35 +1,37 @@
-package com.eventacs.event.model;
+package com.eventacs.external.eventbrite.model;
+
+import com.eventacs.external.eventbrite.model.EventResponse;
+import com.eventacs.external.eventbrite.model.Pagination;
 
 import java.util.List;
 
-public class EventsResponse {
+public class EventbriteEventsResponse {
 
-    private EventsMetadata eventsMetadata;
-    private List<Event> events;
+    private Pagination pagination;
+    private List<EventResponse> eventResponses;
 
-    public EventsResponse() {
+    public EventbriteEventsResponse() {
 
     }
 
-    public EventsResponse(EventsMetadata eventsMetadata, List<Event> events) {
-        this.eventsMetadata = eventsMetadata;
-        this.events = events;
+    public EventbriteEventsResponse(Pagination pagination, List<EventResponse> eventResponses) {
+        this.pagination = pagination;
+        this.eventResponses = eventResponses;
     }
 
-    public EventsMetadata getEventsMetadata() {
-        return eventsMetadata;
+    public Pagination getPagination() {
+        return pagination;
     }
 
-    public void setEventsMetadata(EventsMetadata eventsMetadata) {
-        this.eventsMetadata = eventsMetadata;
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
     }
 
-    public List<Event> getEvents() {
-        return events;
+    public List<EventResponse> getEventResponses() {
+        return eventResponses;
     }
 
-    public void setEvents(List<Event> events) {
-        this.events = events;
+    public void setEventResponses(List<EventResponse> eventResponses) {
+        this.eventResponses = eventResponses;
     }
-
 }
