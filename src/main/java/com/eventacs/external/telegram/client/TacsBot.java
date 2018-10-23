@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -162,6 +163,8 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
+
+
     private StringBuilder getIdNombreEventosEncontrados(List<Event> listaEventos, StringBuilder mensajeAEnviar) {
         listaEventos = listaEventos.size() > 40 ? listaEventos.subList(0, 40):listaEventos.subList(0, listaEventos.size());//me quedo con los primeros 10. Luego se va a implementar paginación
         mensajeAEnviar.append("Eventos encontrados:\n");
@@ -198,6 +201,18 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
+    public void enviarMensajeRemoverTeclado(StringBuilder mensajeAEnviar, long chatId){
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
+        message.setReplyMarkup(keyboardMarkup);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void mostrarMenuComandos(StringBuilder mensajeAEnviar, long chatId){
 
 
@@ -209,9 +224,6 @@ public class TacsBot extends TelegramLongPollingBot {
 
         KeyboardButton keyboardButton3 = new KeyboardButton();
         keyboardButton3.setText("/revisareventos");
-
-        //List<KeyboardButton> keyboardButtonList = new ArrayList<>();
-        //keyboardButtonList.add(keyboardButton);
 
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboardRow.add(keyboardButton1);
@@ -228,7 +240,7 @@ public class TacsBot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
 
 
-        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        SendMessage message = new SendMessage().setChatId(chatId).setText("Elija uno de los siguientes comandos");
         message.setReplyMarkup(replyKeyboardMarkup);
 
         try {
@@ -237,6 +249,49 @@ public class TacsBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    public void enviarMensajeConTeclado(StringBuilder mensajeAEnviar, long chatId, ReplyKeyboardMarkup teclado) {
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        message.setReplyMarkup(teclado);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enviarMensajeSinTeclado(StringBuilder mensajeAEnviar, long chatId) {
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
+        message.setReplyMarkup(keyboardMarkup);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enviarMensajeConOpcionSiNo(StringBuilder mensajeAEnviar, long chatId) {
+        KeyboardButton keyboardButton1 = new KeyboardButton();
+        keyboardButton1.setText("Si");
+
+        KeyboardButton keyboardButton2 = new KeyboardButton();
+        keyboardButton2.setText("No");
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(keyboardButton1);
+        keyboardRow.add(keyboardButton2);
+
+        List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
+        keyboardRowArrayList.add(keyboardRow);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+
+        enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
     }
 
     public void agregarEvento(String idLista, String idEvento, long chatId){
