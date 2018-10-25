@@ -132,7 +132,8 @@ public class TacsBot extends TelegramLongPollingBot {
                 String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
                 mensajeAEnviar.append("Elija uno de los siguientes comandos");
-                mostrarMenuComandos(mensajeAEnviar, chatId);
+                enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
+                break;
             case "/ayuda":
                 comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
@@ -155,7 +156,7 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/test":
 
                 mensajeAEnviar.append("prueba");
-                mostrarMenuComandos(mensajeAEnviar, chatId);
+                enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
@@ -213,7 +214,14 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
-    public void mostrarMenuComandos(StringBuilder mensajeAEnviar, long chatId){
+    public void mostrarMenuComandos(long chatId){
+        StringBuilder mensajeAEnviar = new StringBuilder();
+        mensajeAEnviar.append("Elija uno de los siguientes comandos");
+        enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
+
+    }
+
+    public void enviarMensajeConTecladoComandos(StringBuilder mensajeAEnviar, long chatId){
 
 
         KeyboardButton keyboardButton1 = new KeyboardButton();
@@ -239,16 +247,9 @@ public class TacsBot extends TelegramLongPollingBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
 
+        enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
 
-        SendMessage message = new SendMessage().setChatId(chatId).setText("Elija uno de los siguientes comandos");
-        message.setReplyMarkup(replyKeyboardMarkup);
 
-        try {
-            // Se envía el mensaje
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
     }
 
     public void enviarMensajeConTeclado(StringBuilder mensajeAEnviar, long chatId, ReplyKeyboardMarkup teclado) {

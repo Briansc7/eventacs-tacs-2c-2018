@@ -31,13 +31,13 @@ public class ComandoLogin {
         switch (loginStates.get(chatId)){
             case inicio:
                 mensajeAEnviar.append("Ingrese su Username");
-                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                tacsBot.enviarMensajeSinTeclado(mensajeAEnviar, chatId);
                 loginStates.put(chatId, estadosLogin.esperaUsername);
                 break;
             case esperaUsername:
                 usernameGuardado.put(chatId,parts[0]);
                 mensajeAEnviar.append("Ingrese su contraseña");
-                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                tacsBot.enviarMensajeSinTeclado(mensajeAEnviar, chatId);
                 loginStates.put(chatId, estadosLogin.esperaPw);
                 break;
             case esperaPw:
@@ -46,11 +46,11 @@ public class ComandoLogin {
                 if(Validaciones.userPwValido(username, pw)){
                     TacsBot.guardarCuentaTelegram(chatId, username);
                     mensajeAEnviar.append("Login exitoso");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
                 else{
                     mensajeAEnviar.append("usuario o contraseña inválida");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
 
                 loginStates.remove(chatId);

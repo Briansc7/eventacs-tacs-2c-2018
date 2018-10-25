@@ -269,6 +269,7 @@ public class ComandoBuscarEvento {
                     case "NO":
                         fechaFinGuardada.put(chatId, Optional.empty());
                         ejecutarBusqueda(chatStates, chatId, tacsBot, mensajeAEnviar);
+                        tacsBot.mostrarMenuComandos(chatId);
                         break;
                     default:
                         mensajeAEnviar.append("Opción inválida.\nDesea agregar una fecha de fin a su búsqueda?\nIngrese Si/No");
@@ -346,6 +347,9 @@ public class ComandoBuscarEvento {
                 LOGGER.info("Fecha inicio guardada: " + fechaFinGuardada.get(chatId));
 
                 ejecutarBusqueda(chatStates, chatId, tacsBot, mensajeAEnviar);
+
+                tacsBot.mostrarMenuComandos(chatId);
+
                 break;
             default:
                 break;
