@@ -131,7 +131,7 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/start":
                 String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
-                mensajeAEnviar.append("Elija uno de los siguientes comandos");
+                mensajeAEnviar.append("Elije uno de los siguientes comandos");
                 enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 break;
             case "/ayuda":
@@ -216,7 +216,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void mostrarMenuComandos(long chatId){
         StringBuilder mensajeAEnviar = new StringBuilder();
-        mensajeAEnviar.append("Elija uno de los siguientes comandos");
+        mensajeAEnviar.append("Elije uno de los siguientes comandos");
         enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
 
     }
@@ -233,16 +233,33 @@ public class TacsBot extends TelegramLongPollingBot {
         KeyboardButton keyboardButton3 = new KeyboardButton();
         keyboardButton3.setText("/revisareventos");
 
+        KeyboardButton keyboardButton4 = new KeyboardButton();
+        keyboardButton4.setText("/agregarevento");
+
+        KeyboardButton keyboardButton5 = new KeyboardButton();
+        keyboardButton5.setText("/login");
+
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboardRow.add(keyboardButton1);
 
         KeyboardRow keyboardRow2 = new KeyboardRow();
         keyboardRow2.add(keyboardButton2);
-        keyboardRow2.add(keyboardButton3);
+
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        keyboardRow3.add(keyboardButton3);
+
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow4.add(keyboardButton4);
+
+        KeyboardRow keyboardRow5 = new KeyboardRow();
+        keyboardRow5.add(keyboardButton5);
 
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
         keyboardRowArrayList.add(keyboardRow);
         keyboardRowArrayList.add(keyboardRow2);
+        keyboardRowArrayList.add(keyboardRow3);
+        keyboardRowArrayList.add(keyboardRow4);
+        keyboardRowArrayList.add(keyboardRow5);
 
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
