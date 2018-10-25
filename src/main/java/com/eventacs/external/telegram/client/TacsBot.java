@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.eventacs.external.telegram.client.estados.*;
+import static java.lang.Math.toIntExact;
 
 enum estados{
     inicio, agregarevento, revisareventos, buscarevento, login
@@ -66,6 +70,11 @@ public class TacsBot extends TelegramLongPollingBot {
 
 
         LOGGER.info("Mensaje completo recibido: " + update);
+
+        if (update.hasCallbackQuery()){
+            editarMensaje(update);
+            return;
+        }
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
@@ -123,6 +132,24 @@ public class TacsBot extends TelegramLongPollingBot {
 
     }
 
+    private void editarMensaje(Update update) {
+        String call_data = update.getCallbackQuery().getData();
+        long message_id = update.getCallbackQuery().getMessage().getMessageId();
+        long chat_id = update.getCallbackQuery().getMessage().getChatId();
+        if (call_data.equals("update_msg_text")) {
+            String answer = "Updated message text";
+            EditMessageText new_message = new EditMessageText()
+                    .setChatId(chat_id)
+                    .setMessageId(toIntExact(message_id))
+                    .setText(answer);
+            try {
+                execute(new_message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
 
         final long chatId = update.getMessage().getChatId();
@@ -156,13 +183,14 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/test":
 
                 mensajeAEnviar.append("prueba");
-                enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
+                enviarMensajeConBoton(mensajeAEnviar, chatId);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
         }
     }
+
 
 
 
@@ -212,6 +240,27 @@ public class TacsBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    private void enviarMensajeConBoton(StringBuilder mensajeAEnviar, long chatId) {
+        SendMessage message = new SendMessage() // Create a message object object
+                .setChatId(chatId)
+                .setText("Enviaste /prueba");
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        List<InlineKeyboardButton> rowInline = new ArrayList<>();
+        rowInline.add(new InlineKeyboardButton().setText("Update message text").setCallbackData("update_msg_text"));
+        // Set the keyboard to the markup
+        rowsInline.add(rowInline);
+        // Add it to the message
+        markupInline.setKeyboard(rowsInline);
+        message.setReplyMarkup(markupInline);
+        try {
+            execute(message); // Sending our message object to user
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void mostrarMenuComandos(long chatId){
