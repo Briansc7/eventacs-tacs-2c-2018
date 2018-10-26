@@ -72,7 +72,7 @@ public class TacsBot extends TelegramLongPollingBot {
         LOGGER.info("Mensaje completo recibido: " + update);
 
         if (update.hasCallbackQuery()){
-            editarMensaje(update);
+            inlineButtonPresionado(update);
             return;
         }
 
@@ -132,23 +132,28 @@ public class TacsBot extends TelegramLongPollingBot {
 
     }
 
-    private void editarMensaje(Update update) {
+    private void inlineButtonPresionado(Update update) {
         String call_data = update.getCallbackQuery().getData();
         long message_id = update.getCallbackQuery().getMessage().getMessageId();
         long chat_id = update.getCallbackQuery().getMessage().getChatId();
         if (call_data.equals("update_msg_text")) {
             String answer = "Updated message text";
-            EditMessageText new_message = new EditMessageText()
-                    .setChatId(chat_id)
-                    .setMessageId(toIntExact(message_id))
-                    .setText(answer);
-            try {
-                execute(new_message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            editarMensaje(message_id, chat_id, answer);
         }
     }
+
+    private void editarMensaje(long message_id, long chat_id, String answer) {
+        EditMessageText new_message = new EditMessageText()
+                .setChatId(chat_id)
+                .setMessageId(toIntExact(message_id))
+                .setText(answer);
+        try {
+            execute(new_message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
 
@@ -312,6 +317,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);//el teclado desaparece luego de elegir una opcion
+        replyKeyboardMarkup.setResizeKeyboard(true);//hace el teclado mas responsive
 
         enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
 
@@ -329,6 +336,7 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
+    // Método para enviar un mensaje removiendo el teclado en caso de que no sea de un uso
     public void enviarMensajeSinTeclado(StringBuilder mensajeAEnviar, long chatId) {
         SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
         ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
@@ -341,6 +349,7 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
+    // Método para enviar un mensaje y mostrar un teclado con los botones "Si" y "No"
     public void enviarMensajeConOpcionSiNo(StringBuilder mensajeAEnviar, long chatId) {
         KeyboardButton keyboardButton1 = new KeyboardButton();
         keyboardButton1.setText("Si");
@@ -357,6 +366,9 @@ public class TacsBot extends TelegramLongPollingBot {
 
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);//el teclado desaparece luego de elegir una opcion
+        replyKeyboardMarkup.setResizeKeyboard(true);//hace el teclado mas responsive
+
 
         enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
     }

@@ -31,13 +31,13 @@ public class ComandoLogin {
         switch (loginStates.get(chatId)){
             case inicio:
                 mensajeAEnviar.append("Ingrese su Username");
-                tacsBot.enviarMensajeSinTeclado(mensajeAEnviar, chatId);
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 loginStates.put(chatId, estadosLogin.esperaUsername);
                 break;
             case esperaUsername:
                 usernameGuardado.put(chatId,parts[0]);
                 mensajeAEnviar.append("Ingrese su contraseña");
-                tacsBot.enviarMensajeSinTeclado(mensajeAEnviar, chatId);
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 loginStates.put(chatId, estadosLogin.esperaPw);
                 break;
             case esperaPw:
