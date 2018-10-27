@@ -31,7 +31,7 @@ public class UsersRepository {
         eventsOne.add(eventOne);
 
         EventList eventListOne = new EventList("Id1", "name1", eventsOne);
-        EventList eventListTwo = new EventList("Id1", "name1", new ArrayList<>());
+        EventList eventListTwo = new EventList("Id2", "name2", new ArrayList<>());
 
         List<EventList> eventListListOne = new ArrayList<>();
         List<EventList> eventListListTwo = new ArrayList<>();
