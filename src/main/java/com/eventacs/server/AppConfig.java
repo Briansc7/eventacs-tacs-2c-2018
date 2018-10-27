@@ -93,10 +93,10 @@ public class AppConfig {
         return mapper;
     }
 
-    @Bean
-    public TacsBot tacsBot() { return new TacsBot(eventService()); }
-
-    @Bean
-    public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
+//    @Bean
+//    public TacsBot tacsBot() { return new TacsBot(eventService()); }
+//
+//    @Bean
+//    public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
 }

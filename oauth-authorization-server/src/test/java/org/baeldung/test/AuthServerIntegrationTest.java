@@ -1,6 +1,6 @@
 package org.baeldung.test;
 
-import org.baeldung.config.AuthorizationServerApplication;
+import com.eventacs.config.AuthorizationServerApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
