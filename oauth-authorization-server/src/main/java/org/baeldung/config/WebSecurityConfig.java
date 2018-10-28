@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
 		//.and().formLogin().permitAll()
 		.and().csrf().disable();
-                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 		// @formatter:on
     }
 

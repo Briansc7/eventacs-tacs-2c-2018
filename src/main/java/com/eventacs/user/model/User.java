@@ -8,6 +8,7 @@ import java.util.List;
 public class User {
 
     private String id;
+    private String chatId;
     private String name;
     private String lastName;
     private List<EventList> events;
@@ -19,6 +20,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
     }
 
     public String getId() {

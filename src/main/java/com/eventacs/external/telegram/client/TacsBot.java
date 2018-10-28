@@ -3,7 +3,7 @@ package com.eventacs.external.telegram.client;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
-import com.eventacs.user.repository.UsersRepository;
+import com.eventacs.server.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -223,6 +222,10 @@ public class TacsBot extends TelegramLongPollingBot {
         }
 
         return mensajeAEnviar;
+    }
+
+    public static void guardarToken(final long key, final String value) {
+        () -> AppConfig.TelegramRepository
     }
 
     public static void guardarCuentaTelegram(long chatId, String username) {
