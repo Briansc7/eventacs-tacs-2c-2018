@@ -4,6 +4,7 @@ import AppNavbar from './AppNavbar';
 import EventsSearchBox from "./EventsSearchBox";
 import EventsCluster from './EventsCluster';
 import {Col, Row} from "reactstrap";
+import { slide as Menu } from 'react-burger-menu'
 
 class Home extends Component {
 
@@ -15,6 +16,10 @@ class Home extends Component {
     this.handleNewSearches = this.handleNewSearches.bind(this);
   }
 
+  showSettings(event) {
+    event.preventDefault();
+  }
+
   handleEventsSearch(eventsResponse) {
     this.setState({hasSearches: true, eventsResponse: eventsResponse})
   }
@@ -22,8 +27,6 @@ class Home extends Component {
   handleNewSearches() {
     this.setState({hasSearches: false})
   }
-
-
 
   render() {
 
@@ -37,6 +40,14 @@ class Home extends Component {
     return (
       <div>
         <AppNavbar/>
+
+        <Menu>
+          <a id="home" className="menu-item" href="/">Home</a>
+          <a id="about" className="menu-item" href="/about">About</a>
+          <a id="contact" className="menu-item" href="/contact">Contact</a>
+          <a onClick={ this.showSettings } className="menu-item--small" href="">Settings</a>
+        </Menu>
+
         <Row>
           <Col xs="3">
             <EventsSearchBox searchHandler={this.handleEventsSearch}
