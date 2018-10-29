@@ -14,6 +14,8 @@ import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
 import com.eventacs.user.model.User;
 import com.eventacs.user.repository.AlarmsRepository;
+import com.eventacs.user.repository.TelegramUsersRepository;
+import com.eventacs.user.repository.TelegramUsersRepositoryImpl;
 import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,14 +108,19 @@ public class AppConfig {
     }
 
     @Bean
-    public RedisTemplate<String, User> redisTemplate(){
-        RedisTemplate<String,User> template = new RedisTemplate<>();
+    public RedisTemplate<Long, String> redisTemplate(){
+        RedisTemplate<Long,String> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         return template;
     }
-
+    /*
     @Repository
-    public interface TelegramRepository extends CrudRepository<String,String>  {
+    public interface UsersRepo extends CrudRepository<Long,String>  {
+    }*/
+
+    @Bean
+    public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
+        return new TelegramUsersRepositoryImpl(RedisTemplate<Long,String>);
     }
 
     @Bean
@@ -121,7 +128,5 @@ public class AppConfig {
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
-
-
 
 }

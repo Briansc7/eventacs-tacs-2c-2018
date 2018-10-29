@@ -3,7 +3,7 @@ package com.eventacs.external.telegram.client;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.service.EventService;
-import com.eventacs.server.AppConfig;
+import com.eventacs.user.repository.TelegramUsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
 
+    private TelegramUsersRepository telegramUsersRepository;
+
     ComandoAyuda comandoAyuda = new ComandoAyuda();
     ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
     ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
@@ -44,8 +46,9 @@ public class TacsBot extends TelegramLongPollingBot {
     private EventService eventService;
     private int numero = 0;
 
-    public TacsBot(EventService eventService) {
+    public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository) {
         this.eventService = eventService;
+        this.telegramUsersRepository = telegramUsersRepository;
     }
 
     public EventService getEventService() {
@@ -224,8 +227,8 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public static void guardarToken(final long key, final String value) {
-        () -> AppConfig.TelegramRepository
+    public static guardarToken(final long key, final String value) {
+        telegramUsersRepository.save(key,value);
     }
 
     public static void guardarCuentaTelegram(long chatId, String username) {
