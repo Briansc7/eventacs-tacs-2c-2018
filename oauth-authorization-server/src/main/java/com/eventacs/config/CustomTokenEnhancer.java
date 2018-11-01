@@ -1,11 +1,8 @@
 package com.eventacs.config;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;

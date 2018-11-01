@@ -1,10 +1,10 @@
 package com.eventacs.user.repository;
 
-import com.eventacs.user.model.User;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Repository
@@ -15,7 +15,12 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
 
     public TelegramUsersRepositoryImpl(RedisTemplate<Long,String> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        hashOperations=redisTemplate.opsForHash();
+     //   hashOperations=redisTemplate.opsForHash();
+    }
+
+    @PostConstruct
+    private void init(){
+        hashOperations = redisTemplate.opsForHash();
     }
 
     @Override

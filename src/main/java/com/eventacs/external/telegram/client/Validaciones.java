@@ -27,7 +27,7 @@ public class Validaciones {
     En caso de que el dato no sea válido, se retorna false y se detalla el error en mensajeDeError
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
-    private static ObjectMapper objectMapper;
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static boolean categoriaValida(String idCategoria, StringBuilder mensajeDeError) {
         return true;

@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.stereotype.Repository;
@@ -113,8 +114,9 @@ public class AppConfig {
 
     @Bean
     public RedisTemplate<Long, String> redisTemplate(){
-        RedisTemplate<Long,String> template = new RedisTemplate<>();
+        RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
         template.setConnectionFactory(jedisConnectionFactory());
+        template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
         return template;
     }
     /*
