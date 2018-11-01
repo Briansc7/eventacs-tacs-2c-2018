@@ -227,7 +227,7 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public void guardarToken(long key, String value) {
+    public static void guardarToken(long key, String value) {
         telegramUsersRepository.save(key,value);
     }
 
