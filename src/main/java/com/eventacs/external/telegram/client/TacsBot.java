@@ -34,7 +34,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
 
-    private TelegramUsersRepository telegramUsersRepository;
+    private static TelegramUsersRepository telegramUsersRepository;
 
     ComandoAyuda comandoAyuda = new ComandoAyuda();
     ComandoAgregarEvento comandoAgregarEvento = new ComandoAgregarEvento();
@@ -227,7 +227,7 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public static guardarToken(final long key, final String value) {
+    public void guardarToken(long key, String value) {
         telegramUsersRepository.save(key,value);
     }
 

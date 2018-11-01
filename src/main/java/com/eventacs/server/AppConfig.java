@@ -120,11 +120,11 @@ public class AppConfig {
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
-        return new TelegramUsersRepositoryImpl(RedisTemplate<Long,String>);
+        return new TelegramUsersRepositoryImpl(redisTemplate());
     }
 
     @Bean
-    public TacsBot tacsBot() { return new TacsBot(eventService()); }
+    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl()); }
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
