@@ -1,11 +1,20 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.external.eventbrite.model.GetAccessToken;
+import com.eventacs.external.telegram.client.httprequest.RequestLogin;
 import com.eventacs.user.model.User;
 import com.eventacs.user.repository.UsersRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.codehaus.jackson.ObjectCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Optional;
+import org.apache.http.impl.client.HttpClients;
+
 
 public class Validaciones {
 
@@ -14,6 +23,7 @@ public class Validaciones {
     En caso de que el dato no sea válido, se retorna false y se detalla el error en mensajeDeError
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
+    private static ObjectCodec objectMapper;
 
     public static boolean categoriaValida(String idCategoria, StringBuilder mensajeDeError) {
         return true;
@@ -36,20 +46,15 @@ public class Validaciones {
         return true;
     }
 
-    public static boolean userPwValido(String username, String pw) {
+    public static GetAccessToken userPwValido(String username, String pw) {
 
-        UsersRepository repo = new UsersRepository();
-        Encriptador encriptador = new Encriptador();
-        String pwEncriptado = encriptador.toShae256(pw);
+        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
+        CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+        GetAccessToken response = null;
 
-        Optional<User> usuario = repo.getByUserId(username);
-        if(!usuario.isPresent()){
-            return false;
-        }
-        else{
-            String pwreal = usuario.get().getPassword();
-            return pwreal.equals(pwEncriptado);
-        }
+        RequestLogin request = (new RequestLogin(username,pw);
+        return response = objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
+
     }
 
     public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {
