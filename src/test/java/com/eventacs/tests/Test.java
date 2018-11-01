@@ -2,6 +2,8 @@ package com.eventacs.tests;
 
 import com.eventacs.event.model.Category;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
+import com.eventacs.external.telegram.client.TacsBot;
+import com.eventacs.external.telegram.client.Validaciones;
 import com.eventacs.external.telegram.client.httprequest.GetRequest;
 import com.eventacs.external.telegram.client.httprequest.RequestLogin;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,10 +24,22 @@ public class Test {
 
     @org.junit.Test
     public void givenNoToken_whenGetSecureRequest_thenUnauthorized() throws Exception {
-        RequestLogin request = (new RequestLogin("usuario","clave"));
+        RequestLogin request = (new RequestLogin("usuario", "clave"));
         //GetAccessToken token = new GetAccessToken();
         response = this.objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
-        GetRequest requestApi =(new GetRequest("http://localhost:9000/eventacs/categories", response.getAccess_token()));
-        List<Category> Categoryes = this.objectMapper.readValue(httpClient.execute(requestApi.build()).getEntity().getContent(), new TypeReference<List<Category>>(){});
+        GetRequest requestApi = (new GetRequest("http://localhost:9000/eventacs/categories", response.getAccess_token()));
+        List<Category> Categoryes = this.objectMapper.readValue(httpClient.execute(requestApi.build()).getEntity().getContent(), new TypeReference<List<Category>>() {
+        });
+    }
+
+    @org.junit.Test
+    public void prueba() throws Exception {
+        GetAccessToken accessToken = Validaciones.userPwValido("usuario", "clave");
+        if (accessToken.getAccess_token() != null) {
+            //TacsBot.guardarCuentaTelegram(chatId, username);
+            TacsBot.guardarToken(111, accessToken.getAccess_token());
+            System.out.println("CHAU" + accessToken.getAccess_token());
+        }
+
     }
 }
