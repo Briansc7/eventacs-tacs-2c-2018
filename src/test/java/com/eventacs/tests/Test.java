@@ -23,7 +23,7 @@ public class Test {
     @org.junit.Test
     public void givenNoToken_whenGetSecureRequest_thenUnauthorized() throws Exception {
         RequestLogin request = (new RequestLogin("usuario","clave"));
-        GetAccessToken token = new GetAccessToken();
+        //GetAccessToken token = new GetAccessToken();
         response = this.objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
         GetRequest requestApi =(new GetRequest("http://localhost:9000/eventacs/categories", response.getAccess_token()));
         List<Category> Categoryes = this.objectMapper.readValue(httpClient.execute(requestApi.build()).getEntity().getContent(), new TypeReference<List<Category>>(){});
