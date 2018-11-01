@@ -2,6 +2,7 @@ package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
+import com.eventacs.event.model.EventsResponse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.user.repository.TelegramUsersRepository;
 import org.slf4j.Logger;
@@ -215,13 +216,13 @@ public class TacsBot extends TelegramLongPollingBot {
     public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        List<Event> listaEventos = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
+        EventsResponse eventsResponse = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
 
-        if(listaEventos.isEmpty()){
+        if(eventsResponse.getEvents().isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
         }
         else{
-            mensajeAEnviar = getIdNombreEventosEncontrados(listaEventos, mensajeAEnviar);
+            mensajeAEnviar = getIdNombreEventosEncontrados(eventsResponse.getEvents(), mensajeAEnviar);
         }
 
         return mensajeAEnviar;

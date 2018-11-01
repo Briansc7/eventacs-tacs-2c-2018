@@ -24,14 +24,15 @@ public class MainTelegram {
     private void initBot() {
         // Se crea un nuevo Bot API
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-
-        /*try {
+/*
+        try {
             // Se registra el bot
             telegramBotsApi.registerBot(this.tacsBot);
             LOGGER.info("BOT REGISTRADO");
         } catch (TelegramApiException e) {
             e.printStackTrace();
-        }*/
+        }
+        */
     }
 
 }

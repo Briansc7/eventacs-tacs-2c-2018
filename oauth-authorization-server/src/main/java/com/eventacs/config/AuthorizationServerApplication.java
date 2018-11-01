@@ -1,16 +1,14 @@
-package com.eventacs.server;
+package com.eventacs.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.telegram.telegrambots.ApiContextInitializer;
 
 @SpringBootApplication
-public class ResourceServerApplication extends SpringBootServletInitializer {
+public class AuthorizationServerApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        ApiContextInitializer.init();
-        SpringApplication.run(ResourceServerApplication.class, args);
+        SpringApplication.run(AuthorizationServerApplication.class, args);
     }
 
 }

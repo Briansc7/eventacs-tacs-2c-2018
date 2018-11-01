@@ -6,6 +6,7 @@ import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
+import com.eventacs.external.eventbrite.mapping.PaginationMapper;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
@@ -69,7 +70,7 @@ public class AppConfig {
 
     @Bean
     public EventbriteFacade eventbriteFacade() {
-        return new EventbriteFacade(eventbriteClient(), eventMapper(), categoryMapper());
+        return new EventbriteFacade(eventbriteClient(), eventMapper(), categoryMapper(), paginationMapper());
     }
 
     @Bean
@@ -86,6 +87,9 @@ public class AppConfig {
     public CategoryMapper categoryMapper() {
         return new CategoryMapper();
     }
+
+    @Bean
+    public PaginationMapper paginationMapper() { return new PaginationMapper(); }
 
     @Bean
     public RestClient restClient() {
