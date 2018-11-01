@@ -50,15 +50,19 @@ public class Validaciones {
         return true;
     }
 
-    public static GetAccessToken userPwValido(String username, String pw) throws IOException  {
+    public static GetAccessToken userPwValido(String username, String pw)  {
 
         RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
         GetAccessToken response = null;
 
         RequestLogin request = (new RequestLogin(username,pw));
-        return response = objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
-
+        try {
+            response = objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {
