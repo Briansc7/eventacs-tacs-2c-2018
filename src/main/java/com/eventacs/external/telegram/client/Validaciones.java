@@ -5,6 +5,7 @@ import com.eventacs.external.telegram.client.httprequest.RequestLogin;
 import com.eventacs.user.model.User;
 import com.eventacs.user.repository.UsersRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.params.ClientPNames;
@@ -12,6 +13,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.ObjectCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import org.apache.http.impl.client.HttpClients;
 
@@ -23,7 +27,7 @@ public class Validaciones {
     En caso de que el dato no sea válido, se retorna false y se detalla el error en mensajeDeError
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
-    private static ObjectCodec objectMapper;
+    private static ObjectMapper objectMapper;
 
     public static boolean categoriaValida(String idCategoria, StringBuilder mensajeDeError) {
         return true;
@@ -46,13 +50,13 @@ public class Validaciones {
         return true;
     }
 
-    public static GetAccessToken userPwValido(String username, String pw) {
+    public static GetAccessToken userPwValido(String username, String pw) throws IOException  {
 
         RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
         GetAccessToken response = null;
 
-        RequestLogin request = (new RequestLogin(username,pw);
+        RequestLogin request = (new RequestLogin(username,pw));
         return response = objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
 
     }
