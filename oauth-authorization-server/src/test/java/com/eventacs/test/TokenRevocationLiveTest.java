@@ -1,4 +1,4 @@
-package org.baeldung.test;
+package com.eventacs.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;

@@ -1,4 +1,4 @@
-package org.baeldung.config;
+package com.eventacs.config;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
