@@ -35,6 +35,7 @@ public class Test {
     @org.junit.Test
     public void prueba() throws Exception {
         GetAccessToken accessToken = Validaciones.userPwValido("usuario", "clave");
+        accessToken = this.objectMapper.readValue(httpClient.execute(accessToken.build()).getEntity().getContent(), GetAccessToken.class);
         if (accessToken.getAccess_token() != null) {
             //TacsBot.guardarCuentaTelegram(chatId, username);
             TacsBot.guardarToken(111, accessToken.getAccess_token());
