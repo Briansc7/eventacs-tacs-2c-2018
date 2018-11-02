@@ -29,7 +29,7 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
     }
 
     @Override
-    public String findByChatId(final String chatId) {
+    public String findByChatId(final long chatId) {
         return (String)hashOperations.get("CHATID",chatId);
     }
 

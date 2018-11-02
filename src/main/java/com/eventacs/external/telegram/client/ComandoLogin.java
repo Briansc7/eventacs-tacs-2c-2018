@@ -51,7 +51,6 @@ public class ComandoLogin {
                     TacsBot.guardarToken(chatId, accessToken.getAccess_token());
                     mensajeAEnviar.append("Login exitoso");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
-
                 }
                 else{
                     mensajeAEnviar.append("usuario o contraseña inválida");
