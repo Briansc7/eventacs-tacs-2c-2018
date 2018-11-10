@@ -12,18 +12,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.eventacs.external.telegram.client.estados.*;
+import static java.lang.Math.toIntExact;
 
 enum estados{
     inicio, agregarevento, revisareventos, buscarevento, login
@@ -69,6 +78,11 @@ public class TacsBot extends TelegramLongPollingBot {
 
 
         LOGGER.info("Mensaje completo recibido: " + update);
+
+        if (update.hasCallbackQuery()){
+            inlineButtonPresionado(update);
+            return;
+        }
 
         // Se obtiene el mensaje escrito por el usuario
         final String messageTextReceived = update.getMessage().getText();
@@ -126,6 +140,29 @@ public class TacsBot extends TelegramLongPollingBot {
 
     }
 
+    private void inlineButtonPresionado(Update update) {
+        String call_data = update.getCallbackQuery().getData();
+        long message_id = update.getCallbackQuery().getMessage().getMessageId();
+        long chat_id = update.getCallbackQuery().getMessage().getChatId();
+        if (call_data.equals("update_msg_text")) {
+            String answer = "Updated message text";
+            editarMensaje(message_id, chat_id, answer);
+        }
+    }
+
+    private void editarMensaje(long message_id, long chat_id, String answer) {
+        EditMessageText new_message = new EditMessageText()
+                .setChatId(chat_id)
+                .setMessageId(toIntExact(message_id))
+                .setText(answer);
+        try {
+            execute(new_message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
 
         final long chatId = update.getMessage().getChatId();
@@ -134,6 +171,9 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/start":
                 String nombreUsuario = update.getMessage().getFrom().getFirstName();
                 mensajeAEnviar.append("Bienvenido ").append(nombreUsuario).append("\n\n");
+                mensajeAEnviar.append("Elije uno de los siguientes comandos");
+                enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
+                break;
             case "/ayuda":
                 comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
@@ -152,6 +192,11 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case "/test":
+
+                mensajeAEnviar.append("prueba");
+                enviarMensajeConBoton(mensajeAEnviar, chatId);
                 break;
             default:
                 mensajeAEnviar.append("opción no válida");
@@ -203,6 +248,144 @@ public class TacsBot extends TelegramLongPollingBot {
     private String getAccessToken(long chatId) {
         return telegramUsersRepository.findByChatId(chatId);
     }
+    public void enviarMensajeRemoverTeclado(StringBuilder mensajeAEnviar, long chatId){
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
+        message.setReplyMarkup(keyboardMarkup);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void enviarMensajeConBoton(StringBuilder mensajeAEnviar, long chatId) {
+        SendMessage message = new SendMessage() // Create a message object object
+                .setChatId(chatId)
+                .setText("Enviaste /prueba");
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        List<InlineKeyboardButton> rowInline = new ArrayList<>();
+        rowInline.add(new InlineKeyboardButton().setText("Update message text").setCallbackData("update_msg_text"));
+        // Set the keyboard to the markup
+        rowsInline.add(rowInline);
+        // Add it to the message
+        markupInline.setKeyboard(rowsInline);
+        message.setReplyMarkup(markupInline);
+        try {
+            execute(message); // Sending our message object to user
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void mostrarMenuComandos(long chatId){
+        StringBuilder mensajeAEnviar = new StringBuilder();
+        mensajeAEnviar.append("Elije uno de los siguientes comandos");
+        enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
+
+    }
+
+    public void enviarMensajeConTecladoComandos(StringBuilder mensajeAEnviar, long chatId){
+
+
+        KeyboardButton keyboardButton1 = new KeyboardButton();
+        keyboardButton1.setText("/ayuda");
+
+        KeyboardButton keyboardButton2 = new KeyboardButton();
+        keyboardButton2.setText("/buscarevento");
+
+        KeyboardButton keyboardButton3 = new KeyboardButton();
+        keyboardButton3.setText("/revisareventos");
+
+        KeyboardButton keyboardButton4 = new KeyboardButton();
+        keyboardButton4.setText("/agregarevento");
+
+        KeyboardButton keyboardButton5 = new KeyboardButton();
+        keyboardButton5.setText("/login");
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(keyboardButton1);
+
+        KeyboardRow keyboardRow2 = new KeyboardRow();
+        keyboardRow2.add(keyboardButton2);
+
+        KeyboardRow keyboardRow3 = new KeyboardRow();
+        keyboardRow3.add(keyboardButton3);
+
+        KeyboardRow keyboardRow4 = new KeyboardRow();
+        keyboardRow4.add(keyboardButton4);
+
+        KeyboardRow keyboardRow5 = new KeyboardRow();
+        keyboardRow5.add(keyboardButton5);
+
+        List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
+        keyboardRowArrayList.add(keyboardRow);
+        keyboardRowArrayList.add(keyboardRow2);
+        keyboardRowArrayList.add(keyboardRow3);
+        keyboardRowArrayList.add(keyboardRow4);
+        keyboardRowArrayList.add(keyboardRow5);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);//el teclado desaparece luego de elegir una opcion
+        replyKeyboardMarkup.setResizeKeyboard(true);//hace el teclado mas responsive
+
+        enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
+
+
+    }
+
+    public void enviarMensajeConTeclado(StringBuilder mensajeAEnviar, long chatId, ReplyKeyboardMarkup teclado) {
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        message.setReplyMarkup(teclado);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para enviar un mensaje removiendo el teclado en caso de que no sea de un uso
+    public void enviarMensajeSinTeclado(StringBuilder mensajeAEnviar, long chatId) {
+        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
+        ReplyKeyboardRemove keyboardMarkup = new ReplyKeyboardRemove();
+        message.setReplyMarkup(keyboardMarkup);
+        try {
+            // Se envía el mensaje
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para enviar un mensaje y mostrar un teclado con los botones "Si" y "No"
+    public void enviarMensajeConOpcionSiNo(StringBuilder mensajeAEnviar, long chatId) {
+        KeyboardButton keyboardButton1 = new KeyboardButton();
+        keyboardButton1.setText("Si");
+
+        KeyboardButton keyboardButton2 = new KeyboardButton();
+        keyboardButton2.setText("No");
+
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboardRow.add(keyboardButton1);
+        keyboardRow.add(keyboardButton2);
+
+        List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
+        keyboardRowArrayList.add(keyboardRow);
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);//el teclado desaparece luego de elegir una opcion
+        replyKeyboardMarkup.setResizeKeyboard(true);//hace el teclado mas responsive
+
+
+        enviarMensajeConTeclado(mensajeAEnviar, chatId, replyKeyboardMarkup);
+    }
+
 
     public void revisarEventos(String idLista, long chatId){
 

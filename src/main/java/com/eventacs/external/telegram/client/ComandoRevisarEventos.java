@@ -43,6 +43,7 @@ public class ComandoRevisarEventos {
                 }
 
                 tacsBot.revisarEventos(parts[0],chatId);
+                tacsBot.mostrarMenuComandos(chatId);
                 revisarEventosStates.put(chatId, estadosRevisarEventos.inicio);
                 chatStates.put(chatId,estados.inicio);
                 break;
