@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.params.ClientPNames;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class EventacsCommands {
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -47,8 +49,9 @@ public class EventacsCommands {
 
     public static void addEventToList(String accessToken, String listID, String eventID, String userID) {
         try {
+            String jsonString = "{\"userId\":\""+userID+"\"}";
             httpClient.execute(
-                    (new RequestWitnToken("putRequest","http://localhost:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addParameter("{\"userId\":\"", userID)
+                    (new RequestWitnToken("putRequest","http://localhost:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,6 +99,6 @@ public class EventacsCommands {
     }
 
     private static List<String> getStringParameterList(Optional<Object> parameter) {
-        return (List<String>)((List<Object>) parameter.get()).stream().map(e -> e.toString());
+        return ((List<?>) parameter.get()).stream().map(e -> (String) e).collect(Collectors.toList());
     }
 }

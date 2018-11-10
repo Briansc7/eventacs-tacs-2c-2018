@@ -1,7 +1,9 @@
 package com.eventacs.external.telegram.client.httprequest;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -46,6 +48,11 @@ public abstract class EventacsRequestBuilder {
 
     public EventacsRequestBuilder addParameter(String key, String value) {
         requestBuilder.addParameters(new BasicNameValuePair(key, value));
+        return this;
+    }
+
+    public EventacsRequestBuilder addEntity(HttpEntity entity) {
+        requestBuilder.setEntity(entity);
         return this;
     }
 
