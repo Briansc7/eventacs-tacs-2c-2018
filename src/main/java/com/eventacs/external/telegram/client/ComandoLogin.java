@@ -1,7 +1,6 @@
 package com.eventacs.external.telegram.client;
 
 import com.eventacs.external.eventbrite.model.GetAccessToken;
-import com.eventacs.external.telegram.client.httprequest.RequestLogin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

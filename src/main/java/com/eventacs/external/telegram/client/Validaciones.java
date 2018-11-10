@@ -1,23 +1,10 @@
 package com.eventacs.external.telegram.client;
 
 import com.eventacs.external.eventbrite.model.GetAccessToken;
-import com.eventacs.external.telegram.client.httprequest.RequestLogin;
-import com.eventacs.user.model.User;
-import com.eventacs.user.repository.UsersRepository;
+import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.codehaus.jackson.ObjectCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Optional;
-import org.apache.http.impl.client.HttpClients;
 
 
 public class Validaciones {
@@ -51,18 +38,7 @@ public class Validaciones {
     }
 
     public static GetAccessToken userPwValido(String username, String pw)  {
-
-        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
-        CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
-        GetAccessToken response = null;
-
-        RequestLogin request = (new RequestLogin(username,pw));
-        try {
-            response = objectMapper.readValue(httpClient.execute(request.build()).getEntity().getContent(), GetAccessToken.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return response;
+        return EventacsCommands.login(username, pw);
     }
 
     public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {

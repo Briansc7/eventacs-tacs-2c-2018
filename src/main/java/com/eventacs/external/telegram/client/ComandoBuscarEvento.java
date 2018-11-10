@@ -63,17 +63,17 @@ public class ComandoBuscarEvento {
                 break;
             case preguntaQuiereKeyword:
 
-                switch (parts[0]){
+                switch (parts[0].toLowerCase()){
                     case "si":
-                    case "Si":
-                    case "SI":
+//                    case "Si":
+//                    case "SI":
                         mensajeAEnviar.append("Ingrese el keyword");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaKeyword);
                         break;
                     case "no":
-                    case "No":
-                    case "NO":
+//                    case "No":
+//                    case "NO":
                         keywordGuardado.put(chatId, Optional.empty());
                         mensajeAEnviar.append("Desea agregar una categoría a su búsqueda?\nIngrese Si/No");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -95,18 +95,18 @@ public class ComandoBuscarEvento {
                 break;
 
             case preguntaQuiereCategoria:
-                switch (parts[0]){
+                switch (parts[0].toLowerCase()){
                     case "si":
-                    case "Si":
-                    case "SI":
+//                    case "Si":
+//                    case "SI":
                         mensajeAEnviar = tacsBot.categoriasDisponibles();
                         mensajeAEnviar.append("\nIngrese el id de la categoría");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
                         break;
                     case "no":
-                    case "No":
-                    case "NO":
+//                    case "No":
+//                    case "NO":
                         categoriasGuardadas.put(chatId, Optional.empty());
                         mensajeAEnviar.append("Desea agregar una fecha de inicio a su búsqueda?\nIngrese Si/No\"");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -140,17 +140,17 @@ public class ComandoBuscarEvento {
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaOtraCategoria);
                 break;
             case esperaOtraCategoria:
-                switch (parts[0]){
+                switch (parts[0].toLowerCase()){
                     case "si":
-                    case "Si":
-                    case "SI":
+//                    case "Si":
+//                    case "SI":
                         mensajeAEnviar.append("Ingrese el id de la categoría");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);
                         break;
                     case "no":
-                    case "No":
-                    case "NO":
+//                    case "No":
+//                    case "NO":
                         mensajeAEnviar.append("Desea agregar una fecha de inicio a su búsqueda?\nIngrese Si/No\"");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.preguntaQuiereFechaInicio);
@@ -162,17 +162,17 @@ public class ComandoBuscarEvento {
                 break;
 
             case preguntaQuiereFechaInicio:
-                switch (parts[0]){
+                switch (parts[0].toLowerCase()){
                     case "si":
-                    case "Si":
-                    case "SI":
+//                    case "Si":
+//                    case "SI":
                         mensajeAEnviar.append("\nIngrese el día de la fecha de inicio");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
                         break;
                     case "no":
-                    case "No":
-                    case "NO":
+//                    case "No":
+//                    case "NO":
                         fechaInicioGuardada.put(chatId, Optional.empty());
                         mensajeAEnviar.append("Desea agregar una fecha de fin a su búsqueda?\nIngrese Si/No\"");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -256,17 +256,17 @@ public class ComandoBuscarEvento {
                 break;
 
             case preguntaQuiereFechaFin:
-                switch (parts[0]){
+                switch (parts[0].toLowerCase()){
                     case "si":
-                    case "Si":
-                    case "SI":
+//                    case "Si":
+//                    case "SI":
                         mensajeAEnviar.append("\nIngrese el día de la fecha de fin");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
                         break;
                     case "no":
-                    case "No":
-                    case "NO":
+//                    case "No":
+//                    case "NO":
                         fechaFinGuardada.put(chatId, Optional.empty());
                         ejecutarBusqueda(chatStates, chatId, tacsBot, mensajeAEnviar);
                         break;
