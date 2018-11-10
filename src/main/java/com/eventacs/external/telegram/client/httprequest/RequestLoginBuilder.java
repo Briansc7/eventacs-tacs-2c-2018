@@ -10,6 +10,7 @@ public class RequestLoginBuilder extends EventacsRequestBuilder {
                 .addHeader("Authorization", "Basic " +
                         Base64.getEncoder().
                                 encodeToString(("eventacsClientId:secret").getBytes()))
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
                 .addParameter("grant_type", "password")
                 .addParameter("password", password)
                 .addParameter("username", username);

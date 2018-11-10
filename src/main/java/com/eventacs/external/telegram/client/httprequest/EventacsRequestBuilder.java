@@ -8,31 +8,22 @@ import org.apache.http.message.BasicNameValuePair;
 public abstract class EventacsRequestBuilder {
 
     protected RequestBuilder requestBuilder;
-//    public static HttpUriRequest requestLogin(String username, String password) {
-//        return postRequest("http://localhost:9001/oauth-server/oauth/token")
-//                .addHeader("Authorization", "Basic " +
-//                        Base64.getEncoder().
-//                                encodeToString(("eventacsClientId:secret").getBytes()))
-//                .setEntity(EntityBuilder.create()
-//                        .setParameters(
-//                                new BasicNameValuePair("grant_type", "password"),
-//                                new BasicNameValuePair("password", password),
-//                                new BasicNameValuePair("username", username))
-//                                .build())
-//                .build();
-//    }
+
     public EventacsRequestBuilder postRequest(String url) {
-        requestBuilder = RequestBuilder.post(url);
+        requestBuilder = RequestBuilder.post(url)
+                .addHeader("Content-Type", "application/json");
         return this;
     }
 
     public EventacsRequestBuilder getRequest(String url) {
-        requestBuilder = RequestBuilder.get(url);
+        requestBuilder = RequestBuilder.get(url)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
         return this;
     }
 
     public EventacsRequestBuilder putRequest(String url) {
-        requestBuilder = RequestBuilder.put(url);
+        requestBuilder = RequestBuilder.put(url)
+                .addHeader("Content-Type", "application/json");;
         return this;
     }
     public EventacsRequestBuilder deleteRequest(String url) {

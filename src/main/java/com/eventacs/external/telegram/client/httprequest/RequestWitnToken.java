@@ -18,7 +18,7 @@ public class RequestWitnToken extends EventacsRequestBuilder {
         }
 //        getRequest(url);
         addAccessToken( accessToken, "Bearer ");
-        addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+
     }
 
     public RequestWitnToken(String method, String url, String accessToken, Map<String,String> parameters) {

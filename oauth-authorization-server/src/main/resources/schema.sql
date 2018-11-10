@@ -80,6 +80,7 @@ CREATE TABLE users (
         credentials_expired boolean,
         nombre VARCHAR(100),
         email varchar(50),
+        chatId varchar(50),
         enabled TINYINT(1)
 );
 drop table if exists authorities;

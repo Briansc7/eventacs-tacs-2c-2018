@@ -1,6 +1,8 @@
 package com.eventacs.external.telegram.client.httprequest;
 
 import com.eventacs.event.model.Category;
+import com.eventacs.event.model.EventList;
+import com.eventacs.event.model.EventsResponse;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,14 +48,15 @@ public class EventacsCommands {
     public static void addEventToList(String accessToken, String listID, String eventID, String userID) {
         try {
             httpClient.execute(
-                    (new RequestWitnToken("putRequest","http://localhost:9000/event-lists/"+listID+"/"+eventID, accessToken)).addParameter("userId", userID)
+                    (new RequestWitnToken("putRequest","http://localhost:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addParameter("{\"userId\":\"", userID)
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void getEvents(String accessToken, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+    public static EventsResponse getEvents(String accessToken, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+        EventsResponse eventsResponse = null;
         try {
             RequestWitnToken request = (new RequestWitnToken("getRequest","http://localhost:9000/eventacs/events", accessToken));
             addParameterIfPresent("keyword", keyword, request);
@@ -61,11 +64,23 @@ public class EventacsCommands {
             addParameterIfPresent("endDate", endDate, request);
             addParameterIfPresent("page", page, request);
             addParameterIfPresent("categories", categories, request);
-            httpClient.execute(
-                    request.build()).getEntity().getContent();
+            eventsResponse = objectMapper.readValue(httpClient.execute(
+                    request.build()).getEntity().getContent(), EventsResponse.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return eventsResponse;
+    }
+
+    public static EventList getEventList(String accessToken, String listId) {
+        EventList eventList = null;
+        try {
+            eventList = objectMapper.readValue(httpClient.execute(
+                    (new RequestWitnToken("getRequest", "http://localhost:9000/eventacs/event-lists/" + listId, accessToken)).build()).getEntity().getContent(), EventList.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return eventList;
     }
 
     private static void addParameterIfPresent(String parameterName, Object parameter, RequestWitnToken request) {

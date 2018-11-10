@@ -369,7 +369,7 @@ public class ComandoBuscarEvento {
 
         Optional<BigInteger> page = Optional.of(BigInteger.ONE);
 
-        mensajeAEnviar = tacsBot.buscarEventos(keyword, categories, startDate, endDate, page);
+        mensajeAEnviar = tacsBot.buscarEventos(keyword, categories, startDate, endDate, page, chatId);
         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
 
         buscarEventoStates.remove(chatId);

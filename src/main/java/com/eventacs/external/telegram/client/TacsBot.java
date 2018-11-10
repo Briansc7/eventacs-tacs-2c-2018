@@ -2,8 +2,10 @@ package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
+import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.EventsResponse;
 import com.eventacs.event.service.EventService;
+import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.user.repository.TelegramUsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.eventacs.external.telegram.client.estados.*;
@@ -192,16 +195,20 @@ public class TacsBot extends TelegramLongPollingBot {
         }
     }
 
-    public void agregarEvento(String idLista, String idEvento, long chatId){
-        String userID = getUserId(chatId); //se identifica al usuario a partir del chatid
-        this.eventService.addEvent(idLista, idEvento, userID);
+    public void agregarEvento(String listId, String eventId, long chatId){
+        EventacsCommands.addEventToList(getAccessToken(chatId), listId, eventId, getUserId(chatId));
+//      this.eventService.addEvent(idLista, idEvento, userID);
+    }
+
+    private String getAccessToken(long chatId) {
+        return telegramUsersRepository.findByChatId(chatId);
     }
 
     public void revisarEventos(String idLista, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        String userid = getUserId(chatId);
-        List<Event> listaEventos = this.eventService.getEventList(idLista, userid).getEvents();
+        List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista).getEvents();
+//        List<Event> listaEventos = this.eventService.getEventList(idLista, getUserId(chatId)).getEvents();
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
@@ -213,10 +220,11 @@ public class TacsBot extends TelegramLongPollingBot {
         enviarMensaje(mensajeAEnviar, chatId);
     }
 
-    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page){
+    public StringBuilder buscarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        EventsResponse eventsResponse = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
+        EventsResponse eventsResponse = EventacsCommands.getEvents(getAccessToken(chatId), keyword, categories, startDate, endDate, page);
+//        EventsResponse eventsResponse = this.eventService.getEvents(keyword, categories, startDate, endDate, page);
 
         if(eventsResponse.getEvents().isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
@@ -242,7 +250,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public boolean existeUserConChatID(long chatId) {
-        return usuarios.containsKey(chatId);
+        return !Objects.isNull(getAccessToken(chatId));
     }
 
     public StringBuilder categoriasDisponibles(){
