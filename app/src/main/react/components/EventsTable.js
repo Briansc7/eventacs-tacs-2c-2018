@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import SimpleDropdown from "./SimpleDropdown";
 
 const tableStyle = {
   width: '100%'
@@ -10,15 +11,18 @@ class EventsTable extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {events: [],
-                  metadata: {},
-                  isLoading: true};
+    this.state = {events: [], metadata: {}, userEventLists: [], isLoading: true};
   }
 
   componentDidMount() {
     this.setState({events: this.props.data.data.events,
                    metadata: this.props.data.data.metadata,
+                   userEventLists: this.getUserEventLists,
                    isLoading: false});
+  }
+
+  handleSelectedEventListAction() {
+
   }
 
   render() {
@@ -42,6 +46,10 @@ class EventsTable extends Component {
           <td>{event.end}</td>
           <td>
             <ButtonGroup>
+
+              <SimpleDropdown data={this.state.userEventLists} header={"Event Lists"} selectedHandler={this.handleSelectedEventListAction}/>
+
+
               <Button size="sm" color="primary" tag={Link} to={"/event-lists/add/" + event.id}>Add to an EventList</Button>
             </ButtonGroup>
           </td>

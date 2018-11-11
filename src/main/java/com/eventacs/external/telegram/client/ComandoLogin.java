@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +44,16 @@ public class ComandoLogin {
             case esperaPw:
                 String username = usernameGuardado.get(chatId);
                 String pw = parts[0];
-                if(Validaciones.userPwValido(username, pw)){
+                GetAccessToken accessToken = Validaciones.userPwValido(username, pw);
+                if(accessToken.getAccess_token() != null){
                     TacsBot.guardarCuentaTelegram(chatId, username);
+                    TacsBot.guardarToken(chatId, accessToken.getAccess_token());
                     mensajeAEnviar.append("Login exitoso");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
                 else{
                     mensajeAEnviar.append("usuario o contraseña inválida");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
 
                 loginStates.remove(chatId);

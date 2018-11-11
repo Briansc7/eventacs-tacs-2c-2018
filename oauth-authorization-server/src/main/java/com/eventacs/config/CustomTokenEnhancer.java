@@ -1,6 +1,4 @@
-package org.baeldung.config;
-
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+package com.eventacs.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +13,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         final Map<String, Object> additionalInfo = new HashMap<>();
-        additionalInfo.put("organization", authentication.getName() + randomAlphabetic(4));
+        additionalInfo.put("username", authentication.getName());
+        additionalInfo.put("role", authentication.getAuthorities());
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
     }

@@ -13,7 +13,10 @@ import com.eventacs.httpclient.RestClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
+import com.eventacs.user.model.User;
 import com.eventacs.user.repository.AlarmsRepository;
+import com.eventacs.user.repository.TelegramUsersRepository;
+import com.eventacs.user.repository.TelegramUsersRepositoryImpl;
 import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +27,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.jedis.JedisConnection;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.core.CrudMethods;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -98,7 +108,29 @@ public class AppConfig {
     }
 
     @Bean
-    public TacsBot tacsBot() { return new TacsBot(eventService()); }
+    JedisConnectionFactory jedisConnectionFactory(){
+        return new JedisConnectionFactory();
+    }
+
+    @Bean
+    public RedisTemplate<Long, String> redisTemplate(){
+        RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
+        template.setConnectionFactory(jedisConnectionFactory());
+        template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
+        return template;
+    }
+    /*
+    @Repository
+    public interface UsersRepo extends CrudRepository<Long,String>  {
+    }*/
+
+    @Bean
+    public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
+        return new TelegramUsersRepositoryImpl(redisTemplate());
+    }
+
+    @Bean
+    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl()); }
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }

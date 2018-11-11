@@ -1,4 +1,4 @@
-package org.baeldung.config;
+package com.eventacs.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -26,6 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void globalUserDetails(final AuthenticationManagerBuilder auth) throws Exception {
         // @formatter:off
         auth.jdbcAuthentication().dataSource(datasource)
+      .withUser("User1").password(passwordEncoder.encode("Pw1")).roles("USER").and()
 	  .withUser("usuario").password(passwordEncoder.encode("clave")).roles("USER").and()
 	  .withUser("admin1").password(passwordEncoder.encode("111")).roles("ADMIN").and()
 	  .withUser("usuario2").password(passwordEncoder.encode("clave")).roles("USER").and()
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
 		//.and().formLogin().permitAll()
 		.and().csrf().disable();
-                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 		// @formatter:on
     }
 
