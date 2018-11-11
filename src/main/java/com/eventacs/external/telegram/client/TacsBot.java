@@ -46,7 +46,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
-    private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
+    //private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
 
     private static TelegramUsersRepository telegramUsersRepository;
 
@@ -425,7 +425,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public static void guardarCuentaTelegram(long chatId, String username) {
-        usuarios.put(chatId, username);
+        //usuarios.put(chatId, username);
 
         try
         {
@@ -460,8 +460,42 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public String getUserId(long chatId){
-        return usuarios.get(chatId);
-        //return "id1";
+
+        String username = "";
+
+        try
+        {
+            // create a mysql database connection
+            String myDriver = "com.mysql.jdbc.Driver";
+            String myUrl = "jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "pds", "clave");
+
+
+            // the mysql select statement
+            String query = "SELECT username FROM users where chatID = ";
+            query += chatId;
+
+
+            Statement st = conn.createStatement();
+            //st.setLong (1, chatId);
+
+
+            // execute the preparedstatement
+            ResultSet rs = st.executeQuery(query);
+            username = rs.getString("username");
+
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return username;
+        //return usuarios.get(chatId);
     }
 
     public boolean existeUserConChatID(long chatId) {
