@@ -2,7 +2,6 @@ package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.EventsResponse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
@@ -33,6 +32,8 @@ import java.util.Optional;
 
 import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
+
+import java.sql.*;
 
 enum estados{
     inicio, agregarevento, revisareventos, buscarevento, login
@@ -425,6 +426,37 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public static void guardarCuentaTelegram(long chatId, String username) {
         usuarios.put(chatId, username);
+
+        try
+        {
+            // create a mysql database connection
+            String myDriver = "com.mysql.jdbc.Driver";
+            String myUrl = "jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true";
+            Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "pds", "clave");
+
+
+            // the mysql insert statement
+            String query = " update users set chatID = ?"
+                    + " where username = ?";
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setLong (1, chatId);
+            preparedStmt.setString (2, username);
+
+            // execute the preparedstatement
+            preparedStmt.execute();
+
+            conn.close();
+        }
+        catch (Exception e)
+        {
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     public String getUserId(long chatId){
