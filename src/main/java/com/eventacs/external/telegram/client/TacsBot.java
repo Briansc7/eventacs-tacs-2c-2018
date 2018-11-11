@@ -46,8 +46,6 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
-    //private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
-
     private static TelegramUsersRepository telegramUsersRepository;
 
     ComandoAyuda comandoAyuda = new ComandoAyuda();
@@ -425,7 +423,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public static void guardarCuentaTelegram(long chatId, String username) {
-        //usuarios.put(chatId, username);
+
 
         try
         {
@@ -478,12 +476,14 @@ public class TacsBot extends TelegramLongPollingBot {
 
 
             Statement st = conn.createStatement();
-            //st.setLong (1, chatId);
-
 
             // execute the preparedstatement
             ResultSet rs = st.executeQuery(query);
-            username = rs.getString("username");
+
+            // iterate through the java resultset
+            while (rs.next()) {
+                username = rs.getString("username");
+            }
 
             conn.close();
         }
@@ -495,7 +495,6 @@ public class TacsBot extends TelegramLongPollingBot {
         }
 
         return username;
-        //return usuarios.get(chatId);
     }
 
     public boolean existeUserConChatID(long chatId) {

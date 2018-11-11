@@ -51,6 +51,13 @@ public class ComandoBuscarEvento {
         Optional<LocalDate> startDate = Optional.of(LocalDate.now());
         Optional<LocalDate> endDate = Optional.of(LocalDate.now().plusDays(1));
 
+        if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
+            mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
+            tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+            chatStates.put(chatId,estados.inicio);
+            return;
+        }
+
         if(!buscarEventoStates.containsKey(chatId)){
             buscarEventoStates.put(chatId, estadosBuscarEvento.inicio);
         }
