@@ -29,10 +29,8 @@ export default class AppNavbar extends Component {
   }
 
   onLoginForm(username, password) {
-    console.log(this.loginData);
     this.loginData.username = username;
     this.loginData.password = password;
-    console.log(this.loginData);
   };
 
   onSigninForm = (username, password) => {
@@ -86,7 +84,7 @@ export default class AppNavbar extends Component {
   }
 
   toggleSigninForm() {
-    this.setState({toggleSigninForm: !this.state.toggleSigninForm});
+    this.setState({toggleSigninForm: !this.state.toggleSigninForm, toggleLoginForm: this.state.toggleLoginForm});
   }
 
   render() {
