@@ -1,11 +1,11 @@
 package com.eventacs.external.telegram.client;
 
-import com.eventacs.user.model.User;
-import com.eventacs.user.repository.UsersRepository;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
+import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 
 public class Validaciones {
 
@@ -14,6 +14,7 @@ public class Validaciones {
     En caso de que el dato no sea válido, se retorna false y se detalla el error en mensajeDeError
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TacsBot.class);
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static boolean categoriaValida(String idCategoria, StringBuilder mensajeDeError) {
         return true;
@@ -36,20 +37,8 @@ public class Validaciones {
         return true;
     }
 
-    public static boolean userPwValido(String username, String pw) {
-
-        UsersRepository repo = new UsersRepository();
-        Encriptador encriptador = new Encriptador();
-        String pwEncriptado = encriptador.toShae256(pw);
-
-        Optional<User> usuario = repo.getByUserId(username);
-        if(!usuario.isPresent()){
-            return false;
-        }
-        else{
-            String pwreal = usuario.get().getPassword();
-            return pwreal.equals(pwEncriptado);
-        }
+    public static GetAccessToken userPwValido(String username, String pw)  {
+        return EventacsCommands.login(username, pw);
     }
 
     public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {

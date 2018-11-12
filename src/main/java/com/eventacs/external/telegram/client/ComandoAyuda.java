@@ -1,8 +1,5 @@
 package com.eventacs.external.telegram.client;
 
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.util.HashMap;
 
 
@@ -48,14 +45,7 @@ public class ComandoAyuda{
                 break;
         }
 
-        SendMessage message = new SendMessage().setChatId(chatId).setText(mensajeAEnviar.toString());
-
-        try {
-            // Se envía el mensaje
-            tacsBot.execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
 
     }
 

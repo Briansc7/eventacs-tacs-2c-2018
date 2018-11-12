@@ -20,7 +20,6 @@
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <spring.version>5.0.8.RELEASE</spring.version>
-        <!--<jetty.version>9.4.11.v20180605</jetty.version>-->
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <jackson.version>2.9.6</jackson.version>
@@ -62,23 +61,11 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.jetty</groupId>-->
-            <!--<artifactId>jetty-server</artifactId>-->
-            <!--<version>${jetty.version}</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
             <version>3.6.1</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.eclipse.jetty</groupId>-->
-            <!--<artifactId>jetty-servlet</artifactId>-->
-            <!--<version>${jetty.version}</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -179,6 +166,28 @@
             <version>${commons-io.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>2.0.3.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>compile</scope>
+            <version>8.0.13</version>
+        </dependency>
 
     </dependencies>
 
@@ -193,6 +202,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -204,16 +214,10 @@
                         </goals>
                     </execution>
                 </executions>
-
                 <configuration>
                     <mainClass>com.eventacs.server.ResourceServerApplication</mainClass>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.eclipse.jetty</groupId>-->
-                <!--<artifactId>jetty-maven-plugin</artifactId>-->
-                <!--<version>9.4.6.v20170531</version>-->
-            <!--</plugin>-->
         </plugins>
     </build>
 </project>
