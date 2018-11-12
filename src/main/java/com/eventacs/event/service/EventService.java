@@ -69,7 +69,7 @@ public class EventService {
 
         List<UserInfoDTO> users = this.userService.getUsers();
 
-        List<EventList> eventLists = users.stream().map(user -> user.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+        List<EventList> eventLists = users.stream().map(user -> user.getEventLists()).flatMap(List::stream).collect(Collectors.toList());
 
         List<Event> events = eventLists.stream().map(eventList -> eventList.getEvents()).flatMap(List::stream).collect(Collectors.toList());
 
@@ -121,7 +121,7 @@ public class EventService {
 
         UserInfoDTO user = this.userService.getUser(userId);
 
-        return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+        return user.getEventLists().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
     }
 
 }

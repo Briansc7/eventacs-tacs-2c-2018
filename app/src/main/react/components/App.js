@@ -12,7 +12,7 @@ class App extends Component {
         <Switch>
           <Route path='/' exact={true} component={Home}/>
           <Route path='/events' exact={true} component={EventsTable}/>
-          <Route path='/event-lists/:id' component={EventListEdit}/>
+          <Route path='/event-lists/add/:id' component={EventListEdit}/>
         </Switch>
       </Router>
     )

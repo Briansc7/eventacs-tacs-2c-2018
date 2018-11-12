@@ -23,13 +23,6 @@ class GroupEdit extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    if (this.props.match.params.id !== 'new') {
-      const group = await (await fetch(`/api/group/${this.props.match.params.id}`)).json();
-      this.setState({item: group});
-    }
-  }
-
   handleChange(event) {
     const target = event.target;
     const value = target.value;

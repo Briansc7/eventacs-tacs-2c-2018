@@ -9,17 +9,17 @@ public class UserInfoDTO {
     private String id;
     private String name;
     private String lastName;
-    private List<EventList> events;
+    private List<EventList> eventLists;
 
     public UserInfoDTO() {
 
     }
 
-    public UserInfoDTO(String id, String name, String lastName, List<EventList> events) {
+    public UserInfoDTO(String id, String name, String lastName, List<EventList> eventLists) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
-        this.events = events;
+        this.eventLists = eventLists;
     }
 
     public String getId() {
@@ -46,11 +46,12 @@ public class UserInfoDTO {
         this.lastName = lastName;
     }
 
-    public List<EventList> getEvents() {
-        return events;
+    public List<EventList> getEventLists() {
+        return eventLists;
     }
 
-    public void setEvents(List<EventList> events) {
-        this.events = events;
+    public void setEventLists(List<EventList> eventLists) {
+        this.eventLists = eventLists;
     }
+
 }

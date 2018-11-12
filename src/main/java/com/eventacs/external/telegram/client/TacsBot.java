@@ -46,6 +46,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
+    private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
+
     private static TelegramUsersRepository telegramUsersRepository;
 
     ComandoAyuda comandoAyuda = new ComandoAyuda();
@@ -241,6 +243,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void agregarEvento(String listId, String eventId, long chatId){
         EventacsCommands.addEventToList(getAccessToken(chatId), listId, eventId, getUserId(chatId));
+//      this.eventService.addEvent(idLista, idEvento, userID);
     }
 
     private String getAccessToken(long chatId) {
@@ -389,6 +392,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista).getEvents();
+//        List<Event> listaEventos = this.eventService.getEventList(idLista, getUserId(chatId)).getEvents();
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
@@ -421,7 +425,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public static void guardarCuentaTelegram(long chatId, String username) {
-
+        usuarios.put(chatId, username);
 
         try
         {
@@ -456,43 +460,8 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public String getUserId(long chatId){
-
-        String username = "";
-
-        try
-        {
-            // create a mysql database connection
-            String myDriver = "com.mysql.jdbc.Driver";
-            String myUrl = "jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true";
-            Class.forName(myDriver);
-            Connection conn = DriverManager.getConnection(myUrl, "pds", "clave");
-
-
-            // the mysql select statement
-            String query = "SELECT username FROM users where chatID = ";
-            query += chatId;
-
-
-            Statement st = conn.createStatement();
-
-            // execute the preparedstatement
-            ResultSet rs = st.executeQuery(query);
-
-            // iterate through the java resultset
-            while (rs.next()) {
-                username = rs.getString("username");
-            }
-
-            conn.close();
-        }
-        catch (Exception e)
-        {
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-
-        return username;
+        return usuarios.get(chatId);
+        //return "id1";
     }
 
     public boolean existeUserConChatID(long chatId) {
