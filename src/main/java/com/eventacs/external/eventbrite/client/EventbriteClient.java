@@ -1,18 +1,14 @@
 package com.eventacs.external.eventbrite.client;
 
-import com.eventacs.event.model.Event;
-import com.eventacs.exception.ConectionErrorException;
+import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.external.eventbrite.model.*;
 import com.eventacs.httpclient.RestClient;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,7 +32,7 @@ public class EventbriteClient {
         this.restClient = restClient;
     }
 
-    public List<EventResponse> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+    public EventbriteEventsResponse getEvents(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
 
         Pagination pagination = new Pagination();
 
@@ -47,7 +43,7 @@ public class EventbriteClient {
         pathParts.add("/events");
         pathParts.add("/search");
 
-        keyWord.map(k -> parameters.put("q", k));
+        keyword.map(k -> parameters.put("q", k));
         categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
         endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
@@ -66,11 +62,11 @@ public class EventbriteClient {
 
         } while (pagination.getHasMoreItems());
 
-        return events;
+        return new EventbriteEventsResponse(pagination, events);
 
     }
 
-    public List<EventResponse> getEventsByPage(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, BigInteger page) {
+    public EventbriteEventsResponse getEventsByPage(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, BigInteger page) {
 
         List<String> pathParts = new ArrayList<>();
         Map<String, String> parameters = new HashMap<>();
@@ -79,7 +75,7 @@ public class EventbriteClient {
         pathParts.add("/events");
         pathParts.add("/search");
 
-        keyWord.map(k -> parameters.put("q", k));
+        keyword.map(k -> parameters.put("q", k));
         categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
         endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
@@ -87,7 +83,7 @@ public class EventbriteClient {
 
         PaginatedEvents events = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
 
-        return events.getEventsResponse();
+        return new EventbriteEventsResponse(events.getPagination(), events.getEventsResponse());
 
     }
 

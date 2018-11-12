@@ -1,4 +1,4 @@
-package org.baeldung.test;
+package com.eventacs.test;
 
 import com.eventacs.config.AuthorizationServerApplication;
 import org.junit.Test;
