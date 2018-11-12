@@ -16,7 +16,6 @@ public class RequestWitnToken extends EventacsRequestBuilder {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-//        getRequest(url);
         addAccessToken( accessToken, "Bearer ");
 
     }

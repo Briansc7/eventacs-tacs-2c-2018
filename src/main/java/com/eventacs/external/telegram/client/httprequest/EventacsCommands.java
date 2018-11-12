@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class EventacsCommands {
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
-    private static CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
+    private static CloseableHttpClient httpClient = HttpClients.custom().setSSLContext((new SecureSSL()).getSSLContext()).setDefaultRequestConfig(requestConfig).build();
 
     public static GetAccessToken login(String username, String password) {
         GetAccessToken response = null;
@@ -39,7 +39,7 @@ public class EventacsCommands {
     public static List<Category> getCategories(String accessToken) {
         try {
             return objectMapper.readValue(httpClient.execute(
-                    (new RequestWitnToken("getRequest","http://localhost:9000/eventacs/categories", accessToken))
+                    (new RequestWitnToken("getRequest","https://eventacs.com:9000/eventacs/categories", accessToken))
                             .build()).getEntity().getContent(), new TypeReference<List<Category>>() {});
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +51,7 @@ public class EventacsCommands {
         try {
             String jsonString = "{\"userId\":\""+userID+"\"}";
             httpClient.execute(
-                    (new RequestWitnToken("putRequest","http://localhost:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    (new RequestWitnToken("putRequest","https://eventacs.com:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class EventacsCommands {
     public static EventsResponse getEvents(String accessToken, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
         EventsResponse eventsResponse = null;
         try {
-            RequestWitnToken request = (new RequestWitnToken("getRequest","http://localhost:9000/eventacs/events", accessToken));
+            RequestWitnToken request = (new RequestWitnToken("getRequest","https://eventacs.com:9000/eventacs/events", accessToken));
             addParameterIfPresent("keyword", keyword, request);
             addParameterIfPresent("startDate", startDate, request);
             addParameterIfPresent("endDate", endDate, request);
@@ -79,7 +79,7 @@ public class EventacsCommands {
         EventList eventList = null;
         try {
             eventList = objectMapper.readValue(httpClient.execute(
-                    (new RequestWitnToken("getRequest", "http://localhost:9000/eventacs/event-lists/" + listId, accessToken)).build()).getEntity().getContent(), EventList.class);
+                    (new RequestWitnToken("getRequest", "https://eventacs.com:9000/eventacs/event-lists/" + listId, accessToken)).build()).getEntity().getContent(), EventList.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

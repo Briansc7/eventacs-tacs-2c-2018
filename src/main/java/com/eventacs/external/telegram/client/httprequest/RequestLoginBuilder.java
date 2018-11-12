@@ -6,7 +6,7 @@ import java.util.Base64;
 public class RequestLoginBuilder extends EventacsRequestBuilder {
 
     public RequestLoginBuilder(String username, String password) {
-        super.postRequest("http://localhost:9001/oauth-server/oauth/token")
+        super.postRequest("https://eventacs.com:9001/oauth-server/oauth/token")
                 .addHeader("Authorization", "Basic " +
                         Base64.getEncoder().
                                 encodeToString(("eventacsClientId:secret").getBytes()))
