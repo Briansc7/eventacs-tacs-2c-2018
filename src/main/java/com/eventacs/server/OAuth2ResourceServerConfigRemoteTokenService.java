@@ -34,39 +34,39 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     }
 
 
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        defaultTokenServices.setSupportRefreshToken(true);
-        return defaultTokenServices;
-    }
+//    @Bean
+//    @Primary
+//    public DefaultTokenServices tokenServices() {
+//        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+//        defaultTokenServices.setTokenStore(tokenStore());
+//        defaultTokenServices.setSupportRefreshToken(true);
+//        return defaultTokenServices;
+//    }
 
     // JDBC token store configuration
 
-    @Bean
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true");
-        dataSource.setUsername("pds");
-        dataSource.setPassword("clave");
-        return dataSource;
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource());
-    }
-
-//    @Primary
 //    @Bean
-//    public RemoteTokenServices tokenServices() {
-//        final RemoteTokenServices tokenService = new RemoteTokenServices();
-//        tokenService.setCheckTokenEndpointUrl("https://localhost:9001/oauth-server/oauth/check_token");
-//        tokenService.setClientId("eventacsClientId");
-//        tokenService.setClientSecret("secret");
-//        return tokenService;
+//    public DataSource dataSource() {
+//        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setUrl("jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true");
+//        dataSource.setUsername("pds");
+//        dataSource.setPassword("clave");
+//        return dataSource;
 //    }
+//
+//    @Bean
+//    public TokenStore tokenStore() {
+//        return new JdbcTokenStore(dataSource());
+//    }
+
+    @Primary
+    @Bean
+    public RemoteTokenServices tokenServices() {
+        final RemoteTokenServices tokenService = new RemoteTokenServices();
+        tokenService.setCheckTokenEndpointUrl("https://eventacs.com:9001/oauth-server/oauth/check_token");
+        tokenService.setClientId("eventacsClientId");
+        tokenService.setClientSecret("secret");
+        return tokenService;
+    }
 }
