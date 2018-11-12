@@ -49,11 +49,11 @@ public class ComandoLogin {
                     TacsBot.guardarCuentaTelegram(chatId, username);
                     TacsBot.guardarToken(chatId, accessToken.getAccess_token());
                     mensajeAEnviar.append("Login exitoso");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
                 else{
                     mensajeAEnviar.append("usuario o contraseña inválida");
-                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }
 
                 loginStates.remove(chatId);
