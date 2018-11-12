@@ -46,10 +46,6 @@ class EventsTable extends Component {
           <td>{event.end}</td>
           <td>
             <ButtonGroup>
-
-              <SimpleDropdown data={this.state.userEventLists} header={"Event Lists"} selectedHandler={this.handleSelectedEventListAction}/>
-
-
               <Button size="sm" color="primary" tag={Link} to={"/event-lists/add/" + event.id}>Add to an EventList</Button>
             </ButtonGroup>
           </td>
