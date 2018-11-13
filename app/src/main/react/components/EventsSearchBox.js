@@ -38,7 +38,8 @@ class EventsSearchBox extends Component {
     this.setState({isLoading: true});
   //  let headers = {"content-Type": "application/x-www-form-urlencoded; charset=utf-8"};
   //  headers["Authorization"] = `Bearer 5d79ae57-9079-4c46-b66a-efc5fa61e595`;
-    fetch('/eventacs/categories', {headers,})
+    //fetch('/eventacs/categories', {headers,}
+    fetch('/eventacs/categories')
       .then(response => response.json())
       .then(data => this.setState({categories: data, isLoading: false}));
   }

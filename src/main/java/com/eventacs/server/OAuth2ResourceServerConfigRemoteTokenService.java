@@ -29,7 +29,8 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
         // @formatter:off
                 http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
-                    .authorizeRequests().anyRequest().authenticated();
+                    .authorizeRequests().anyRequest().permitAll();
+                    //.authorizeRequests().anyRequest().authenticated();
         // @formatter:on                
     }
 
