@@ -20,7 +20,7 @@
     "react-select": "^2.1.0",
     "reactstrap": "6.3.0"
   },
-  "proxy": "http://localhost:9000",
+  "proxy": "https://eventacs.com:9000",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
