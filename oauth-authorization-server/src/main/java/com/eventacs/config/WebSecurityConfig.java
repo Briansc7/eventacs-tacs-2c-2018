@@ -57,5 +57,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 		// @formatter:on
     }
-
 }

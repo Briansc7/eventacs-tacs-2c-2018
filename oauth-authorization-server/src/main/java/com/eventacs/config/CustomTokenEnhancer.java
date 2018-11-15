@@ -10,6 +10,8 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 public class CustomTokenEnhancer implements TokenEnhancer {
 
+    //TODO: Agregar datos de usuario etc
+
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         final Map<String, Object> additionalInfo = new HashMap<>();
