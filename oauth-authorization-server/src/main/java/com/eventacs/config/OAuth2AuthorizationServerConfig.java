@@ -39,6 +39,10 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     private Environment env;
 
     @Autowired
+    @Qualifier("userDetailsService")
+    private UserDetailServiceImpl userDetailServiceImpl;
+
+    @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
@@ -62,7 +66,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer()));
-        endpoints.tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain).authenticationManager(authenticationManager);
+        endpoints.tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain).userDetailsService(userDetailServiceImpl).authenticationManager(authenticationManager);
     }
 
     @Bean

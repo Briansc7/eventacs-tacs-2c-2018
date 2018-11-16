@@ -78,9 +78,11 @@ CREATE TABLE users (
         account_expired boolean,
         account_locked boolean,
         credentials_expired boolean,
-        nombre VARCHAR(100),
+        name VARCHAR(100),
         email varchar(50),
         chatId varchar(50),
+        celPhone varchar(20),
+        telegramName varchar(50),
         enabled TINYINT(1)
 );
 drop table if exists authorities;
