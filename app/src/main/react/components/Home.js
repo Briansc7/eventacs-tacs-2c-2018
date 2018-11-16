@@ -4,7 +4,7 @@ import AppNavbar from './AppNavbar';
 import EventsSearchBox from "./EventsSearchBox";
 import EventsCluster from './EventsCluster';
 import {Col, Row} from "reactstrap";
-//import './oauth.js';
+import './oauth.js';
 import { slide as Menu } from 'react-burger-menu'
 
 class Home extends Component {
