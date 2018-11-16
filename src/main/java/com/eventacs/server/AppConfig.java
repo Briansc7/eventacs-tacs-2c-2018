@@ -1,6 +1,7 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
@@ -98,5 +99,8 @@ public class AppConfig {
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
+
+    @Bean
+    public EventListRepository eventListRepository() { return new EventListRepository(); }
 
 }

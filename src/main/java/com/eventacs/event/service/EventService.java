@@ -7,6 +7,7 @@ import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 public class EventService {
     //TODO por ahora esto es para suplantar el tema de tener que buscar en base el último id.
+    //TODO ver si conviene guardarlo en el mongo de eventlist o en alguna otra
     public Integer autoIncrementalListId = 1;
 
     @Autowired
@@ -31,6 +33,9 @@ public class EventService {
 
     @Autowired
     private EventbriteFacade eventbriteFacade;
+
+    @Autowired
+    private EventListRepository eventListRepository;
 
     public EventService(EventbriteFacade eventbriteFacade) {
         this.eventbriteFacade = eventbriteFacade;
@@ -41,7 +46,7 @@ public class EventService {
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
-        String listId = listIdGenerator(eventListCreation.getUserId());
+        String listId = listIdGenerator(eventListCreation.getUserId()); //TODO agarrar del mongo el listId
         try {
             userService.addEventList(eventListCreation, listId);
             return listId;
@@ -114,15 +119,16 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public EventList getEventList(String listId, String userId) {
+    public List<EventList> getEventList(String listId, String userId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
         //TODO ya teniendo el id hacer un getById directo
 
         //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        UserInfoDTO user = this.userService.getUser(userId);
+        return eventListRepository.getEventListByUserId(userId);
 
-        return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+      //  return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+      // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 
 }

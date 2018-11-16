@@ -3,6 +3,7 @@ package com.eventacs.user.service;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -42,6 +43,9 @@ public class UserService {
     @Autowired
     private AlarmsMapper alarmsMapper;
 
+    @Autowired
+    private EventListRepository eventListRepository;
+
     public UserService(UsersRepository usersRepository, UsersMapper usersMapper, AlarmsRepository alarmsRepository, AlarmsMapper alarmsMapper, EventListsMapper eventListsMapper) {
         this.usersRepository = usersRepository;
         this.usersMapper = usersMapper;
@@ -79,6 +83,7 @@ public class UserService {
         if (user.isPresent()) {
             user.get().addEventList(eventListCreation.getListName(), listId);
             this.usersRepository.update(user.get());
+            this.eventListRepository.createEventList(eventListCreation);
         } else {
             throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
         }

@@ -16,6 +16,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -198,7 +199,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         String userid = getUserId(chatId);
-        List<Event> listaEventos = this.eventService.getEventList(idLista, userid).getEvents();
+        List<Event> listaEventos = new ArrayList<>();
+        this.eventService.getEventList(idLista, userid).forEach(eventList -> listaEventos.addAll(eventList.getEvents()));
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
