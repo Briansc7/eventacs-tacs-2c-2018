@@ -1,8 +1,6 @@
 package com.eventacs.external.eventbrite.model;
+import com.eventacs.external.telegram.client.JdbcDao.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.security.core.authority.AuthorityUtils;
-
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetAccessToken {
@@ -13,18 +11,20 @@ public class GetAccessToken {
     private String expires_in;
     private String scope;
     private String username;
-    private List<Authority> role;
+    //private List<Authority> role;
+    private UserData principal;
 
     public GetAccessToken() {
     }
 
-    public GetAccessToken(String access_token, String token_type, String refresh_token, String expires_in, String scope, String username) {
+    public GetAccessToken(String access_token, String token_type, String refresh_token, String expires_in, String scope, String username, UserData principal) {
         this.access_token = access_token;
         this.token_type = token_type;
         this.refresh_token = refresh_token;
         this.expires_in = expires_in;
         this.scope = scope;
         this.username = username;
+        this.principal = principal;
     }
 
 
@@ -76,11 +76,11 @@ public class GetAccessToken {
         this.username = username;
     }
 
-    public List<Authority> getRole() {
-        return role;
+    public UserData getPrincipal() {
+        return principal;
     }
 
-    public void setRole(List<Authority> role) {
-        this.role = role;
+    public void setPrincipal(UserData principal) {
+        this.principal = principal;
     }
 }
