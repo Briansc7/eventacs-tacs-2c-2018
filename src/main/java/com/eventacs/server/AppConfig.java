@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -101,6 +102,6 @@ public class AppConfig {
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
     @Bean
-    public EventListRepository eventListRepository() { return new EventListRepository(); }
+    public EventListRepository eventListRepository(MongoClient mongoClient) { return new EventListRepository(mongoClient); }
 
 }
