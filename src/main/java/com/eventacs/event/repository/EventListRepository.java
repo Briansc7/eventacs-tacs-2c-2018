@@ -5,12 +5,13 @@ import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
 import com.mongodb.*;
-import org.mongodb.morphia.Datastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class EventListRepository {
@@ -26,38 +27,21 @@ public class EventListRepository {
     }
 
     public List<EventList> getEventListByUserId(String userId) {
-        List<EventList> eventLists = new ArrayList<>();
+        Map<String, String> conditions = new HashMap<>();
+        conditions.put("userId", userId);
 
-        Datastore datastore = eventacsMongoClient.getDatastore("eventacs");
-
-        DBCollection collection = eventacsMongoClient.getCollection("eventLists");
-
-        BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("userId", userId);
-        DBCursor cursor = collection.find(searchQuery);
-
-        queryResult.add(cursor.getQuery());
-
-        while (cursor.hasNext()) {
-            queryResult.add(cursor.next());
-        }
-
-        eventacsMongoClient.getElementsAs();
-
-        return eventLists;
+        return eventacsMongoClient.getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
     }
 
     public void createEventList(EventListCreationDTO eventListCreationDTO) {
+        Map<String, Object> documentElements =  new HashMap<>();
 
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-        DB database = mongoClient.getDB("eventacs");
-        DBCollection collection = database.getCollection("eventList");
-        BasicDBObject document = new BasicDBObject();
-        document.put("userId", eventListCreationDTO.getUserId());
-        document.put("listName", eventListCreationDTO.getListName());
-        document.put("listId", ""); //ver como hacer para que sea incremental y se fije cual es la última lista que se creo de todas para que el id no se pise.
-        document.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
-        collection.insert(document);
+        documentElements.put("userId", eventListCreationDTO.getUserId());
+        documentElements.put("listName", eventListCreationDTO.getListName());
+        documentElements.put("listId", ""); //ver como hacer para que sea incremental y se fije cual es la última lista que se creo de todas para que el id no se pise.
+        documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
+
+        eventacsMongoClient.createDocument("eventList", documentElements);
     }
 
     public void addEventsToEventList(Event event, String listId) {

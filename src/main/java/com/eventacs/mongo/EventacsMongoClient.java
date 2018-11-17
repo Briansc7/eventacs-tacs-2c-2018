@@ -1,12 +1,10 @@
 package com.eventacs.mongo;
 
-import com.eventacs.event.model.EventList;
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +31,13 @@ public class EventacsMongoClient {
         return database.getCollection(collection);
     }
 
-    public <T> T getElementsAs(Class<T> clazz, Map<String, String> conditions) {
+    public <T> List<T> getElementsAs(Class<T> clazz, Map<String, String> conditions, String collectionName, String dbName) {
         List<DBObject> queryResult = new ArrayList<>();
         BasicDBObject searchQuery = new BasicDBObject();
+        Datastore datastore = this.getDatastore(dbName);
+        List<T> result = new ArrayList<>();
+
+        DBCollection collection = this.getCollection(collectionName);
 
         searchQuery.putAll(conditions);
 
@@ -46,6 +48,17 @@ public class EventacsMongoClient {
         while (cursor.hasNext()) {
             queryResult.add(cursor.next());
         }
-        queryResult.forEach(qr -> eventLists.add(morphia.fromDBObject(datastore, EventList .class, qr)));
-        }
+
+        queryResult.forEach(qr -> result.add(morphia.fromDBObject(datastore, clazz, qr)));
+
+        return result;
+    }
+
+    public void createDocument(String collectionName, Map<String, Object> documentElements) {
+        BasicDBObject document = new BasicDBObject();
+        DBCollection collection = this.getCollection(collectionName);
+
+        document.putAll(documentElements);
+        collection.insert(document);
+    }
 }

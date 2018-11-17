@@ -45,7 +45,7 @@ public class EventbriteClient {
 
         pathParts.add("/v3");
         pathParts.add("/events");
-        pathParts.add("/search");
+        pathParts.add("/search");` `
 
         keyWord.map(k -> parameters.put("q", k));
         categories.map(c -> parameters.put("categories", String.join(",", c)));
