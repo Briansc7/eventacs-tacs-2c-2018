@@ -38,22 +38,19 @@ public class EventListRepository {
 
         documentElements.put("userId", eventListCreationDTO.getUserId());
         documentElements.put("listName", eventListCreationDTO.getListName());
-        documentElements.put("listId", ""); //ver como hacer para que sea incremental y se fije cual es la última lista que se creo de todas para que el id no se pise.
+        documentElements.put("listId", ""); //TODO ver como hacer para que sea incremental y se fije cual es la última lista que se creo de todas para que el id no se pise.
         documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
         eventacsMongoClient.createDocument("eventList", documentElements);
     }
 
     public void addEventsToEventList(Event event, String listId) {
-        //borrar event dao, que reciba el evento a agregar como Event y que lo inserte como put en la base tipo update!
+        Map<String, Object> documentElements =  new HashMap<>();
 
+        documentElements.put("events", event);
 
-        private String eventId;
-        private String name;
-        private String description;
-        private String category;
-        private String logoUrl;
-        private LocalDateTime start;
-        private LocalDateTime end;
+        eventacsMongoClient.addEventToEventList(documentElements, listId);
     }
+
+
 }

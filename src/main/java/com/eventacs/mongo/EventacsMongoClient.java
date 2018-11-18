@@ -61,4 +61,17 @@ public class EventacsMongoClient {
         document.putAll(documentElements);
         collection.insert(document);
     }
+
+    public void addEventToEventList(Map<String, Object> documentElements, String listId) {
+        BasicDBObject query = new BasicDBObject();
+        DBCollection collection = this.getCollection("eventLists");
+        BasicDBObject newDocument = new BasicDBObject();
+        BasicDBObject updateObject = new BasicDBObject();
+
+        query.put("listId", listId);
+        newDocument.putAll(documentElements);
+        updateObject.put("$set", newDocument);
+
+        collection.update(query, updateObject);
+    }
 }

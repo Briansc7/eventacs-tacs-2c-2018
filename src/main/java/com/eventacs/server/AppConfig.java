@@ -10,6 +10,7 @@ import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
+import com.eventacs.mongo.EventacsMongoClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
@@ -102,6 +103,6 @@ public class AppConfig {
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
     @Bean
-    public EventListRepository eventListRepository(MongoClient mongoClient) { return new EventListRepository(mongoClient); }
+    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient) { return new EventListRepository(eventacsMongoClient); }
 
 }

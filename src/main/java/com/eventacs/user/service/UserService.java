@@ -99,6 +99,7 @@ public class UserService {
 
         eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
 
+        this.eventListRepository.addEventsToEventList(event, listId);
     }
 
     public String changeListName(String listId, String listName) {
