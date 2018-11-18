@@ -1,6 +1,7 @@
 package com.eventacs.tests;
 
 import com.eventacs.event.model.Category;
+import com.eventacs.event.model.EventList;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.external.telegram.client.httprequest.EventacsRequestBuilder;
@@ -30,8 +31,9 @@ public class TestEventacs {
 //        response = objectMapper.readValue(httpClient.execute(
 //                (new RequestLoginBuilder("usuario", "clave")).build())
 //                .getEntity().getContent(), GetAccessToken.class);
-        response = EventacsCommands.login("usuario", "clave");
-        List<Category> Categoryes =  EventacsCommands.getCategories(response.getAccess_token());
+        response = EventacsCommands.login("usuario2", "clave");
+        //List<Category> Categoryes =  EventacsCommands.getCategories(response.getAccess_token());
+        EventList eventList = EventacsCommands.getEventList(response.getAccess_token(),"Id1");
 //       List<Category> Categoryes = this.objectMapper.readValue(httpClient.execute((new RequestWitnToken("http://localhost:9000/eventacs/categories", response.getAccess_token())).build()).getEntity().getContent(), new TypeReference<List<Category>>() {});
     }
 

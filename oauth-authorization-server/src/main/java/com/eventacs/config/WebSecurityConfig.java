@@ -22,15 +22,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private DataSource datasource;
+
+//    @Autowired
+//    private UserDetailServiceImpl userDetailServiceImpl;
+
     @Autowired
     public void globalUserDetails(final AuthenticationManagerBuilder auth) throws Exception {
         // @formatter:off
-        auth.jdbcAuthentication().dataSource(datasource)
-      .withUser("User1").password(passwordEncoder.encode("Pw1")).roles("USER").and()
-	  .withUser("usuario").password(passwordEncoder.encode("clave")).roles("USER").and()
-	  .withUser("admin1").password(passwordEncoder.encode("111")).roles("ADMIN").and()
-	  .withUser("usuario2").password(passwordEncoder.encode("clave")).roles("USER").and()
-	  .withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN");
+        //auth.jdbcAuthentication().dataSource(datasource)
+//      .withUser("User1").password(passwordEncoder.encode("Pw1")).roles("USER").and()
+//	  .withUser("usuario").password(passwordEncoder.encode("clave")).roles("USER").and()
+//	  .withUser("admin1").password(passwordEncoder.encode("111")).roles("ADMIN").and()
+//	  .withUser("usuario2").password(passwordEncoder.encode("clave")).roles("USER").and()
+//	  .withUser("admin").password(passwordEncoder.encode("admin")).roles("ADMIN");
+        auth.userDetailsService(new UserDetailServiceImpl(datasource));
     }// @formatter:on
 
     @Override
