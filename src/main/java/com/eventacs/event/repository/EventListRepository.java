@@ -4,7 +4,6 @@ import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
-import com.mongodb.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -33,12 +32,12 @@ public class EventListRepository {
         return eventacsMongoClient.getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
     }
 
-    public void createEventList(EventListCreationDTO eventListCreationDTO) {
+    public void createEventList(EventListCreationDTO eventListCreationDTO, String listId) {
         Map<String, Object> documentElements =  new HashMap<>();
 
         documentElements.put("userId", eventListCreationDTO.getUserId());
         documentElements.put("listName", eventListCreationDTO.getListName());
-        documentElements.put("listId", ""); //TODO ver como hacer para que sea incremental y se fije cual es la última lista que se creo de todas para que el id no se pise.
+        documentElements.put("listId", listId);
         documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
         eventacsMongoClient.createDocument("eventList", documentElements);
@@ -46,11 +45,24 @@ public class EventListRepository {
 
     public void addEventsToEventList(Event event, String listId) {
         Map<String, Object> documentElements =  new HashMap<>();
-
         documentElements.put("events", event);
 
-        eventacsMongoClient.addEventToEventList(documentElements, listId);
+        eventacsMongoClient.update("listId", listId,documentElements, "eventLists");
     }
 
 
+    public String deleteEventList(String listId) {
+        return eventacsMongoClient.deleteEventList(listId);
+    }
+
+    public String changeListName(String listId, String listName) {
+        Map<String, Object> documentElements =  new HashMap<>();
+        documentElements.put("listName", listName);
+        return eventacsMongoClient.update("listId", listId, documentElements, "eventLists");
+    }
+
+
+    public Integer listIdGenerator() {
+        return eventacsMongoClient.listIdGenerator();
+    }
 }

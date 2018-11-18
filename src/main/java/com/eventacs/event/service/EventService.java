@@ -24,9 +24,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class EventService {
-    //TODO por ahora esto es para suplantar el tema de tener que buscar en base el último id.
-    //TODO ver si conviene guardarlo en el mongo de eventlist o en alguna otra
-    public Integer autoIncrementalListId = 1;
 
     @Autowired
     private UserService userService;
@@ -46,12 +43,11 @@ public class EventService {
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
-        String listId = listIdGenerator(eventListCreation.getUserId()); //TODO agarrar del mongo el listId
+        String listId = listIdGenerator();
         try {
             userService.addEventList(eventListCreation, listId);
             return listId;
         } catch (UserNotFound e){
-            autoIncrementalListId --;
             throw e;
         }
     }
@@ -105,10 +101,8 @@ public class EventService {
 
     }
 
-    private String listIdGenerator(String userId) {
-        //TODO Esto debería primero ir a la base para ver cual es el último id para darselo a ésta lista
-        String id = (autoIncrementalListId ++).toString();
-        return "U" + userId + "L" + id;
+    private String listIdGenerator() {
+        return eventListRepository.listIdGenerator().toString();
     }
 
     private Event getEvent(String eventId) {
@@ -120,14 +114,7 @@ public class EventService {
     }
 
     public List<EventList> getEventList(String listId, String userId) {
-        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-        //TODO ya teniendo el id hacer un getById directo
-
-        //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
-
         return eventListRepository.getEventListByUserId(userId);
-
-      //  return user.getEvents().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
       // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 

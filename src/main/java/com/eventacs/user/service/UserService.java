@@ -83,7 +83,7 @@ public class UserService {
         if (user.isPresent()) {
             user.get().addEventList(eventListCreation.getListName(), listId);
             this.usersRepository.update(user.get());
-            this.eventListRepository.createEventList(eventListCreation);
+            this.eventListRepository.createEventList(eventListCreation, listId);
         } else {
             throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
         }
@@ -105,7 +105,7 @@ public class UserService {
     public String changeListName(String listId, String listName) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
         this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getId().equals(listId))).forEach(list -> list.setListName(listName));
-        return listId;
+        return this.eventListRepository.changeListName(listId, listName);
     }
 
     public String deleteEventList(String listId) {
@@ -119,7 +119,8 @@ public class UserService {
             throw new UserNotFound("User not found for this event list Id" + listId);
         } else {
             filteredUsers.get(0).getEvents().remove(eventListsToBeRemoved.get(0));
-            return eventListsToBeRemoved.get(0).getId();
+            eventListsToBeRemoved.get(0).getId();
+            return this.eventListRepository.deleteEventList(listId);
         }
     }
 
