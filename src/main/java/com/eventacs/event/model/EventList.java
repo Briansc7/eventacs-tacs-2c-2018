@@ -13,6 +13,9 @@ public class EventList {
         this.events = events;
     }
 
+    public EventList() {
+    }
+
     public String getId() {
         return id;
     }

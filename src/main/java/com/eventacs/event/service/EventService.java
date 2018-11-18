@@ -1,7 +1,6 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
@@ -9,6 +8,7 @@ import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
+import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.service.UserService;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,8 +37,8 @@ public class EventService {
         this.eventbriteFacade = eventbriteFacade;
     }
 
-    public List<Event> getEvents(Optional<String> keyWord, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
-        return this.eventbriteFacade.getEvents(keyWord, categories, startDate, endDate, page);
+    public EventsResponse getEvents(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page) {
+        return this.eventbriteFacade.getEvents(keyword, categories, startDate, endDate, page);
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
@@ -71,7 +70,7 @@ public class EventService {
 
         List<UserInfoDTO> users = this.userService.getUsers();
 
-        List<EventList> eventLists = users.stream().map(user -> user.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+        List<EventList> eventLists = users.stream().map(user -> user.getEventLists()).flatMap(List::stream).collect(Collectors.toList());
 
         List<Event> events = eventLists.stream().map(eventList -> eventList.getEvents()).flatMap(List::stream).collect(Collectors.toList());
 

@@ -1,9 +1,9 @@
 package com.eventacs.event.controller;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
+import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +30,13 @@ public class EventController {
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getEvents(@RequestParam(name = "keyWord", required = false) Optional<String> keyWord,
-                                 @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
-                                 @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
-                                 @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate,
-                                 @RequestParam(name = "page", required = false) Optional<BigInteger> page) {
-        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {} page: {}", keyWord, categories, startDate, endDate, page);
-        return this.eventService.getEvents(keyWord, categories, startDate, endDate, page);
+    public EventsResponse getEvents(@RequestParam(name = "keyword", required = false) Optional<String> keyword,
+                                    @RequestParam(name = "categories", required = false) Optional<List<String>> categories,
+                                    @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
+                                    @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate,
+                                    @RequestParam(name = "page", required = false) Optional<BigInteger> page) {
+        LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {} page: {}", keyword, categories, startDate, endDate, page);
+        return this.eventService.getEvents(keyword, categories, startDate, endDate, page);
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)

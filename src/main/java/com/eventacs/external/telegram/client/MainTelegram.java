@@ -8,7 +8,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
-@Component
+//@Component
 public class MainTelegram {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainTelegram.class);
@@ -32,6 +32,7 @@ public class MainTelegram {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
     }
 
 }
