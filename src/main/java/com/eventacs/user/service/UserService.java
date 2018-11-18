@@ -3,6 +3,7 @@ package com.eventacs.user.service;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -42,6 +43,9 @@ public class UserService {
     @Autowired
     private AlarmsMapper alarmsMapper;
 
+    @Autowired
+    private EventListRepository eventListRepository;
+
     public UserService(UsersRepository usersRepository, UsersMapper usersMapper, AlarmsRepository alarmsRepository, AlarmsMapper alarmsMapper, EventListsMapper eventListsMapper) {
         this.usersRepository = usersRepository;
         this.usersMapper = usersMapper;
@@ -79,6 +83,7 @@ public class UserService {
         if (user.isPresent()) {
             user.get().addEventList(eventListCreation.getListName(), listId);
             this.usersRepository.update(user.get());
+            this.eventListRepository.createEventList(eventListCreation, listId);
         } else {
             throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
         }
@@ -94,12 +99,13 @@ public class UserService {
 
         eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
 
+        this.eventListRepository.addEventsToEventList(event, listId);
     }
 
     public String changeListName(String listId, String listName) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
         this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getId().equals(listId))).forEach(list -> list.setListName(listName));
-        return listId;
+        return this.eventListRepository.changeListName(listId, listName);
     }
 
     public String deleteEventList(String listId) {
@@ -113,7 +119,8 @@ public class UserService {
             throw new UserNotFound("User not found for this event list Id" + listId);
         } else {
             filteredUsers.get(0).getEvents().remove(eventListsToBeRemoved.get(0));
-            return eventListsToBeRemoved.get(0).getId();
+            eventListsToBeRemoved.get(0).getId();
+            return this.eventListRepository.deleteEventList(listId);
         }
     }
 

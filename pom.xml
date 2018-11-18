@@ -43,6 +43,27 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Mongo DB-->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+
+        <!-- For Mongo queries -->
+        <dependency>
+            <groupId>org.jongo</groupId>
+            <artifactId>jongo</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+        <!-- Java Object Document Mapper for MongoDB    -->
+        <dependency>
+            <groupId>org.mongodb.morphia</groupId>
+            <artifactId>morphia</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>

@@ -392,7 +392,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista).getEvents();
-//        List<Event> listaEventos = this.eventService.getEventList(idLista, getUserId(chatId)).getEvents();
+//        List<Event> listaEventos = new ArrayList<>();
+        this.eventService.getEventList(idLista, getUserId(chatId)).forEach(eventList -> listaEventos.addAll(eventList.getEvents()));
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");

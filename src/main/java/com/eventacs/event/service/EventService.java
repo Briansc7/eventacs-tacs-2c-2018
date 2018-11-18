@@ -6,6 +6,7 @@ import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -22,14 +23,15 @@ import java.util.stream.Collectors;
 
 @Component
 public class EventService {
-    //TODO por ahora esto es para suplantar el tema de tener que buscar en base el último id.
-    public Integer autoIncrementalListId = 1;
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private EventbriteFacade eventbriteFacade;
+
+    @Autowired
+    private EventListRepository eventListRepository;
 
     public EventService(EventbriteFacade eventbriteFacade) {
         this.eventbriteFacade = eventbriteFacade;
@@ -40,12 +42,11 @@ public class EventService {
     }
 
     public String createEventList(EventListCreationDTO eventListCreation) {
-        String listId = listIdGenerator(eventListCreation.getUserId());
+        String listId = listIdGenerator();
         try {
             userService.addEventList(eventListCreation, listId);
             return listId;
         } catch (UserNotFound e){
-            autoIncrementalListId --;
             throw e;
         }
     }
@@ -99,10 +100,8 @@ public class EventService {
 
     }
 
-    private String listIdGenerator(String userId) {
-        //TODO Esto debería primero ir a la base para ver cual es el último id para darselo a ésta lista
-        String id = (autoIncrementalListId ++).toString();
-        return "U" + userId + "L" + id;
+    private String listIdGenerator() {
+        return eventListRepository.listIdGenerator().toString();
     }
 
     private Event getEvent(String eventId) {
@@ -113,15 +112,9 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public EventList getEventList(String listId, String userId) {
-        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-        //TODO ya teniendo el id hacer un getById directo
-
-        //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
-
-        UserInfoDTO user = this.userService.getUser(userId);
-
-        return user.getEventLists().stream().filter(list -> list.getId().equals(listId)).findFirst().orElseThrow(() -> new EventListNotFound("EventList " + listId + " not found"));
+    public List<EventList> getEventList(String listId, String userId) {
+        return eventListRepository.getEventListByUserId(userId);
+      // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 
 }

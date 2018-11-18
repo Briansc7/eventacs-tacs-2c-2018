@@ -1,6 +1,7 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
+import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
@@ -10,6 +11,7 @@ import com.eventacs.external.eventbrite.mapping.PaginationMapper;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
+import com.eventacs.mongo.EventacsMongoClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.mongodb.MongoClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -134,5 +137,8 @@ public class AppConfig {
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
+
+    @Bean
+    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient) { return new EventListRepository(eventacsMongoClient); }
 
 }
