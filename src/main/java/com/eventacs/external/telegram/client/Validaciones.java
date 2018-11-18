@@ -44,4 +44,13 @@ public class Validaciones {
     public static boolean usuarioVerificado(long chatId, TacsBot tacsBot) {
         return tacsBot.existeUserConChatID(chatId);
     }
+
+    public static String formatearId(String id){
+        char firstCharacter = id.charAt(0);
+
+        if (firstCharacter == '/')
+            return id.substring(1);
+        else
+            return id;
+    }
 }

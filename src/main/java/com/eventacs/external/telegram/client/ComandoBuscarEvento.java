@@ -131,7 +131,7 @@ public class ComandoBuscarEvento {
                 else
                     categories = Optional.of(new ArrayList<>());
 
-                if(!Validaciones.categoriaValida(parts[0], mensajeDeError)){
+                if(!Validaciones.categoriaValida(Validaciones.formatearId(parts[0]), mensajeDeError)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el id de la categoría");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -139,7 +139,7 @@ public class ComandoBuscarEvento {
                     break;
                 }
 
-                categories.map(c -> c.add(parts[0])); //105 es Música
+                categories.map(c -> c.add(Validaciones.formatearId(parts[0]))); //105 es Música
                 LOGGER.info("Lista de categorias: "+categories);
                 categoriasGuardadas.put(chatId, categories);
                 mensajeAEnviar.append("Desea agregar otra categoría?\nIngrese Si/No");
@@ -380,8 +380,7 @@ public class ComandoBuscarEvento {
 
         Optional<BigInteger> page = Optional.of(BigInteger.ONE);
 
-        mensajeAEnviar = tacsBot.buscarEventos(keyword, categories, startDate, endDate, page, chatId);
-        tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+        tacsBot.mostrarEventos(keyword, categories, startDate, endDate, page, chatId);
 
         buscarEventoStates.remove(chatId);
         keywordGuardado.remove(chatId);

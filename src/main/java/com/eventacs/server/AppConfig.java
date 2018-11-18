@@ -146,7 +146,7 @@ public class AppConfig {
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
-        return new TelegramUsersRepositoryImpl(redisTemplate());
+        return new TelegramUsersRepositoryImpl(redisTemplate(), jdbcDaoTelegramUserData());
     }
 
     @Bean

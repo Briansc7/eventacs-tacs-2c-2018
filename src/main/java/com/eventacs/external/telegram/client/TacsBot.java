@@ -4,6 +4,7 @@ import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventsResponse;
 import com.eventacs.event.service.EventService;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.user.repository.TelegramUsersRepository;
 import org.slf4j.Logger;
@@ -217,17 +218,19 @@ public class TacsBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // Se devuelve el nombre que dimos al bot al crearlo con el BotFather
-        return "TacsBot";
+        //return "TacsBot";
+        return "TacsTestBot";
     }
 
     @Override
     public String getBotToken() {
         // Se devuelve el token que nos generó el BotFather de nuestro bot
-        return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
+        //return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
+        return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
     }
 
     public void agregarDatosEvento(Event e, StringBuilder mensajeAEnviar) {
-        mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
+        mensajeAEnviar.append("ID: /").append(e.getId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
     }
 
@@ -420,7 +423,28 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public static void guardarToken(long key, String value) {
+    public void mostrarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        EventsResponse eventsResponse = EventacsCommands.getEvents(getAccessToken(chatId), keyword, categories, startDate, endDate, page);
+
+        if(eventsResponse.getEvents().isEmpty()){
+            mensajeAEnviar.append("No se encontraron eventos");
+            enviarMensaje(mensajeAEnviar,chatId);
+        }
+        else{
+            eventsResponse.getEvents().forEach(event -> mostrarUnEvento(event, chatId));
+        }
+    }
+
+    public void mostrarUnEvento(Event e, long chatId){
+        StringBuilder mensajeAEnviar = new StringBuilder();
+        mensajeAEnviar.append("ID: /").append(e.getId()).append("\n");
+        mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
+        enviarMensaje(mensajeAEnviar, chatId);
+    }
+
+    public static void guardarToken(long key, GetAccessToken value) {
         telegramUsersRepository.save(key,value);
     }
 
@@ -492,7 +516,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     private void agregarCategoria(Category e, StringBuilder mensajeAEnviar) {
-        mensajeAEnviar.append("ID: ").append(e.getId()).append("\n");
+        mensajeAEnviar.append("ID: /").append(e.getId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
     }
 }
