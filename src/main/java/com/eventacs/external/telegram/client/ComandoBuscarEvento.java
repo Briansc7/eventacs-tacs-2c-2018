@@ -1,5 +1,7 @@
 package com.eventacs.external.telegram.client;
 
+import com.google.api.client.util.DateTime;
+import com.mysql.cj.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +133,7 @@ public class ComandoBuscarEvento {
                 else
                     categories = Optional.of(new ArrayList<>());
 
-                if(!Validaciones.categoriaValida(Validaciones.formatearId(parts[0]), mensajeDeError)){
+                if(!Validaciones.categoriaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el id de la categoría");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -192,6 +194,14 @@ public class ComandoBuscarEvento {
                 break;
             case esperaDiaFechInic:
 
+                if(!Validaciones.isNumeric(parts[0])){
+                    mensajeAEnviar.append("No ha ingresado un número válido\n");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de inicio\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
+                    break;
+                }
+
                 if(parts[0].length()>2){
                     mensajeAEnviar.append("El día no puede ser de más de 2 dígitos\n");
                     mensajeAEnviar.append("Ingrese el día de la fecha de inicio\n");
@@ -216,6 +226,14 @@ public class ComandoBuscarEvento {
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechInic);
                 break;
             case esperaMesFechInic:
+
+                if(!Validaciones.isNumeric(parts[0])){
+                    mensajeAEnviar.append("No ha ingresado un número válido\n");
+                    mensajeAEnviar.append("Ingrese el mes de la fecha de inicio\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechInic);
+                    break;
+                }
 
                 if(parts[0].length()>2){
                     mensajeAEnviar.append("El mes no puede ser de más de 2 dígitos\n");
@@ -249,7 +267,7 @@ public class ComandoBuscarEvento {
 
                 if(!Validaciones.fechainicioValida(fechaParcial, mensajeDeError)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
-                    mensajeAEnviar.append("La fecha ingresada no es válida.\nIngrese el día de la fecha de inicio");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de inicio");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechInic);
                     break;
@@ -287,6 +305,14 @@ public class ComandoBuscarEvento {
 
             case esperaDiaFechFin:
 
+                if(!Validaciones.isNumeric(parts[0])){
+                    mensajeAEnviar.append("No ha ingresado un número válido\n");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de fin\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
+                    break;
+                }
+
                 if(parts[0].length()>2){
                     mensajeAEnviar.append("El día no puede ser de más de 2 dígitos\n");
                     mensajeAEnviar.append("Ingrese el día de la fecha de fin\n");
@@ -311,6 +337,14 @@ public class ComandoBuscarEvento {
                 buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechFin);
                 break;
             case esperaMesFechFin:
+
+                if(!Validaciones.isNumeric(parts[0])){
+                    mensajeAEnviar.append("No ha ingresado un número válido\n");
+                    mensajeAEnviar.append("Ingrese el mes de la fecha de fin\n");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    buscarEventoStates.put(chatId, estadosBuscarEvento.esperaMesFechFin);
+                    break;
+                }
 
                 if(parts[0].length()>2){
                     mensajeAEnviar.append("El mes no puede ser de más de 2 dígitos\n");
@@ -342,7 +376,8 @@ public class ComandoBuscarEvento {
                 fechaParcial = parts[0]+"-"+fechaParcial;
 
 
-                if(!Validaciones.fechafinValida(fechaParcial, mensajeDeError)){
+                //para evitar problemas con que la fecha sea opcional, se soluciona agregando una fecha ficticia que nunca se va a usar
+                if(!Validaciones.fechafinValida(fechaParcial, fechaInicioGuardada.get(chatId).orElse(LocalDate.of(0,1,1)), mensajeDeError)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("La fecha ingresada no es válida.\nIngrese el día de la fecha de fin");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);

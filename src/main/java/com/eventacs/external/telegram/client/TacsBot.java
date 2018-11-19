@@ -201,7 +201,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 enviarMensajeConBoton(mensajeAEnviar, chatId);
                 break;*/
             default:
-                mensajeAEnviar.append("opción no válida");
+                mensajeAEnviar.append("Comando no válido");
+                enviarMensaje(mensajeAEnviar,chatId);
+                comandoAyuda.mostrarAyuda(parts, chatStates, chatId, this);
                 break;
         }
     }
@@ -249,7 +251,7 @@ public class TacsBot extends TelegramLongPollingBot {
 //      this.eventService.addEvent(idLista, idEvento, userID);
     }
 
-    private String getAccessToken(long chatId) {
+    public String getAccessToken(long chatId) {
         return telegramUsersRepository.findByChatId(chatId);
     }
     public void enviarMensajeRemoverTeclado(StringBuilder mensajeAEnviar, long chatId){
@@ -395,7 +397,6 @@ public class TacsBot extends TelegramLongPollingBot {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista).getEvents();
-//        List<Event> listaEventos = this.eventService.getEventList(idLista, getUserId(chatId)).getEvents();
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
