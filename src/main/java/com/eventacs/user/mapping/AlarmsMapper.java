@@ -18,7 +18,7 @@ public class AlarmsMapper {
     }
 
     public Alarm fromApiToModel(AlarmDTO alarmDTO) {
-        SearchDTO searchDTO = alarmDTO.getSearchDTO();
+        SearchDTO searchDTO = alarmDTO.getSearch();
         return new Alarm(alarmDTO.getId().orElse(""), alarmDTO.getUserId(), new Search(searchDTO.getKeyword(),
                                                                                        searchDTO.getCategories(),
                                                                                        searchDTO.getStartDate(),

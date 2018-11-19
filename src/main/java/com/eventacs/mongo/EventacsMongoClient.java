@@ -123,4 +123,28 @@ public class EventacsMongoClient {
             return lastId + 1;
         }
     }
+
+    public Integer alarmIdGenerator() {
+        if(getCollection("alarms").count() == 0){
+            return 1;
+        } else {
+            List<DBObject> queryResult = new ArrayList<>();
+            BasicDBObject searchQuery = new BasicDBObject();
+            BasicDBObject sorting = new BasicDBObject();
+            Datastore datastore = this.getDatastore("eventacs");
+            DBCollection collection = this.getCollection("alarms");
+
+            sorting.put("alarmId", -1);
+
+            searchQuery.put("$orderby", sorting);
+
+            DBCursor cursor = collection.find(searchQuery);
+
+            queryResult.add(cursor.getQuery());
+
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventList.class, queryResult.get(0)).getId());
+
+            return lastId + 1;
+        }
+    }
 }
