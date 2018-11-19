@@ -26,8 +26,10 @@ public class AccountController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ResponseBody
-    public UserInfoDTO signup(@RequestBody UserAccountDTO userAccountDTO) {
-        LOGGER.info("/eventacs/signup [POST] Username: {}", userAccountDTO.getName());
+    public boolean signup(@RequestBody UserAccountDTO userAccountDTO) {
+        LOGGER.info("/eventacs/signup [POST] Username: {} Email: {}",
+                userAccountDTO.getUserName(),
+                userAccountDTO.getEmail());
         return this.accountService.createUser(userAccountDTO);
     }
 

@@ -59,7 +59,7 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
-    public AccountService accountService() { return new AccountService(); }
+    public AccountService accountService() { return new AccountService(jdbcDaoTelegramUserData()); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(), alarmsMapper(), eventListsMapper()); }

@@ -1,36 +1,51 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import '../styles/css/style.css';
 
 export default class LoginForm extends Component {
 
-  constructor() {
-    super();
-    this.state = {username: "", password: ""};
+    constructor() {
+        super();
+        this.state = {username: "", password: ""};
+        this.handleLoginData = this.handleLoginData.bind(this);
+        this.updateUsername = this.updateUsername.bind(this);
+        this.updatePassword = this.updatePassword.bind(this);
+    }
 
-    this.handleLoginData = this.handleLoginData.bind(this);
-    this.updateUsername = this.updateUsername.bind(this);
-    this.updatePassword = this.updatePassword.bind(this);
-  }
+    updateUsername = event => {this.setState({username: event.target.value})};
+    updatePassword = event => {this.setState({password: event.target.value})};
 
-  updateUsername = event => {this.setState({username: event.target.value})};
-  updatePassword = event => {this.setState({password: event.target.value})};
+    handleLoginData = () => {this.props.loginHandler(this.state.username, this.state.password)};
 
-  handleLoginData = () => {this.props.loginHandler(this.state.username, this.state.password)};
-
-  render() {
-    return (
-      <Form inline>
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-          <Label for="username" className="mr-sm-2" hidden>Username</Label>
-          <Input type="user" name="user" id="username" placeholder="Username" bsSize="sm" onChange={this.updateUsername}/>
-        </FormGroup>
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-          <Label for="password" className="mr-sm-2" hidden>Password</Label>
-          <Input type="password" name="password" id="password" placeholder="Password" bsSize="sm" onChange={this.updatePassword}/>
-        </FormGroup>
-        <Button onClick={this.handleLoginData}>Login</Button>
-      </Form>
-    );
-  }
-
+    render() {
+        return (
+            <section>
+                <div className="layer"></div>
+                <div className="container">
+                    {
+                        true ?
+                            <div className="login-form">
+                            <h1>Sign In</h1>
+                            <form>
+                                <input type="text" name="username" placeholder="username"/>
+                                <input type="password" name="password" placeholder="password"/>
+                                <input type="submit" name="" value="Login"/>
+                                <input type="button" name="boton" placeholder="signup"/>
+                            </form>
+                        </div> :
+                            <div className="login-form">
+                            <h1>Sign Up</h1>
+                            <form>
+                                <input type="text" name="username" placeholder="username"/>
+                                <input type="password" name="password" placeholder="password"/>
+                                <input type="password" name="retryPassword" placeholder="password"/>
+                                <input type="email" name="email" placeholder="email"/>
+                                <input type="submit" name="" value="SingUp"/>
+                                <input type="button" name="boton" placeholder="signin"/>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </section>
+        );
+    }
 }
