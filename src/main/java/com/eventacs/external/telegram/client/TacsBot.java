@@ -195,11 +195,11 @@ public class TacsBot extends TelegramLongPollingBot {
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
                 break;
-            case "/test":
+            /*case "/test":
 
                 mensajeAEnviar.append("prueba");
                 enviarMensajeConBoton(mensajeAEnviar, chatId);
-                break;
+                break;*/
             default:
                 mensajeAEnviar.append("opción no válida");
                 break;
