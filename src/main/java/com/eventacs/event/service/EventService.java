@@ -1,14 +1,12 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.service.UserService;
@@ -70,9 +68,9 @@ public class EventService {
 
         List<UserInfoDTO> users = this.userService.getUsers();
 
-        List<EventList> eventLists = users.stream().map(user -> user.getEventLists()).flatMap(List::stream).collect(Collectors.toList());
+        List<EventList> eventLists = users.stream().map(UserInfoDTO::getEventLists).flatMap(List::stream).collect(Collectors.toList());
 
-        List<Event> events = eventLists.stream().map(eventList -> eventList.getEvents()).flatMap(List::stream).collect(Collectors.toList());
+        List<Event> events = eventLists.stream().map(EventList::getEvents).flatMap(List::stream).collect(Collectors.toList());
 
         return BigDecimal.valueOf(events.size());
 
@@ -89,12 +87,11 @@ public class EventService {
     }
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
-        // TODO buscar cada lista y encontrar eventos en comun
         // TODO por ahora usar este user generico
         UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        List<Event> events = this.userService.getEventList(listId, user.getId()).getEvents();
-        List<Event> moreEvents = this.userService.getEventList(anotherListId, user.getId()).getEvents();
+        List<Event> events = eventListRepository.getEventListByListId(listId);
+        List<Event> moreEvents =eventListRepository.getEventListByListId(anotherListId);
 
         return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
 
