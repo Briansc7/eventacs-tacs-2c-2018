@@ -6,21 +6,21 @@ public class AlarmDTO {
 
     private Optional<String> id;
     private String userId;
-    private SearchDTO searchDTO;
+    private SearchDTO search;
 
     public AlarmDTO() {
 
     }
 
-    public AlarmDTO(String userId, SearchDTO searchDTO) {
+    public AlarmDTO(String userId, SearchDTO search) {
         this.userId = userId;
-        this.searchDTO = searchDTO;
+        this.search = search;
     }
 
-    public AlarmDTO(Optional<String> id, String userId, SearchDTO searchDTO) {
+    public AlarmDTO(Optional<String> id, String userId, SearchDTO search) {
         this.id = id;
         this.userId = userId;
-        this.searchDTO = searchDTO;
+        this.search = search;
     }
 
     public Optional<String> getId() {
@@ -39,12 +39,12 @@ public class AlarmDTO {
         this.userId = userId;
     }
 
-    public SearchDTO getSearchDTO() {
-        return searchDTO;
+    public SearchDTO getSearch() {
+        return search;
     }
 
-    public void setSearchDTO(SearchDTO searchDTO) {
-        this.searchDTO = searchDTO;
+    public void setSearch(SearchDTO search) {
+        this.search = search;
     }
 
 }
