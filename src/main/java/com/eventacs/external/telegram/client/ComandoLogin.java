@@ -47,7 +47,7 @@ public class ComandoLogin {
                 GetAccessToken accessToken = Validaciones.userPwValido(username, pw);
                 if(accessToken.getAccess_token() != null){
                     TacsBot.guardarCuentaTelegram(chatId, username);
-                    TacsBot.guardarToken(chatId, accessToken.getAccess_token());
+                    TacsBot.guardarToken(chatId, accessToken);
                     mensajeAEnviar.append("Login exitoso");
                     tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }

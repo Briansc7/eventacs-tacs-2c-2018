@@ -18,7 +18,8 @@ public class ComandoAyuda{
                 mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
                 mensajeAEnviar.append("/buscarevento para buscar eventos\n\n");
                 mensajeAEnviar.append("/agregarevento para agregar eventos a una lista de eventos \n\n");
-                mensajeAEnviar.append("/revisareventos para ver eventos de una lista de eventos");
+                mensajeAEnviar.append("/revisareventos para ver eventos de una lista de eventos\n\n");
+                mensajeAEnviar.append("/login para hacer login con el nombre de usuario y contraseña de Eventacs");
                 break;
             /*case 2:
                 switch (parts[1]){
