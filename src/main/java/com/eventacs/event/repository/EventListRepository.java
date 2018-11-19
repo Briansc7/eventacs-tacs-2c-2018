@@ -41,7 +41,7 @@ public class EventListRepository {
         documentElements.put("listId", listId);
         documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
-        eventacsMongoClient.createDocument("eventList", documentElements);
+        eventacsMongoClient.createDocument("eventLists", documentElements);
     }
 
     public void addEventsToEventList(Event event, String listId) {
