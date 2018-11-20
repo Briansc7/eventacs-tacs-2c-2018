@@ -27,9 +27,14 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-                http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .authorizeRequests().anyRequest().permitAll();
+                http
+                    .authorizeRequests()
+                        .antMatchers("/eventacs/signup").permitAll()
+                        .and()
+                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .and()
+                        .authorizeRequests()
+                        .anyRequest().authenticated();
                     //.authorizeRequests().anyRequest().authenticated();
         // @formatter:on                
     }

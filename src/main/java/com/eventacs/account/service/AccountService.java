@@ -2,23 +2,30 @@ package com.eventacs.account.service;
 
 import com.eventacs.account.dto.UserAccountDTO;
 import com.eventacs.account.dto.UserLoginDTO;
-import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.user.dto.UserInfoDTO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 
 public class AccountService {
 
-    private JdbcDaoTelegramUserData userData;
+    private JdbcDaoUserData userData;
 
-    public AccountService(JdbcDaoTelegramUserData userData) {
+    public AccountService(JdbcDaoUserData userData) {
         this.userData = userData;
     }
 
     // TODO Cambiarle el nombre de newUserDTO
     public boolean createUser(UserAccountDTO userAccountDTO) {
-        userData.insertUserDataAccount(userAccountDTO);
-        return true;
+        boolean userCreated = true;
+        userAccountDTO.setPassword((new BCryptPasswordEncoder()).encode(userAccountDTO.getPassword()));
+        try {
+            userData.insertUserDataAccount(userAccountDTO);
+        } catch (Exception e){
+            userCreated = false;
+        }
+        return userCreated;
     }
 
     public UserInfoDTO login(UserLoginDTO userLoginDTO) {

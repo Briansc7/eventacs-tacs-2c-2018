@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
+import '../styles/css/style.css'
 import AppNavbar from './AppNavbar';
 import EventsSearchBox from "./EventsSearchBox";
 import EventsCluster from './EventsCluster';

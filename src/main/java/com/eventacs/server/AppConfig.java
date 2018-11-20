@@ -8,6 +8,7 @@ import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
@@ -59,7 +60,7 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
-    public AccountService accountService() { return new AccountService(jdbcDaoTelegramUserData()); }
+    public AccountService accountService() { return new AccountService(jdbcDaoUserData()); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(), alarmsMapper(), eventListsMapper()); }
@@ -124,6 +125,8 @@ public class AppConfig {
         return mapper;
     }
 
+    JdbcDaoUserData jdbcDaoUserData() { return new JdbcDaoUserData(dataSourceUsers()); };
+
     @Bean
     JdbcDaoTelegramUserData jdbcDaoTelegramUserData() { return new JdbcDaoTelegramUserData(dataSource()); };
 
@@ -174,6 +177,16 @@ public class AppConfig {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
         dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUsername(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        return dataSource;
+    }
+
+    @Bean
+    public DataSource dataSourceUsers() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("jdbc.urlUsers"));
         dataSource.setUsername(env.getProperty("jdbc.user"));
         dataSource.setPassword(env.getProperty("jdbc.pass"));
         return dataSource;
