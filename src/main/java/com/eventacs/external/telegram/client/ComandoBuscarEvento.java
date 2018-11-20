@@ -53,6 +53,13 @@ public class ComandoBuscarEvento {
         Optional<LocalDate> startDate = Optional.of(LocalDate.now());
         Optional<LocalDate> endDate = Optional.of(LocalDate.now().plusDays(1));
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            buscarEventoStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
             tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -379,7 +386,7 @@ public class ComandoBuscarEvento {
                 //para evitar problemas con que la fecha sea opcional, se soluciona agregando una fecha ficticia que nunca se va a usar
                 if(!Validaciones.fechafinValida(fechaParcial, fechaInicioGuardada.get(chatId).orElse(LocalDate.of(0,1,1)), mensajeDeError)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
-                    mensajeAEnviar.append("La fecha ingresada no es válida.\nIngrese el día de la fecha de fin");
+                    mensajeAEnviar.append("Ingrese el día de la fecha de fin");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     buscarEventoStates.put(chatId, estadosBuscarEvento.esperaDiaFechFin);
                     break;

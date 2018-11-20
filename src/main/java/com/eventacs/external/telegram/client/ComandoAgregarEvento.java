@@ -17,6 +17,13 @@ public class ComandoAgregarEvento {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            agregarEventoStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
             tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -76,7 +83,7 @@ public class ComandoAgregarEvento {
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 tacsBot.mostrarMenuComandos(chatId);
-                agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);
+                agregarEventoStates.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
             default:

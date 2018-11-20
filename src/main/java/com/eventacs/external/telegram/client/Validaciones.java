@@ -32,7 +32,7 @@ public class Validaciones {
 
         mensajeDeError.append("El id de categoría ingresado no existe");
 
-        return categorias.stream().anyMatch(c->c.getId()==idCategoria);
+        return categorias.stream().anyMatch(c->c.getId().equalsIgnoreCase(idCategoria));
     }
 
     public static  boolean fechaValida(String fecha){
