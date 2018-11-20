@@ -3,7 +3,6 @@ package com.eventacs.event.controller;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
-import com.eventacs.external.eventbrite.model.EventbriteEventsResponse;
 import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.model.UserId;
 import org.slf4j.Logger;
@@ -37,6 +36,13 @@ public class EventController {
                                     @RequestParam(name = "page", required = false) Optional<BigInteger> page) {
         LOGGER.info("/eventacs/events [GET] With: keyWord: {} categories: {} startDate: {} endDate: {} page: {}", keyword, categories, startDate, endDate, page);
         return this.eventService.getEvents(keyword, categories, startDate, endDate, page);
+    }
+
+    @RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
+    @ResponseBody
+    public Event getEvent(@PathVariable String eventId) {
+        LOGGER.info("/eventacs/events/{} [GET]", eventId);
+        return this.eventService.getEvent(eventId);
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)

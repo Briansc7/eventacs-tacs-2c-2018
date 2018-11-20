@@ -23,11 +23,19 @@ public class ComandoLogin {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            loginStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!loginStates.containsKey(chatId)){
             loginStates.put(chatId, estadosLogin.inicio);
         }
 
         LOGGER.info("Estado login: " + loginStates.get(chatId));
+
 
         switch (loginStates.get(chatId)){
             case inicio:

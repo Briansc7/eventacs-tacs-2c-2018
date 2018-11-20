@@ -41,6 +41,15 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getTokenAccess();
         }
     }
+    @Override
+    public String findUserIdByChatId(final long chatId) {
+        //try{
+        //    return (String)hashOperations.get("CHATID",chatId);
+        //}
+        //catch(Exception e){
+            return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getUserName();
+        //}
+    }
 
     @Override
     public void update(final long chatId, final String accessToken) {

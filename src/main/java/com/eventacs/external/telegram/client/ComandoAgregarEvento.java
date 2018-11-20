@@ -17,6 +17,13 @@ public class ComandoAgregarEvento {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            agregarEventoStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
             tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -50,15 +57,15 @@ public class ComandoAgregarEvento {
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                 break;
             case esperaIdEvento:
-/*
-                if(!Validaciones.idEventoValido(Validaciones.formatearId(parts[0]), mensajeDeError)){
+
+                if(!Validaciones.idEventoValido(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                     break;
-                }*/
-
+                }
+/*
                 try{
                     tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
                 }
@@ -69,13 +76,14 @@ public class ComandoAgregarEvento {
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                     break;
-                }
+                }*/
 
+                tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
 
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 tacsBot.mostrarMenuComandos(chatId);
-                agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);
+                agregarEventoStates.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
             default:

@@ -15,6 +15,13 @@ public class ComandoRevisarEventos {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            revisarEventosStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
             tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -44,7 +51,7 @@ public class ComandoRevisarEventos {
 
                 tacsBot.revisarEventos(Validaciones.formatearId(parts[0]),chatId);
                 tacsBot.mostrarMenuComandos(chatId);
-                revisarEventosStates.put(chatId, estadosRevisarEventos.inicio);
+                revisarEventosStates.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
              default:

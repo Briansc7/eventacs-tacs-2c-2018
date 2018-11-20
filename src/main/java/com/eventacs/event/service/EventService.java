@@ -105,7 +105,7 @@ public class EventService {
         return "U" + userId + "L" + id;
     }
 
-    private Event getEvent(String eventId) {
+    public Event getEvent(String eventId) {
         return this.eventbriteFacade.getEvent(eventId);
     }
 
