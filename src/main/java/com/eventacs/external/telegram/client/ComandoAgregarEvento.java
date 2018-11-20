@@ -50,15 +50,15 @@ public class ComandoAgregarEvento {
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                 break;
             case esperaIdEvento:
-/*
-                if(!Validaciones.idEventoValido(Validaciones.formatearId(parts[0]), mensajeDeError)){
+
+                if(!Validaciones.idEventoValido(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                     break;
-                }*/
-
+                }
+/*
                 try{
                     tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
                 }
@@ -69,8 +69,9 @@ public class ComandoAgregarEvento {
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                     break;
-                }
+                }*/
 
+                tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
 
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);

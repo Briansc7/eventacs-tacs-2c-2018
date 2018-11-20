@@ -77,19 +77,23 @@ public class Validaciones {
 
     public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token) {
 
-        try{
-            EventacsCommands.getEventList(token, listId);
-        }
-        catch (Exception e){
+        if(EventacsCommands.getEventList(token, listId) == null){
             mensajeDeError.append("El id de lista ingresado no existe");
             return false;
         }
-        return true;
+        else
+            return true;
+
     }
 
     //validado de otra forma
-    public static boolean idEventoValido(String part, StringBuilder mensajeDeError) {
-        return true;
+    public static boolean idEventoValido(String eventId, StringBuilder mensajeDeError, String token) {
+        if(EventacsCommands.getEvent(token, eventId) == null){
+            mensajeDeError.append("El id de evento ingresado no existe");
+            return false;
+        }
+        else
+            return true;
     }
 
     public static GetAccessToken userPwValido(String username, String pw)  {

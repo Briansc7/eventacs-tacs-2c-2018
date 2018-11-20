@@ -448,7 +448,7 @@ public class TacsBot extends TelegramLongPollingBot {
     public static void guardarToken(long key, GetAccessToken value) {
         telegramUsersRepository.save(key,value);
     }
-
+/*
     public static void guardarCuentaTelegram(long chatId, String username) {
         usuarios.put(chatId, username);
 
@@ -482,10 +482,11 @@ public class TacsBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     public String getUserId(long chatId){
-        return usuarios.get(chatId);
+        return telegramUsersRepository.findUserIdByChatId(chatId);
+        //return usuarios.get(chatId);
         //return "id1";
     }
 
