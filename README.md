@@ -2,6 +2,28 @@
 ### Description
 Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Construcción de Software
 
+### Creacion de certificados
+La variable de entorno JAVA_HOME debe estar seteada
+En el directorio resources de el servidor de recursos, ejecuta estos 3 comandos:
+ -keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650
+ -keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer
+ -sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
+ -contraseña eventacs
+ -sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
+contraseña changeit o changeme
+ -archivo hosts agregar la siguiente linea sin comentar
+127.0.0.1       eventacs.com    eventacs        localhost
+ -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados al resources del servidor de oauth
+
+###Para los certificados del front
+ Crear el directorio certificate (en el raiz de la app, del front). Pararse en ese directorio y ejecutar los siguientes comandos
+ -openssl genrsa -out server.key 2048
+ -openssl rsa -in server.key -out server.key
+ -openssl req -sha256 -new -key server.key -out server.csr -subj '/CN=eventacs.com'
+ -openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
+ -cat server.crt server.key > server.pem
+
+
 ### Install
 Para levantar la aplicacion ejecutar desde una consola:
 $- mvn clean compile exec:java
