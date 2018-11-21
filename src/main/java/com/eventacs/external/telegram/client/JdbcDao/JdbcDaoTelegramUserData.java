@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client.JdbcDao;
 
+import com.eventacs.account.dto.UserAccountDTO;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -13,6 +14,7 @@ public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
 
     public static final String DEF_DELETE_TOKEN_CHATID_SQL = "delete token_id_chat_id where chat_id = ?";
     public static final String DEF_INSERT_TOKEN_CHATID_SQL = "insert into token_id_chat_id (token_access, chatid, user_name) values(?,?,?)";
+    public static final String DEF_INSERT_USER_ACCOUNT_SQL = "insert into users (username, password, name, email) values(?,?,?,?)";
     public static final String DEF_SELECT_TOKEN_CHATID_USERNAME_SQL = "select token_access, chatid, user_name from token_id_chat_id where chatid = ?";
 
     public JdbcDaoTelegramUserData(DataSource datasource) {
@@ -22,6 +24,14 @@ public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
 
     public void insertTokenChatId(GetAccessToken token, String chatId) {
         getJdbcTemplate().update(DEF_INSERT_TOKEN_CHATID_SQL, token.getAccess_token(), chatId, token.getUsername());
+    }
+
+    public void insertUserDataAccount(UserAccountDTO userAccountDTO) {
+        getJdbcTemplate().update(DEF_INSERT_USER_ACCOUNT_SQL,
+                userAccountDTO.getUserName(),
+                userAccountDTO.getPassword(),
+                userAccountDTO.getFullName(),
+                userAccountDTO.getEmail());
     }
 
     public void deleteTokenByChatId(String chatId) {

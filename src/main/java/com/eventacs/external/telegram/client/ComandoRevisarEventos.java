@@ -15,6 +15,13 @@ public class ComandoRevisarEventos {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            revisarEventosStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
             tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -34,7 +41,7 @@ public class ComandoRevisarEventos {
                 break;
             case esperaIdLista:
 
-                if(!Validaciones.idListaValida(parts[0], mensajeDeError)){
+                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -42,9 +49,9 @@ public class ComandoRevisarEventos {
                     break;
                 }
 
-                tacsBot.revisarEventos(parts[0],chatId);
+                tacsBot.revisarEventos(Validaciones.formatearId(parts[0]),chatId);
                 tacsBot.mostrarMenuComandos(chatId);
-                revisarEventosStates.put(chatId, estadosRevisarEventos.inicio);
+                revisarEventosStates.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
              default:

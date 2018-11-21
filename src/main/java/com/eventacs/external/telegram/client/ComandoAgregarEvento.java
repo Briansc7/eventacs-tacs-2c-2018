@@ -1,8 +1,5 @@
 package com.eventacs.external.telegram.client;
 
-import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
-
 import java.util.HashMap;
 
 public class ComandoAgregarEvento {
@@ -19,6 +16,13 @@ public class ComandoAgregarEvento {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
+
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            agregarEventoStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
 
         if(!Validaciones.usuarioVerificado(chatId, tacsBot)){
             mensajeAEnviar.append("Debe hacer /login para utilizar este comando");
@@ -39,7 +43,7 @@ public class ComandoAgregarEvento {
                 break;
             case esperaIdLista:
 
-                if(!Validaciones.idListaValida(parts[0], mensajeDeError)){
+                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
@@ -47,26 +51,39 @@ public class ComandoAgregarEvento {
                     break;
                 }
 
-                idListaGuardado.put(chatId,parts[0]);
+                idListaGuardado.put(chatId,Validaciones.formatearId(parts[0]));
                 mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                 break;
             case esperaIdEvento:
 
-                if(!Validaciones.idEventoValido(parts[0], mensajeDeError)){
+                if(!Validaciones.idEventoValido(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                     agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
                     break;
                 }
+/*
+                try{
+                    tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
+                }
+                catch (Exception e){
+                    mensajeDeError.append("El id de evento ingresado no existe");
+                    mensajeAEnviar.append(mensajeDeError.toString()+"\n");
+                    mensajeAEnviar.append("Ingrese el ID del evento a agregar a la lista");
+                    tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                    agregarEventoStates.put(chatId, estadosAgregarEvento.esperaIdEvento);
+                    break;
+                }*/
 
-                tacsBot.agregarEvento(idListaGuardado.get(chatId),parts[0], chatId);
+                tacsBot.agregarEvento(idListaGuardado.get(chatId),Validaciones.formatearId(parts[0]), chatId);
+
                 mensajeAEnviar.append("Evento Agregado");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 tacsBot.mostrarMenuComandos(chatId);
-                agregarEventoStates.put(chatId, estadosAgregarEvento.inicio);
+                agregarEventoStates.remove(chatId);
                 chatStates.put(chatId,estados.inicio);
                 break;
             default:

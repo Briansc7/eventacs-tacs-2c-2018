@@ -23,11 +23,19 @@ public class ComandoLogin {
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
 
+        if(parts[0].equalsIgnoreCase("/cancelar")){
+            loginStates.remove(chatId);
+            chatStates.put(chatId,estados.inicio);
+            tacsBot.mostrarMenuComandos(chatId);
+            return;
+        }
+
         if(!loginStates.containsKey(chatId)){
             loginStates.put(chatId, estadosLogin.inicio);
         }
 
         LOGGER.info("Estado login: " + loginStates.get(chatId));
+
 
         switch (loginStates.get(chatId)){
             case inicio:
@@ -47,7 +55,7 @@ public class ComandoLogin {
                 GetAccessToken accessToken = Validaciones.userPwValido(username, pw);
                 if(accessToken.getAccess_token() != null){
                     TacsBot.guardarCuentaTelegram(chatId, username);
-                    TacsBot.guardarToken(chatId, accessToken.getAccess_token());
+                    TacsBot.guardarToken(chatId, accessToken);
                     mensajeAEnviar.append("Login exitoso");
                     tacsBot.enviarMensajeConTecladoComandos(mensajeAEnviar, chatId);
                 }

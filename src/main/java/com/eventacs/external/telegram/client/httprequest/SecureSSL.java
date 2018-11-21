@@ -1,6 +1,5 @@
 package com.eventacs.external.telegram.client.httprequest;
 
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.ssl.SSLContexts;
 import javax.net.ssl.SSLContext;
 import java.io.File;

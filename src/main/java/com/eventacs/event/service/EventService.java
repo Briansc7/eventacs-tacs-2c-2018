@@ -101,7 +101,7 @@ public class EventService {
         return eventListRepository.listIdGenerator().toString();
     }
 
-    private Event getEvent(String eventId) {
+    public Event getEvent(String eventId) {
         return this.eventbriteFacade.getEvent(eventId);
     }
 

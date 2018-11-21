@@ -1,6 +1,7 @@
 package com.eventacs.external.telegram.client.httprequest;
 
 import com.eventacs.event.model.Category;
+import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.EventsResponse;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
@@ -73,6 +74,17 @@ public class EventacsCommands {
             e.printStackTrace();
         }
         return eventsResponse;
+    }
+
+    public static Event getEvent(String accessToken, String eventId){
+        try {
+            return objectMapper.readValue(httpClient.execute(
+                    (new RequestWitnToken("getRequest","https://eventacs.com:9000/eventacs/events/" + eventId, accessToken))
+                            .build()).getEntity().getContent(), Event.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static EventList getEventList(String accessToken, String listId) {

@@ -2,26 +2,35 @@ package com.eventacs.account.dto;
 
 public class UserAccountDTO {
 
-    private String name;
-    private String lastName;
+    private String fullName;
+    private String email;
     private String password;
+    private String userName;
 
     public UserAccountDTO() {
-
     }
 
-    public UserAccountDTO(String name, String lastName, String password) {
-        this.name = name;
-        this.lastName = lastName;
+    public UserAccountDTO(String fullName, String email, String password, String userName) {
+        this.fullName = fullName;
+        this.email = email;
         this.password = password;
+        this.userName = userName;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -32,12 +41,11 @@ public class UserAccountDTO {
         this.password = password;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
-
 }

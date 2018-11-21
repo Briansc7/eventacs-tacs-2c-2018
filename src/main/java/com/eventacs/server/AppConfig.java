@@ -69,7 +69,7 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
-    public AccountService accountService() { return new AccountService(); }
+    public AccountService accountService() { return new AccountService(jdbcDaoTelegramUserData()); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(eventacsMongoClient()), alarmsMapper(), eventListsMapper()); }
@@ -156,7 +156,7 @@ public class AppConfig {
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
-        return new TelegramUsersRepositoryImpl(redisTemplate());
+        return new TelegramUsersRepositoryImpl(redisTemplate(), jdbcDaoTelegramUserData());
     }
 
     @Bean
