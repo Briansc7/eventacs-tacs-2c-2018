@@ -8,6 +8,7 @@ import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+<<<<<<< HEAD
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -30,12 +32,41 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.data.redis.connection.jedis.JedisConnection;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.core.CrudMethods;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.stereotype.Repository;
+>>>>>>> oauth2-ssl-telegram
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import javax.sql.DataSource;
 
 @EnableWebMvc
 @Configuration
+@PropertySource({ "classpath:persistence.properties" })
 @ComponentScan(basePackages = "com.eventacs")
 public class AppConfig {
+
+    @Autowired
+    private Environment env;
+
+    @Value("classpath:schema.sql")
+    private Resource schemaScript;
 
     @Bean
     public AccountService accountService() { return new AccountService(); }
@@ -104,6 +135,9 @@ public class AppConfig {
     }
 
     @Bean
+    JdbcDaoTelegramUserData jdbcDaoTelegramUserData() { return new JdbcDaoTelegramUserData(dataSource()); };
+
+    @Bean
     JedisConnectionFactory jedisConnectionFactory(){
         return new JedisConnectionFactory();
     }
@@ -132,8 +166,33 @@ public class AppConfig {
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
     @Bean
+
     public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient) { return new EventListRepository(eventacsMongoClient); }
 
     @Bean
     public EventacsMongoClient eventacsMongoClient() { return new EventacsMongoClient(); }
+
+    public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
+        final DataSourceInitializer initializer = new DataSourceInitializer();
+        initializer.setDataSource(dataSource);
+        initializer.setDatabasePopulator(databasePopulator());
+        return initializer;
+    }
+
+    private DatabasePopulator databasePopulator() {
+        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(schemaScript);
+        return populator;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUsername(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        return dataSource;
+    }
+
 }

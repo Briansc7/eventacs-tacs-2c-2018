@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class TokenController {
 
+    //TODO: utilizar el refresh token / usuario y clave asociado a un ClientId /
+
     @Resource(name = "tokenServices")
     ConsumerTokenServices tokenServices;
 

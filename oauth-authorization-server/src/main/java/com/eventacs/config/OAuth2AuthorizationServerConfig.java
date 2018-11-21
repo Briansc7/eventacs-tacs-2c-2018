@@ -48,7 +48,6 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Value("classpath:data.sql")
     private Resource dataScript;
 
-
     @Override
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()").sslOnly();
