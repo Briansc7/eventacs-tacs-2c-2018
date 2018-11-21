@@ -46,6 +46,8 @@ Para realizar las pruebas, se tienen los siguientes usuarios:
 **/revisareventos:** muestra los eventos de una lista de eventos del usuario. Solamente pide el id de la lista de eventos a consultar. Requiere que el usuario haya verificado su cuenta de telegram usando el comando /login.
 
 **/login:** verifica a qué usuario de la app pertenece la cuenta de telegram. Sólo es necesario utilizarlo una vez. Pide Usuario y contraseña.
+
+**/cancelar:** cancela el uso de un comando para volver al menú inicial. Por ejemplo si precionó por error /buscarevento, se puede salir sin tener que pasar por todo el proceso de pedido de parámetros.
  
 ### Backend API
 ### Routes
