@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //import '../styles/css/style.css';
-import {Modal, ModalHeader, ModalFooter, ModalBody, Row, Col, Button, Form, FormGroup, Label, Input, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
+import {Container, Modal, ModalHeader, ModalFooter, ModalBody, Row, Col, Button, Form, FormGroup, Label, Input, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import classnames from 'classnames';
 import { Redirect } from 'react-router-dom'
 //import "../styles/css/style4.css"
@@ -204,7 +204,7 @@ export default class LoginForm extends Component {
 
     render() {
         return (
-            <div className="container">
+            <Container classname="App">
                 {this.renderRedirect()}
                 <Modal isOpen={this.state.modal}>
                     <ModalHeader onClick={this.openCloseModal}>{this.state.modalTitle}</ModalHeader>
@@ -215,8 +215,6 @@ export default class LoginForm extends Component {
                         <Button color="primary" onClick={this.openCloseModal}>OK</Button>
                     </ModalFooter>
                 </Modal>
-                <div className="frame">
-                    <div className="nav">
                     <Nav tabs className="links">
                         <NavItem>
                             <NavLink
@@ -235,9 +233,35 @@ export default class LoginForm extends Component {
                             </NavLink>
                         </NavItem>
                     </Nav>
-                    </div>
                     <TabContent activeTab={this.state.activeTab}>
                         <TabPane tabId="1">
+                            {/*<Container className="App">*/}
+                            {/*<Form className="form">*/}
+                                {/*<Col>*/}
+                                    {/*<FormGroup>*/}
+                                        {/*<Label>Email</Label>*/}
+                                        {/*<Input*/}
+                                            {/*type="email"*/}
+                                            {/*name="email"*/}
+                                            {/*id="exampleEmail"*/}
+                                            {/*placeholder="myemail@email.com"*/}
+                                        {/*/>*/}
+                                    {/*</FormGroup>*/}
+                                {/*</Col>*/}
+                                {/*<Col>*/}
+                                    {/*<FormGroup>*/}
+                                        {/*<Label for="examplePassword">Password</Label>*/}
+                                        {/*<Input*/}
+                                            {/*type="password"*/}
+                                            {/*name="password"*/}
+                                            {/*id="examplePassword"*/}
+                                            {/*placeholder="********"*/}
+                                        {/*/>*/}
+                                    {/*</FormGroup>*/}
+                                {/*</Col>*/}
+                                {/*<Button>Submit</Button>*/}
+                            {/*</Form>*/}
+                            {/*</Container>*/}
                             <Row>
                                 <Col sm="6">
                                     <Form className="form-signin" onSubmit={this.handleSubmitLogIn}>
@@ -286,8 +310,7 @@ export default class LoginForm extends Component {
                             </Row>
                         </TabPane>
                     </TabContent>
-                </div>
-            </div>
+            </Container>
         );
     }
 }
