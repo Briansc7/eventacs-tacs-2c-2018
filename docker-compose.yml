@@ -1,0 +1,38 @@
+version:  '2.0'
+
+services:
+   mysql:
+     image: mysql
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: pds
+       MYSQL_PASSWORD: clave
+
+   redis:
+      image: redis:5.0.0-alpine
+      command: ["redis-server","--appenonly","yes"]
+      environment:
+        - ALLOW_EMPTY_PASSWORD= yes
+      hostname: redis
+      networks:
+        - redis-net
+      volumes:
+        - redis-data/data
+
+   mongo:
+      image: mongo
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: root
+        MONGO_INITDB_ROOT_PASSWPRD: password
+
+networks:
+   redis-net:
+
+volumes:
+   db_data:
+   redis-data:
