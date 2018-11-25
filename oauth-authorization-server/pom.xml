@@ -142,6 +142,23 @@
 					</nonFilteredFileExtensions>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>spring-boot</classifier>
+							<mainClass>
+								com.eventacs.config.AuthorizationServerApplication
+							</mainClass>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -153,7 +170,7 @@
 		<!-- The main class to start by executing java -jar -->
 		<start-class>com.eventacs.config.AuthorizationServerApplication</start-class>
 	</properties>
-	<!-- <profiles> <profile> <id>dev</id> <build> <resources> <resource> <directory>src/main/resources</directory> 
+	<!-- <profiles> <profile> <listId>dev</listId> <build> <resources> <resource> <directory>src/main/resources</directory>
 		<filtering>true</filtering> <excludes> <exclude>*.jks</exclude> </excludes> 
 		</resource> </resources> </build> </profile> </profiles> -->
 </project>
