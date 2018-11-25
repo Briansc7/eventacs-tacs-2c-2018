@@ -1,31 +1,33 @@
 package com.eventacs.event.dto;
 
-import com.eventacs.event.model.Event;
+import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
 
 public class EventListDTO {
 
-    private String id;
+    @Id
+    private String _id;
+    private String listId;
     private String listName;
-    private List<Event> events;
+    private List<EventDTO> events;
 
     public EventListDTO() {
 
     }
 
-    public EventListDTO(String id, String listName, List<Event> events) {
-        this.id = id;
+    public EventListDTO(String listId, String listName, List<EventDTO> events) {
+        this.listId = listId;
         this.listName = listName;
         this.events = events;
     }
 
-    public String getId() {
-        return id;
+    public String getListId() {
+        return listId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setListId(String listId) {
+        this.listId = listId;
     }
 
     public String getListName() {
@@ -36,12 +38,20 @@ public class EventListDTO {
         this.listName = listName;
     }
 
-    public List<Event> getEvents() {
+    public List<EventDTO> getEvents() {
         return events;
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(List<EventDTO> events) {
         this.events = events;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
 }

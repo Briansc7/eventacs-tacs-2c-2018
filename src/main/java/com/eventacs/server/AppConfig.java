@@ -1,6 +1,7 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
+import com.eventacs.event.dto.EventListMapper;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
@@ -171,8 +172,10 @@ public class AppConfig {
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
     @Bean
+    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient, EventListMapper eventListMapper) { return new EventListRepository(eventacsMongoClient, eventListMapper); }
 
-    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient) { return new EventListRepository(eventacsMongoClient); }
+    @Bean
+    public EventListMapper eventListMapper(){return new EventListMapper();}
 
     @Bean
     public EventacsMongoClient eventacsMongoClient() { return new EventacsMongoClient(); }

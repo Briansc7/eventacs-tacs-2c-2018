@@ -88,7 +88,7 @@ public class UserService {
 
         List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
 
-        Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getId().equals(listId)).findFirst();
+        Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getListId().equals(listId)).findFirst();
 
         eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
 
@@ -97,15 +97,15 @@ public class UserService {
 
     public String changeListName(String listId, String listName) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-        this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getId().equals(listId))).forEach(list -> list.setListName(listName));
+        this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getListId().equals(listId))).forEach(list -> list.setListName(listName));
         return this.eventListRepository.changeListName(listId, listName);
     }
 
     public String deleteEventList(String listId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
 
-        List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getId().equals(listId))).collect(Collectors.toList());
-        List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getId().contains(listId))).collect(Collectors.toList());
+        List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getListId().equals(listId))).collect(Collectors.toList());
+        List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getListId().contains(listId))).collect(Collectors.toList());
 
         if(filteredUsers.size() == 0 || eventListsToBeRemoved.size() == 0){
             throw new UserNotFound("User not found for this event list Id" + listId);
