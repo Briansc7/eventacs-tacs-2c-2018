@@ -1,7 +1,8 @@
 package com.eventacs.mongo;
 
-import com.eventacs.event.model.EventList;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.httpclient.LocalDateTimeConverter;
+import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.exception.EventListNotFound;
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
@@ -75,7 +76,7 @@ public class EventacsMongoClient {
         DBCollection collection = this.getCollection("eventLists");
 
         conditions.put("listId", listId);
-        List<EventList> eventlists = getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
+        List<EventListDTO> eventlists = getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
 
         deleteQuery.put("listId", listId);
 
@@ -136,7 +137,7 @@ public class EventacsMongoClient {
 
             queryResult.add(cursor.getQuery());
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventList.class, queryResult.get(0)).getListId());
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventListDTO.class, queryResult.get(0)).getListId());
 
             return lastId + 1;
         }
@@ -160,7 +161,7 @@ public class EventacsMongoClient {
 
             queryResult.add(cursor.getQuery());
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventList.class, queryResult.get(0)).getListId());
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, AlarmDTO.class, queryResult.get(0)).getAlarmId().get());
 
             return lastId + 1;
         }
