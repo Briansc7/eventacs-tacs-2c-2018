@@ -10,11 +10,28 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
+import Modal from '@material-ui/core/Modal';
+import Cookie from "react-cookie";
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
+import { Redirect } from 'react-router-dom'
 import withStyles from '@material-ui/core/styles/withStyles';
 
+// function rand() {
+//     return Math.round(Math.random() * 20) - 10;
+// }
 
+function getModalStyle() {
+    // const top = 50 + rand();
+    // const left = 50 + rand();
+    const top = 50;
+    const left = 50;
+    return {
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-${top}%, -${left}%)`,
+    };
+}
 
 const styles = theme => ({
     main: {
@@ -27,6 +44,13 @@ const styles = theme => ({
             marginLeft: 'auto',
             marginRight: 'auto',
         },
+    },
+    paperModal: {
+        position: 'absolute',
+        width: theme.spacing.unit * 50,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
     },
     paper: {
         marginTop: theme.spacing.unit * 4, //*8
@@ -94,7 +118,11 @@ class SignIn extends React.Component {
             emailSignUpNotEmpty: false,
             passwordSignUpNotEmpty: false,
             rePasswordSignUpNotEmpty: false,
+            redirect: false,
             passwordSignUpValue: '',
+            modalTitle: '',
+            modalBody: '',
+            open: false,
             value: 0,
         };
     };
@@ -115,7 +143,11 @@ class SignIn extends React.Component {
             passwordSignUpNotEmpty: false,
             rePasswordSignUpNotEmpty: false,
             passwordSignUpValue: '',
-                        })
+            redirect: false,
+            modalTitle: '',
+            open: false,
+            modalBody: '',
+        })
     }
 
     validateUserNameSignIn = (e) => {
@@ -210,23 +242,71 @@ class SignIn extends React.Component {
                 encodeURIComponent('username') + '=' + encodeURIComponent(e.target.usernameSignIn.value)
         })
             .then(response => response.json())
-            .then(data => this.setState({tokenAccess: data, isLoading: false}));
+            .then(data => this.handleResponseSignIn(data));
     }
 
-    signUp(e){
+    setRedirect = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to='/home' />
+        }
+    }
+
+    handleResponseSignIn(res) {
+        if(res.principal !== undefined) {
+            console.log("Datos: "+res+" principal: "+res.principal);
+            Cookie.set('access_token', res);
+            this.setRedirect();
+        } else {
+            this.setState({modalTitle: 'Datos Incorrectos', modalBody: 'El usuario o clave no son correctas. Intentelo nuevamente.',});
+            this.handleOpen();
+        }
+    }
+
+    signUp(e) {
         fetch('https://eventacs.com:9000/eventacs/signup', {
             method: 'POST',
             headers: {
-                'content-Type': 'application/json'},
-            body: {
-                'fullname':e.target.fullNameSignUp.value,
-                'email':e.target.emailSignUp.value,
-                'password':e.target.passwordSignUp.value,
-                'username':e.target.userNameSignUp.value
+                'content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                'fullName': e.target.fullNameSignUp.value,
+                'email': e.target.emailSignUp.value,
+                'password': e.target.passwordSignUp.value,
+                'userName': e.target.userNameSignUp.value
+            }),
         })
             .then(response => response.json())
-            .then(data => this.setState({categories: data, isLoading: false}));
+            .then(data => this.handleResponseSignUp(data));
+    }
+
+    handleResponseSignUp(res) {
+        this.setState({isUserCreated: res.isUserCreated});
+        if(this.state.isUserCreated  !== undefined ) {
+            if (this.state.isUserCreated) {
+                this.setState({modalTitle: 'Usuario Creado', modalBody: "El usuario fue creado correctamente.",});
+            } else {
+                this.setState({modalTitle: 'Usuario No Creado', modalBody: 'El usuario No puso ser creado.',});
+            };
+            this.handleOpen();
+        }
+    }
+
+    handleOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+        if (this.state.isUserCreated) {
+            this.clearForms();
+            this.setState({value: 0});
+        };
     }
 
     render() {
@@ -237,6 +317,22 @@ class SignIn extends React.Component {
 
         return (
             <main className={classes.main}>
+                {this.renderRedirect()}
+                <Modal
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                >
+                    <div style={getModalStyle()} className={classes.paperModal}>
+                        <Typography variant="h6" id="modal-title">
+                            {this.state.modalTitle};
+                        </Typography>
+                        <Typography variant="subtitle1" id="simple-modal-description">
+                            {this.state.modalBody};
+                        </Typography>
+                    </div>
+                </Modal>
                 <CssBaseline />
                 <Paper className={classes.paper}>
                     <Tabs

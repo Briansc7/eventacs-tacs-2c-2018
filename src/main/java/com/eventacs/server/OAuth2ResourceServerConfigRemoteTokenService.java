@@ -56,7 +56,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
 //        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 //        dataSource.setUrl("jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true");
-//        dataSource.setUsername("pds");
+//        dataSource.setUserName("pds");
 //        dataSource.setPassword("clave");
 //        return dataSource;
 //    }

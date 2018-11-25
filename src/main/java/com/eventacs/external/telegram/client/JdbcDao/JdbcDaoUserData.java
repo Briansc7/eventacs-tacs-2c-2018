@@ -13,6 +13,7 @@ import java.util.List;
 public class JdbcDaoUserData extends JdbcDaoSupport {
 
     public static final String DEF_INSERT_USER_ACCOUNT_SQL = "insert into users (username, password, name, email) values(?,?,?,?)";
+    public static final String DEF_INSERT_USER_ROLE_SQL = "insert into authorities (username, authority) values(?,?)";
 
     public JdbcDaoUserData(DataSource datasource) {
         setDataSource(datasource);
@@ -25,6 +26,9 @@ public class JdbcDaoUserData extends JdbcDaoSupport {
                 userAccountDTO.getPassword(),
                 userAccountDTO.getFullName(),
                 userAccountDTO.getEmail());
+        getJdbcTemplate().update(DEF_INSERT_USER_ROLE_SQL,
+                userAccountDTO.getUserName(),
+                "ROLE_USER");
     }
 
 }
