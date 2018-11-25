@@ -12,11 +12,11 @@ import java.util.Map;
 @Repository
 public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
 
-    private RedisTemplate<Long,String> redisTemplate;
+    private RedisTemplate<Long,GetAccessToken> redisTemplate;
     private HashOperations  hashOperations;
     private JdbcDaoTelegramUserData jdbcDaoTelegramUserData;
 
-    public TelegramUsersRepositoryImpl(RedisTemplate<Long,String> redisTemplate, JdbcDaoTelegramUserData jdbcDaoTelegramUserData) {
+    public TelegramUsersRepositoryImpl(RedisTemplate<Long,GetAccessToken> redisTemplate, JdbcDaoTelegramUserData jdbcDaoTelegramUserData) {
         this.redisTemplate = redisTemplate;
         this.jdbcDaoTelegramUserData = jdbcDaoTelegramUserData;
      //   hashOperations=redisTemplate.opsForHash();
@@ -28,38 +28,40 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
     }
 
     @Override
-    public Map<Long,String> findAll() {
+    public Map<Long,GetAccessToken> findAll() {
         return hashOperations.entries("CHATID");
     }
 
     @Override
     public String findByChatId(final long chatId) {
         try{
-            return (String)hashOperations.get("CHATID",chatId);
+            GetAccessToken getAccessToken = (GetAccessToken) hashOperations.get("CHATID",chatId);
+            return getAccessToken.getAccess_token();
         }
         catch(Exception e){
+            e.printStackTrace();
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getTokenAccess();
         }
     }
     @Override
     public String findUserIdByChatId(final long chatId) {
-        //try{
-        //    return (String)hashOperations.get("CHATID",chatId);
-        //}
-        //catch(Exception e){
+        try{
+            return ((GetAccessToken) hashOperations.get("CHATID",chatId)).getUsername();
+        }
+        catch(Exception e){
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getUserName();
-        //}
+        }
     }
 
     @Override
-    public void update(final long chatId, final String accessToken) {
+    public void update(final long chatId, final GetAccessToken accessToken) {
         hashOperations.put("CHATID",chatId,accessToken);
     }
 
     @Override
     public void save(final long chatId, final GetAccessToken accessToken) {
         try{
-            hashOperations.put("CHATID",chatId,accessToken.getAccess_token());
+            hashOperations.put("CHATID",chatId,accessToken);
         }
         catch (Exception e){
             e.printStackTrace();

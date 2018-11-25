@@ -13,7 +13,7 @@ import java.util.List;
 public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
 
     public static final String DEF_DELETE_TOKEN_CHATID_SQL = "delete token_id_chat_id where chat_id = ?";
-    public static final String DEF_INSERT_TOKEN_CHATID_SQL = "insert into token_id_chat_id (token_access, chatid, user_name) values(?,?,?)";
+    public static final String DEF_INSERT_TOKEN_CHATID_SQL = "insert into token_id_chat_id (token_access, chatid, user_name) values(?,?,?) ON DUPLICATE KEY UPDATE token_access = ?, user_name = ?";
     public static final String DEF_INSERT_USER_ACCOUNT_SQL = "insert into users (username, password, name, email) values(?,?,?,?)";
     public static final String DEF_SELECT_TOKEN_CHATID_USERNAME_SQL = "select token_access, chatid, user_name from token_id_chat_id where chatid = ?";
 
@@ -23,7 +23,7 @@ public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
 
 
     public void insertTokenChatId(GetAccessToken token, String chatId) {
-        getJdbcTemplate().update(DEF_INSERT_TOKEN_CHATID_SQL, token.getAccess_token(), chatId, token.getUsername());
+        getJdbcTemplate().update(DEF_INSERT_TOKEN_CHATID_SQL, token.getAccess_token(), chatId, token.getUsername(), token.getAccess_token(), token.getUsername());
     }
 
     public void insertUserDataAccount(UserAccountDTO userAccountDTO) {

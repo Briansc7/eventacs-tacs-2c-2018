@@ -3,7 +3,7 @@ import com.eventacs.external.telegram.client.JdbcDao.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetAccessToken {
+public class GetAccessToken implements java.io.Serializable{
 
     private String access_token;
     private String token_type;
@@ -69,7 +69,8 @@ public class GetAccessToken {
     }
 
     public String getUsername() {
-        return username;
+        //return username;
+        return principal.getUsername();
     }
 
     public void setUsername(String username) {

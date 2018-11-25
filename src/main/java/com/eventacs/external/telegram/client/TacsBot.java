@@ -195,11 +195,11 @@ public class TacsBot extends TelegramLongPollingBot {
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
                 break;
-            /*case "/test":
-
-                mensajeAEnviar.append("prueba");
-                enviarMensajeConBoton(mensajeAEnviar, chatId);
-                break;*/
+            case "/test":
+                mensajeAEnviar.append("Token: "+getAccessToken(chatId));
+                enviarMensaje(mensajeAEnviar, chatId);
+                //enviarMensajeConBoton(mensajeAEnviar, chatId);
+                break;
             default:
                 mensajeAEnviar.append("Comando no válido");
                 enviarMensaje(mensajeAEnviar,chatId);
@@ -220,15 +220,15 @@ public class TacsBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // Se devuelve el nombre que dimos al bot al crearlo con el BotFather
-        return "TacsBot";
-        //return "TacsTestBot";
+        //return "TacsBot";
+        return "TacsTestBot";
     }
 
     @Override
     public String getBotToken() {
         // Se devuelve el token que nos generó el BotFather de nuestro bot
-        return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
-        //return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
+        //return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
+        return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
     }
 
     public void agregarDatosEvento(Event e, StringBuilder mensajeAEnviar) {
@@ -485,8 +485,8 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public String getUserId(long chatId){
-        //return telegramUsersRepository.findUserIdByChatId(chatId);
-        return usuarios.get(chatId);
+        return telegramUsersRepository.findUserIdByChatId(chatId);
+        //return usuarios.get(chatId);
         //return "id1";
     }
 

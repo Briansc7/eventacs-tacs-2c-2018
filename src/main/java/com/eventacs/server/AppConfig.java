@@ -8,6 +8,7 @@ import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
@@ -43,6 +44,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -143,10 +145,13 @@ public class AppConfig {
     }
 
     @Bean
-    public RedisTemplate<Long, String> redisTemplate(){
-        RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
+    public RedisTemplate<Long, GetAccessToken> redisTemplate(){
+        RedisTemplate<Long,GetAccessToken> template = new RedisTemplate<Long,GetAccessToken>();
         template.setConnectionFactory(jedisConnectionFactory());
-        template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
+        //template.setValueSerializer(new LdapFailAwareRedisObjectSerializer());
+        //template.setKeySerializer(new LongRedisSerializer());
+        //template.setHashKeySerializer(new LongRedisSerializer());
+        template.setHashValueSerializer(new LdapFailAwareRedisObjectSerializer());
         return template;
     }
     /*
