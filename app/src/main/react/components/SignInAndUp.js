@@ -87,8 +87,6 @@ class SignIn extends React.Component {
             isValidPasswordSignUp: false,
             isValidPasswordSignIn: false,
             isValidFullNameSignUp: false,
-            valueSignInButton: true,
-            valueSignUpButton: true,
             userNameSignInNotEmpty: false,
             passwordSignInNotEmpty: false,
             userNameSignUpNotEmpty: false,
@@ -96,6 +94,7 @@ class SignIn extends React.Component {
             emailSignUpNotEmpty: false,
             passwordSignUpNotEmpty: false,
             rePasswordSignUpNotEmpty: false,
+            passwordSignUpValue: '',
             value: 0,
         };
     };
@@ -108,8 +107,6 @@ class SignIn extends React.Component {
             isValidPasswordSignUp: false,
             isValidPasswordSignIn: false,
             isValidFullNameSignUp: false,
-            valueSignInButton: true,
-            valueSignUpButton: true,
             userNameSignInNotEmpty: false,
             passwordSignInNotEmpty: false,
             userNameSignUpNotEmpty: false,
@@ -117,6 +114,7 @@ class SignIn extends React.Component {
             emailSignUpNotEmpty: false,
             passwordSignUpNotEmpty: false,
             rePasswordSignUpNotEmpty: false,
+            passwordSignUpValue: '',
                         })
     }
 
@@ -154,14 +152,17 @@ class SignIn extends React.Component {
     validatePasswordSignUp = (e) => {
         const validatePasswordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
         //Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
+        this.setState({passwordSignUpValue: e.target.value});
         (!validatePasswordRegEx.test(e.target.value)) ? this.setState({isValidPasswordSignUp: true}) : this.setState({isValidPasswordSignUp: false});
         if(e.target.value.length > 0) {this.setState({passwordSignUpNotEmpty: true})};
     };
 
     validateRePasswordSignUp = (e) => {
+        const {passwordSignUpValue} = this.state;
         const validatePasswordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
         //Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
         (!validatePasswordRegEx.test(e.target.value)) ? this.setState({isValidRePasswordSignUp: true}) : this.setState({isValidRePasswordSignUp: false});
+        (e.target.value === passwordSignUpValue) ? this.setState({isValidRePasswordSignUp: false, isValidPasswordSignUp: false}) : this.setState({isValidRePasswordSignUp: true, isValidPasswordSignUp: true});
         if(e.target.value.length > 0) {this.setState({rePasswordSignUpNotEmpty: true})};
     };
 
@@ -182,6 +183,50 @@ class SignIn extends React.Component {
         return (((isValidUserNameSignUp || isValidEmailSignUp || isValidRePasswordSignUp || isValidPasswordSignUp
             || isValidFullNameSignUp) === false) && ((userNameSignUpNotEmpty && fullNameSignUpNotEmpty &&
             emailSignUpNotEmpty && passwordSignUpNotEmpty && rePasswordSignUpNotEmpty) === true));
+    }
+
+    submitSignIn(e) {
+        e.preventDefault();
+
+        return this.login(e);
+    }
+
+    submitSignUp(e) {
+        e.preventDefault();
+
+        return this.signUp(e);
+    }
+
+    login(e){
+        console.log("Valor Username: " + e.target.usernameSignIn.value);
+        console.log("Valor Clave: " + e.target.passwordSignIn.value);
+        fetch('https://eventacs.com:9001/oauth-server/oauth/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic ZXZlbnRhY3NDbGllbnRJZDpzZWNyZXQ=',
+                'content-Type': 'application/x-www-form-urlencoded; charset=utf-8'},
+            body: encodeURIComponent('grant_type') + '=' + encodeURIComponent('password') + '&' +
+                encodeURIComponent('password') + '=' + encodeURIComponent(e.target.passwordSignIn.value) + '&' +
+                encodeURIComponent('username') + '=' + encodeURIComponent(e.target.usernameSignIn.value)
+        })
+            .then(response => response.json())
+            .then(data => this.setState({tokenAccess: data, isLoading: false}));
+    }
+
+    signUp(e){
+        fetch('https://eventacs.com:9000/eventacs/signup', {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json'},
+            body: {
+                'fullname':e.target.fullNameSignUp.value,
+                'email':e.target.emailSignUp.value,
+                'password':e.target.passwordSignUp.value,
+                'username':e.target.userNameSignUp.value
+            },
+        })
+            .then(response => response.json())
+            .then(data => this.setState({categories: data, isLoading: false}));
     }
 
     render() {
@@ -216,14 +261,14 @@ class SignIn extends React.Component {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <form className={classes.form} onSubmit={(e) => {this.validateFormSignIn(e)}}>
+                        <form className={classes.form} onSubmit={(e) => {this.submitSignIn(e)}}>
                             <FormControl error={this.state.isValidUserNameSignIn} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Username</InputLabel>
                                 <Input onChange={(e) => {this.validateUserNameSignIn(e)}} id="text" name="usernameSignIn" autoComplete="text" autoFocus />
                             </FormControl>
                             <FormControl error={this.state.isValidPasswordSignIn} margin="normal" fullWidth>
                                 <InputLabel htmlFor="password">Password</InputLabel>
-                                <Input onChange={(e) => {this.validatePasswordSignIn(e)}} name="password" type="password" id="password" autoComplete="current-password" />
+                                <Input onChange={(e) => {this.validatePasswordSignIn(e)}} name="passwordSignIn" type="password" id="password" autoComplete="current-password" />
                             </FormControl>
                             <Button
                                 disabled={!isEnabledSignIn}
@@ -249,22 +294,22 @@ class SignIn extends React.Component {
                             </Typography>
                         </Grid>
                     </Grid>
-                        <form className={classes.form} onSubmit={(e) => {this.validateFormSignIn(e)}}>
+                        <form className={classes.form} onSubmit={(e) => {this.submitSignUp(e)}}>
                             <FormControl error={this.state.isValidUserNameSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Username</InputLabel>
-                                <Input id="text" name="text" onChange={(e) => {this.validateUserNameSignUp(e)}} autoComplete="text" autoFocus />
+                                <Input id="text" name="userNameSignUp" onChange={(e) => {this.validateUserNameSignUp(e)}} autoComplete="text" autoFocus />
                             </FormControl>
                             <FormControl error={this.state.isValidFullNameSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Full Name</InputLabel>
-                                <Input id="text" name="text" onChange={(e) => {this.validateFullNameSignUp(e)}} autoComplete="text" />
+                                <Input id="text" name="fullNameSignUp" onChange={(e) => {this.validateFullNameSignUp(e)}} autoComplete="text" />
                             </FormControl>
                             <FormControl error={this.state.isValidEmailSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Email</InputLabel>
-                                <Input id="email" name="text" onChange={(e) => {this.validateEmailSignUp(e)}}  autoComplete="text" />
+                                <Input id="email" name="emailSignUp" onChange={(e) => {this.validateEmailSignUp(e)}}  autoComplete="text" />
                             </FormControl>
                             <FormControl error={this.state.isValidPasswordSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="password">Password</InputLabel>
-                                <Input name="password" type="password" onChange={(e) => {this.validatePasswordSignUp(e)}} id="password" autoComplete="new-password" />
+                                <Input name="passwordSignUp" type="password" onChange={(e) => {this.validatePasswordSignUp(e)}} id="password" autoComplete="new-password"/>
                             </FormControl>
                             <FormControl error={this.state.isValidRePasswordSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="rePassword">Retype Password</InputLabel>
