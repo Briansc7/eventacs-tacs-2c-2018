@@ -87,13 +87,18 @@ class SignIn extends React.Component {
             isValidPasswordSignUp: false,
             isValidPasswordSignIn: false,
             isValidFullNameSignUp: false,
+            valueSignInButton: true,
+            valueSignUpButton: true,
+            userNameSignInNotEmpty: false,
+            passwordSignInNotEmpty: false,
+            userNameSignUpNotEmpty: false,
+            fullNameSignUpNotEmpty: false,
+            emailSignUpNotEmpty: false,
+            passwordSignUpNotEmpty: false,
+            rePasswordSignUpNotEmpty: false,
             value: 0,
         };
     };
-
-    //validateForm = (e) => {
-       // this.validateUserName(e);
-   // }
 
     clearForms = () => {
         this.setState({isValidUserNameSignIn: false,
@@ -103,74 +108,61 @@ class SignIn extends React.Component {
             isValidPasswordSignUp: false,
             isValidPasswordSignIn: false,
             isValidFullNameSignUp: false,
+            valueSignInButton: true,
+            valueSignUpButton: true,
+            userNameSignInNotEmpty: false,
+            passwordSignInNotEmpty: false,
+            userNameSignUpNotEmpty: false,
+            fullNameSignUpNotEmpty: false,
+            emailSignUpNotEmpty: false,
+            passwordSignUpNotEmpty: false,
+            rePasswordSignUpNotEmpty: false,
                         })
     }
 
     validateUserNameSignIn = (e) => {
         const validateUserNameRegEx = /^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){6,18}[a-zA-Z0-9]$/;
-        if (!validateUserNameRegEx.test(e.target.value)) {
-            this.setState({isValidUserNameSignIn: true})
-        } else {
-            this.setState({isValidUserNameSignIn: false})
-        };
+        (!validateUserNameRegEx.test(e.target.value)) ? this.setState({isValidUserNameSignIn: true}) : this.setState({isValidUserNameSignIn: false});
+        if(e.target.value.length > 0) {this.setState({userNameSignInNotEmpty: true})};
     };
 
     validatePasswordSignIn = (e) => {
         const validatePasswordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
         //Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
-        //const validatePasswordRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!validatePasswordRegEx.test(e.target.value)) {
-            this.setState({isValidPasswordSignIn: true})
-        } else {
-            this.setState({isValidPasswordSignIn: false})
-        };
+        (!validatePasswordRegEx.test(e.target.value)) ? this.setState({isValidPasswordSignIn: true}) : this.setState({isValidPasswordSignIn: false});
+        if(e.target.value.length > 0) {this.setState({passwordSignInNotEmpty: true})};
     };
 
     validateUserNameSignUp = (e) => {
         const validateUserNameRegEx = /^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){6,18}[a-zA-Z0-9]$/;
-        if (!validateUserNameRegEx.test(e.target.value)) {
-            this.setState({isValidUserNameSignUp: true})
-        } else {
-            this.setState({isValidUserNameSignUp: false})
-        };
+        (!validateUserNameRegEx.test(e.target.value)) ? this.setState({isValidUserNameSignUp: true}) : this.setState({isValidUserNameSignUp: false});
+        if(e.target.value.length > 0) {this.setState({userNameSignUpNotEmpty: true})};
     };
 
     validateFullNameSignUp = (e) => {
-        const validatePasswordRegEx = /^[a-zA-Z0-9](_(?!(\.|_))|\.(?!(_|\.))|[a-zA-Z0-9]){6,18}[a-zA-Z0-9]$/;
-        if (!validatePasswordRegEx.test(e.target.value)) {
-            this.setState({isValidFullNameSignUp: true})
-        } else {
-            this.setState({isValidFullNameSignUp: false})
-        };
+        const validateFullNameRegEx = /^([A-Za-z'\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/;
+        (!validateFullNameRegEx.test(e.target.value)) ? this.setState({isValidFullNameSignUp: true}) : this.setState({isValidFullNameSignUp: false});
+        if(e.target.value.length > 0) {this.setState({fullNameSignUpNotEmpty: true})};
     };
 
     validateEmailSignUp = (e) => {
-        const validateUserNameRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!validateUserNameRegEx.test(e.target.value)) {
-            this.setState({isValidEmailSignUp: true})
-        } else {
-            this.setState({isValidEmailSignUp: false})
-        };
+        const validateEmailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        (!validateEmailRegEx.test(e.target.value)) ? this.setState({isValidEmailSignUp: true}) : this.setState({isValidEmailSignUp: false});
+        if(e.target.value.length > 0) {this.setState({emailSignUpNotEmpty: true})};
     };
 
     validatePasswordSignUp = (e) => {
         const validatePasswordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
         //Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
-        if (!validatePasswordRegEx.test(e.target.value)) {
-            this.setState({isValidPasswordSignUp: true})
-        } else {
-            this.setState({isValidPasswordSignUp: false})
-        };
+        (!validatePasswordRegEx.test(e.target.value)) ? this.setState({isValidPasswordSignUp: true}) : this.setState({isValidPasswordSignUp: false});
+        if(e.target.value.length > 0) {this.setState({passwordSignUpNotEmpty: true})};
     };
 
     validateRePasswordSignUp = (e) => {
         const validatePasswordRegEx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
         //Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character
-        if (!validatePasswordRegEx.test(e.target.value)) {
-            this.setState({isValidRePasswordSignUp: true})
-        } else {
-            this.setState({isValidRePasswordSignUp: false})
-        };
+        (!validatePasswordRegEx.test(e.target.value)) ? this.setState({isValidRePasswordSignUp: true}) : this.setState({isValidRePasswordSignUp: false});
+        if(e.target.value.length > 0) {this.setState({rePasswordSignUpNotEmpty: true})};
     };
 
     handleChange = (event, value) => {
@@ -178,7 +170,23 @@ class SignIn extends React.Component {
         this.setState({ value });
     };
 
+    canBeSubmittedSignIn() {
+        const {isValidUserNameSignIn, isValidPasswordSignIn, passwordSignInNotEmpty, userNameSignInNotEmpty} = this.state;
+        return (((isValidUserNameSignIn || isValidPasswordSignIn) === false) && ((passwordSignInNotEmpty && userNameSignInNotEmpty) === true));
+    }
+
+    canBeSubmittedSignUp() {
+        const { isValidUserNameSignUp, isValidEmailSignUp, isValidRePasswordSignUp, isValidPasswordSignUp,
+            isValidFullNameSignUp, userNameSignUpNotEmpty, fullNameSignUpNotEmpty, emailSignUpNotEmpty,
+            passwordSignUpNotEmpty, rePasswordSignUpNotEmpty} = this.state;
+        return (((isValidUserNameSignUp || isValidEmailSignUp || isValidRePasswordSignUp || isValidPasswordSignUp
+            || isValidFullNameSignUp) === false) && ((userNameSignUpNotEmpty && fullNameSignUpNotEmpty &&
+            emailSignUpNotEmpty && passwordSignUpNotEmpty && rePasswordSignUpNotEmpty) === true));
+    }
+
     render() {
+        const isEnabledSignIn = this.canBeSubmittedSignIn();
+        const isEnabledSignUp = this.canBeSubmittedSignUp();
         const { classes } = this.props;
         const { value } = this.state;
 
@@ -208,7 +216,7 @@ class SignIn extends React.Component {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <form className={classes.form}>
+                        <form className={classes.form} onSubmit={(e) => {this.validateFormSignIn(e)}}>
                             <FormControl error={this.state.isValidUserNameSignIn} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Username</InputLabel>
                                 <Input onChange={(e) => {this.validateUserNameSignIn(e)}} id="text" name="usernameSignIn" autoComplete="text" autoFocus />
@@ -218,12 +226,12 @@ class SignIn extends React.Component {
                                 <Input onChange={(e) => {this.validatePasswordSignIn(e)}} name="password" type="password" id="password" autoComplete="current-password" />
                             </FormControl>
                             <Button
+                                disabled={!isEnabledSignIn}
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 color="primary"
                                 className={classes.submit}
-
                             >
                                 Sign in
                             </Button>
@@ -241,7 +249,7 @@ class SignIn extends React.Component {
                             </Typography>
                         </Grid>
                     </Grid>
-                        <form className={classes.form}>
+                        <form className={classes.form} onSubmit={(e) => {this.validateFormSignIn(e)}}>
                             <FormControl error={this.state.isValidUserNameSignUp} margin="normal" fullWidth>
                                 <InputLabel htmlFor="text">Username</InputLabel>
                                 <Input id="text" name="text" onChange={(e) => {this.validateUserNameSignUp(e)}} autoComplete="text" autoFocus />
@@ -263,6 +271,7 @@ class SignIn extends React.Component {
                                 <Input name="rePassword" type="password" onChange={(e) => {this.validateRePasswordSignUp(e)}} id="rePassword" autoComplete="new-password" />
                             </FormControl>
                             <Button
+                                disabled={!isEnabledSignUp}
                                 type="submit"
                                 fullWidth
                                 variant="contained"
@@ -272,9 +281,6 @@ class SignIn extends React.Component {
                                 Sign in
                             </Button>
                         </form></TabContainer>}
-
-                    {/*</Paper>*/}
-
                 </Paper>
             </main>
         );}
