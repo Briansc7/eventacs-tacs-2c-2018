@@ -194,3 +194,40 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Method: GET
 - Rol: Administrator
 - URI: /event-lists/shared-events?listId=1&anotherListId=2
+
+
+###Mongo
+
+En mongo guardamos 2 colecciones con el siguiente formato:
+
+**EventLists
+
+{
+	"_id" : ObjectId("5bfb193b3f751cb4ca497a44"),
+	"listId" : "1",
+	"listName" : "Lista figo",
+	"userId" : "Figo",
+	"events" : {
+		"name" : "alto event",
+		"start" : "Sun Nov 25 18:50:54 ART 2018",
+		"description" : "un re evento",
+		"end" : "Sun Nov 25 18:50:54 ART 2018",
+		"id" : "98765",
+		"category" : "900",
+		"logoUrl" : "http"
+	          }
+}
+
+**Alarms
+
+{
+	"_id" : ObjectId("5bfb193b3f751cb4ca497a44"),
+	"alarmId" : "1",
+	"userId" : "Figo",
+	"search" : {
+		"keyword" : "buenos",
+		"start" : "Sun Nov 25 18:50:54 ART 2018",
+		"categories" : [ ],
+		"end" : "Sun Nov 25 18:50:54 ART 2018",
+	}
+}
