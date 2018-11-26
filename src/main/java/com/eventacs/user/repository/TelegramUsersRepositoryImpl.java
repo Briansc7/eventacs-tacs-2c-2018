@@ -34,23 +34,23 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
 
     @Override
     public String findByChatId(final long chatId) {
-        try{
+        /*try{
             GetAccessToken getAccessToken = (GetAccessToken) hashOperations.get("CHATID",chatId);
             return getAccessToken.getAccess_token();
         }
         catch(Exception e){
-            e.printStackTrace();
+            e.printStackTrace();*/
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getTokenAccess();
-        }
+        //}
     }
     @Override
     public String findUserIdByChatId(final long chatId) {
-        try{
+        /*try{
             return ((GetAccessToken) hashOperations.get("CHATID",chatId)).getUsername();
         }
-        catch(Exception e){
+        catch(Exception e){*/
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getUserName();
-        }
+        //}
     }
 
     @Override

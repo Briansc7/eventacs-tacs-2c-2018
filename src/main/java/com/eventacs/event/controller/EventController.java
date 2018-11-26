@@ -52,11 +52,11 @@ public class EventController {
         return this.eventService.getCategories();
     }
 
-    @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/event-lists/{listId}/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    public List<EventList> getEventList(@PathVariable String listId) {
+    public List<EventList> getEventList(@PathVariable String listId, @PathVariable String userId) {
         LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
-        return this.eventService.getEventList(listId, "User1");//TODO obtener el userId de la sesión
+        return this.eventService.getEventList(listId, userId);//TODO obtener el userId de la sesión
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)

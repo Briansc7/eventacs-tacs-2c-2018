@@ -31,7 +31,7 @@ public class TestEventacs {
 //                .getEntity().getContent(), GetAccessToken.class);
         response = EventacsCommands.login("usuario2", "clave");
         //List<Category> Categoryes =  EventacsCommands.getCategories(response.getAccess_token());
-        EventList eventList = EventacsCommands.getEventList(response.getAccess_token(),"1");
+        EventList eventList = EventacsCommands.getEventList(response.getAccess_token(),"1", "usuario2");
 //       List<Category> Categoryes = this.objectMapper.readValue(httpClient.execute((new RequestWitnToken("http://localhost:9000/eventacs/categories", response.getAccess_token())).build()).getEntity().getContent(), new TypeReference<List<Category>>() {});
     }
 

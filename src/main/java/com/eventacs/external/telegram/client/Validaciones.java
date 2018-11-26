@@ -77,11 +77,11 @@ public class Validaciones {
 
     public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token) {
 
-        if(EventacsCommands.getEventList(token, listId) == null){
+        /*if(EventacsCommands.getEventList(token, listId) == null){
             mensajeDeError.append("El id de lista ingresado no existe");
             return false;
         }
-        else
+        else*/
             return true;
 
     }

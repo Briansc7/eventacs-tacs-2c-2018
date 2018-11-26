@@ -87,11 +87,11 @@ public class EventacsCommands {
         return null;
     }
 
-    public static EventList getEventList(String accessToken, String listId) {
+    public static EventList getEventList(String accessToken, String listId, String userId) {
         EventList eventList = null;
         try {
             eventList = objectMapper.readValue(httpClient.execute(
-                    (new RequestWitnToken("getRequest", "https://eventacs.com:9000/eventacs/event-lists/" + listId, accessToken)).build()).getEntity().getContent(), EventList.class);
+                    (new RequestWitnToken("getRequest", "https://eventacs.com:9000/eventacs/event-lists/" + listId+"/"+userId, accessToken)).build()).getEntity().getContent(), EventList.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
