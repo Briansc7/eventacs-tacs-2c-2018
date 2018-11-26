@@ -7,6 +7,8 @@ import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -52,20 +54,32 @@ public class EventListRepository {
     }
 
     public void addEventsToEventList(Event event, String listId) {
-        Map<String, Map> documentElements =  new HashMap<>();
-        Map<String, String> eventJson =  new HashMap<>();
+        BasicDBList dbEvents = new BasicDBList();
+        List<Event> events = getEventListByListId(listId);
 
-        eventJson.put("id", event.getId());
-        eventJson.put("name", event.getName());
-        eventJson.put("description", event.getDescription());
-        eventJson.put("category", event.getCategory());
-        eventJson.put("logoUrl", event.getLogoUrl());
-        eventJson.put("end", Date.from(event.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
-        eventJson.put("start", Date.from(event.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+        if(events != null){
+            events.add(event);
+            events.forEach(e -> dbEvents.add(toJson(e)));
 
-        documentElements.put("events", eventJson);
+        } else {
+            dbEvents.add(toJson(event));
+        }
 
-        eventacsMongoClient.addEvents("listId", listId, documentElements, "eventLists");
+        eventacsMongoClient.addEvents("listId", listId, dbEvents, "eventLists");
+    }
+
+    private BasicDBObject toJson(Event e) {
+        BasicDBObject dbEvent =  new BasicDBObject();
+
+        dbEvent.append("id", e.getId());
+        dbEvent.append("name", e.getName());
+        dbEvent.append("description", e.getDescription());
+        dbEvent.append("category", e.getCategory());
+        dbEvent.append("logoUrl", e.getLogoUrl());
+        dbEvent.append("end", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+        dbEvent.append("start", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+
+        return dbEvent;
     }
 
 

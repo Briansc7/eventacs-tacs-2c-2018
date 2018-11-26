@@ -103,15 +103,14 @@ public class EventacsMongoClient {
         return id;
     }
 
-    public String addEvents(String idName, String id, Map<String, Map> documentElements, String collectionName) {
+    public String addEvents(String idName, String id, BasicDBList documentElements, String collectionName) {
         BasicDBObject query = new BasicDBObject();
         DBCollection collection = this.getCollection(collectionName);
-        BasicDBObject newDocument = new BasicDBObject();
         BasicDBObject updateObject = new BasicDBObject();
 
         query.put(idName, id);
-        newDocument.putAll(documentElements);
-        updateObject.put("$set", newDocument);
+
+        updateObject.append("$set", new BasicDBObject("events", documentElements));
 
         collection.update(query, updateObject);
 

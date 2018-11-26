@@ -48,12 +48,21 @@ public class TestEventacs {
     }
 
     @Test
-    public void asd() {
+    public void CreatingTwoEventlistAndAddingEventsShouldReturnNonEmptyEvents() {
         repository = new EventListRepository(new EventacsMongoClient(), new EventListMapper());
+
         eventListCreationDTO = new EventListCreationDTO("Figo", "Lista figo");
 
         repository.createEventList(eventListCreationDTO, "1");
+        repository.createEventList(new EventListCreationDTO("brian", "lista"), "2");
+
         repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");
+        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");
+        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "2");
         List<Event> list = repository.getEventListByListId("1");
+        List<Event> list2 = repository.getEventListByListId("2");
+
+        Assert.assertTrue(!list.isEmpty());
+        Assert.assertTrue(!list2.isEmpty());
     }
 }
