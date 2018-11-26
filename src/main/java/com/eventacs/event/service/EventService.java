@@ -90,8 +90,8 @@ public class EventService {
         // TODO por ahora usar este user generico
         UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        List<Event> events = eventListRepository.getEventListByListId(listId);
-        List<Event> moreEvents =eventListRepository.getEventListByListId(anotherListId);
+        List<Event> events = eventListRepository.getEventsListByListId(listId);
+        List<Event> moreEvents =eventListRepository.getEventsListByListId(anotherListId);
 
         return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
 

@@ -1,30 +1,20 @@
 package com.eventacs.tests;
 
-import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.dto.EventListMapper;
-import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
-import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.external.telegram.client.httprequest.EventacsRequestBuilder;
-import com.eventacs.mongo.EventacsMongoClient;
 import org.apache.http.client.methods.*;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class TestEventacs {
 //    RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).setCookieSpec(ClientPNames.COOKIE_POLICY).build();
 //    CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig).build();
 //    ObjectMapper objectMapper = new ObjectMapper();
     GetAccessToken response = null;
-    EventListRepository repository;
-    EventListCreationDTO eventListCreationDTO;
 
-    @org.junit.Test
+    @Test
     public void givenNoToken_whenGetSecureRequest_thenUnauthorized() throws Exception {
 //        response = objectMapper.readValue(httpClient.execute(
 //                (new RequestLoginBuilder("usuario", "clave")).build())
@@ -45,24 +35,5 @@ public class TestEventacs {
         Assert.assertTrue("No corresponde con el metodo PUT",HttpPut.METHOD_NAME.equalsIgnoreCase((new TestClass()).putRequest("").build().getMethod()));
         Assert.assertTrue("No corresponde con el metodo PATCH", HttpPatch.METHOD_NAME.equalsIgnoreCase((new TestClass()).patchRequest("").build().getMethod()));
         Assert.assertTrue("No corresponde con el metodo OPTIONS",HttpOptions.METHOD_NAME.equalsIgnoreCase((new TestClass()).optionsRequest("").build().getMethod()));
-    }
-
-    @Test
-    public void CreatingTwoEventlistAndAddingEventsShouldReturnNonEmptyEvents() {
-        repository = new EventListRepository(new EventacsMongoClient(), new EventListMapper());
-
-        eventListCreationDTO = new EventListCreationDTO("Figo", "Lista figo");
-
-        repository.createEventList(eventListCreationDTO, "1");
-        repository.createEventList(new EventListCreationDTO("brian", "lista"), "2");
-
-        repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");
-        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");
-        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "2");
-        List<Event> list = repository.getEventListByListId("1");
-        List<Event> list2 = repository.getEventListByListId("2");
-
-        Assert.assertTrue(!list.isEmpty());
-        Assert.assertTrue(!list2.isEmpty());
     }
 }

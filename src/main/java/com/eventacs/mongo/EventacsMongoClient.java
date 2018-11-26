@@ -84,7 +84,7 @@ public class EventacsMongoClient {
             collection.remove(deleteQuery);
             return eventlists.get(0).getListId();
         } else {
-            throw new EventListNotFound("User not found for this event list Id" + listId);
+            throw new EventListNotFound("User not found for this event list Id: " + listId);
         }
     }
 
