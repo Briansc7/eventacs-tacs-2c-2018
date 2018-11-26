@@ -86,11 +86,11 @@ public class UserService {
 
         Optional<User> user = this.usersRepository.getByUserId(userId);
 
-        List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
+        //List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
 
-        Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getListId().equals(listId)).findFirst();
+        //Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getListId().equals(listId)).findFirst();
 
-        eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
+        //eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
 
         this.eventListRepository.addEventsToEventList(event, listId);
     }

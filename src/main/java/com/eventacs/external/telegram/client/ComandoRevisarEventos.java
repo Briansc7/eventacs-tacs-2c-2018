@@ -41,7 +41,7 @@ public class ComandoRevisarEventos {
                 break;
             case esperaIdLista:
 
-                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId))){
+                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId), tacsBot.getUserId(chatId))){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);

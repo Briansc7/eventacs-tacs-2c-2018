@@ -75,9 +75,9 @@ public class Validaciones {
 
     }
 
-    public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token) {
+    public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token, String userId) {
 
-        /*if(EventacsCommands.getEventList(token, listId) == null){
+        /*if(EventacsCommands.getEventList(token, listId, userId) == null){
             mensajeDeError.append("El id de lista ingresado no existe");
             return false;
         }
