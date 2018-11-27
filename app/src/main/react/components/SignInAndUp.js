@@ -99,6 +99,7 @@ class SignIn extends React.Component {
         this.validateUserNameSignIn = this.validateUserNameSignIn.bind(this);
         this.validatePasswordSignIn = this.validatePasswordSignIn.bind(this);
         this.validateUserNameSignUp = this.validateUserNameSignUp.bind(this);
+        this.openCloseModal = this.openCloseModal.bind(this);
         this.validateFullNameSignUp = this.validateFullNameSignUp.bind(this);
         this.validateEmailSignUp = this.validateEmailSignUp.bind(this);
         this.validatePasswordSignUp = this.validatePasswordSignUp.bind(this);
@@ -122,8 +123,9 @@ class SignIn extends React.Component {
             passwordSignUpValue: '',
             modalTitle: '',
             modalBody: '',
-            open: false,
+            modal: false,
             value: 0,
+            tokenAccess: '',
         };
     };
 
@@ -145,8 +147,9 @@ class SignIn extends React.Component {
             passwordSignUpValue: '',
             redirect: false,
             modalTitle: '',
-            open: false,
+            modal: false,
             modalBody: '',
+            tokenAccess: '',
         })
     }
 
@@ -258,14 +261,39 @@ class SignIn extends React.Component {
     }
 
     handleResponseSignIn(res) {
-        if(res.principal !== undefined) {
-            console.log("Datos: "+res+" principal: "+res.principal);
-            Cookie.set('access_token', res);
-            this.setRedirect();
+            this.state.tokenAccess=res;
+            console.log(res);
+        if(this.state.tokenAccess.access_token){
+            //this.setCookies(this.state.tokenAccess);
+            localStorage.setItem("dataSession", JSON.stringify(this.state.tokenAccess));
+            this.redirectToHome();
         } else {
-            this.setState({modalTitle: 'Datos Incorrectos', modalBody: 'El usuario o clave no son correctas. Intentelo nuevamente.',});
-            this.handleOpen();
+            this.notLogin();
         }
+        // if(res.principal !== undefined) {
+        //     console.log("Datos: "+res+" principal: "+res.principal);
+        //     Cookie.set('access_token', res);
+        //     this.setRedirect();
+        // } else {
+        //     this.setState({modalTitle: 'Datos Incorrectos', modalBody: 'El usuario o clave no son correctas. Intentelo nuevamente.',});
+        //     this.handleOpen();
+        // }
+    }
+
+    notLogin(){
+        this.clearForm();
+        this.setState({
+            modalTitle: 'Login incorrecto',
+            modalBody: 'Verifique usuario y contraseña'
+        });
+        this.openCloseModal();
+        console.log("Login fallido");
+    }
+
+    redirectToHome = () => {
+        this.setState({
+            redirect: true
+        })
     }
 
     signUp(e) {
@@ -282,31 +310,35 @@ class SignIn extends React.Component {
             }),
         })
             .then(response => response.json())
-            .then(data => this.handleResponseSignUp(data));
+            .then(response => {
+                response ? this.userCreated():this.userNotCreated();
+            });
     }
 
-    handleResponseSignUp(res) {
-        this.setState({isUserCreated: res.isUserCreated});
-        if(this.state.isUserCreated  !== undefined ) {
-            if (this.state.isUserCreated) {
-                this.setState({modalTitle: 'Usuario Creado', modalBody: "El usuario fue creado correctamente.",});
-            } else {
-                this.setState({modalTitle: 'Usuario No Creado', modalBody: 'El usuario No puso ser creado.',});
-            };
-            this.handleOpen();
-        }
+    userCreated() {
+        this.clearForms();
+        this.setState({
+            value: 0,
+            modalTitle: 'Usuario Creado',
+            modalBody: 'El usuario fue creado.'
+        });
+        this.openCloseModal();
+        console.log("USUARIO CREADO");
     }
 
-    handleOpen = () => {
-        this.setState({ open: true });
-    };
+    userNotCreated() {
+        this.setState({
+            modalTitle: 'No se pudo crear el usuario',
+            modalBody: 'Problema al crear el usuario, intente nuevamente.'
+        });
+        this.openCloseModal();
+        console.log("USUARIO NO CREADO");
+    }
 
-    handleClose = () => {
-        this.setState({open: false});
-        if (this.state.isUserCreated) {
-            this.clearForms();
-            this.setState({value: 0});
-        };
+    openCloseModal() {
+        this.setState({
+            modal: !this.state.modal
+        });
     }
 
     render() {
@@ -321,8 +353,8 @@ class SignIn extends React.Component {
                 <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
-                    open={this.state.open}
-                    onClose={this.handleClose}
+                    open={this.state.modal}
+                    onClose={this.openCloseModal}
                 >
                     <div style={getModalStyle()} className={classes.paperModal}>
                         <Typography variant="h6" id="modal-title">
