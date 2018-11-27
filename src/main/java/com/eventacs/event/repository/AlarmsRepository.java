@@ -7,9 +7,8 @@ import com.eventacs.user.exception.AlarmCreationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
 
 @Repository
 public class AlarmsRepository {
@@ -27,10 +26,16 @@ public class AlarmsRepository {
     public AlarmDTO createAlarm(SearchDTO searchDTO, String userId, String alarmId) {
         Map<String, Object> documentElements =  new HashMap<>();
         Map<String, String> conditions =  new HashMap<>();
+        Map<String, String> searchJson =  new HashMap<>();
 
         documentElements.put("userId", userId);
         documentElements.put("alarmId", alarmId);
-        documentElements.put("search", searchDTO);
+        searchJson.put("keyword", searchDTO.getKeyword().orElse(""));
+        searchJson.put("categories", searchDTO.getCategories().toString());
+        searchJson.put("endDate", Date.from(searchDTO.getEndDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());
+        searchJson.put("startDate", Date.from(searchDTO.getStartDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()).toString());
+
+        documentElements.put("search", searchJson);
 
         conditions.put("alarmId", alarmId);
 

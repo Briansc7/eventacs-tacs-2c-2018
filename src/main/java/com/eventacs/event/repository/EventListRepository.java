@@ -1,17 +1,21 @@
 package com.eventacs.event.repository;
 
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
+import com.eventacs.event.dto.EventListMapper;
+import com.eventacs.event.exception.EventAlreadyExistInEventList;
+import com.eventacs.event.exception.EventListAlreadyExists;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class EventListRepository {
@@ -19,21 +23,31 @@ public class EventListRepository {
     @Autowired
     private EventacsMongoClient eventacsMongoClient;
 
+    @Autowired
+    private EventListMapper eventListMapper;
+
     public EventListRepository() {
     }
 
-    public EventListRepository(EventacsMongoClient eventacsMongoClient) {
+    public EventListRepository(EventacsMongoClient eventacsMongoClient, EventListMapper eventListMapper) {
         this.eventacsMongoClient = eventacsMongoClient;
+        this.eventListMapper = eventListMapper;
     }
 
     public List<EventList> getEventListByUserId(String userId) {
         Map<String, String> conditions = new HashMap<>();
         conditions.put("userId", userId);
 
-        return eventacsMongoClient.getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
+        List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
+        return eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
     }
 
     public void createEventList(EventListCreationDTO eventListCreationDTO, String listId) {
+
+        try {
+            getEventListByListId(listId);
+            throw new EventListAlreadyExists("Event List already created for this user with this id! " + listId + ". This shouldn't happen, are you in a test?");
+        } catch (EventListNotFound e) {
         Map<String, Object> documentElements =  new HashMap<>();
 
         documentElements.put("userId", eventListCreationDTO.getUserId());
@@ -42,13 +56,37 @@ public class EventListRepository {
         documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
         eventacsMongoClient.createDocument("eventLists", documentElements);
+        }
     }
 
     public void addEventsToEventList(Event event, String listId) {
-        Map<String, Object> documentElements =  new HashMap<>();
-        documentElements.put("events", event);
+        BasicDBList dbEvents = new BasicDBList();
+        List<Event> events = getEventsListByListId(listId);
 
-        eventacsMongoClient.update("listId", listId,documentElements, "eventLists");
+        if(events == null){
+            dbEvents.add(toJson(event));
+        } else if(getEventsListByListId(listId).stream().noneMatch(e -> e.getId().equals(event.getId()))){
+            events.add(event);
+            events.forEach(e -> dbEvents.add(toJson(e)));
+        } else {
+            throw new EventAlreadyExistInEventList("This event already is in your event list! Event id: " + event.getId());
+        }
+
+        eventacsMongoClient.addEvents("listId", listId, dbEvents, "eventLists");
+    }
+
+    private BasicDBObject toJson(Event e) {
+        BasicDBObject dbEvent =  new BasicDBObject();
+
+        dbEvent.append("id", e.getId());
+        dbEvent.append("name", e.getName());
+        dbEvent.append("description", e.getDescription());
+        dbEvent.append("category", e.getCategory());
+        dbEvent.append("logoUrl", e.getLogoUrl());
+        dbEvent.append("end", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+        dbEvent.append("start", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+
+        return dbEvent;
     }
 
 
@@ -67,16 +105,31 @@ public class EventListRepository {
         return eventacsMongoClient.listIdGenerator();
     }
 
-    public List<Event> getEventListByListId(String listId) {
+    public List<Event> getEventsListByListId(String listId) {
         Map<String, String> conditions = new HashMap<>();
         conditions.put("listId", listId);
 
-        List<EventList> eventLists = eventacsMongoClient.getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
+        List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
 
-        if(eventLists.size() != 0){
-            return eventLists.get(0).getEvents();
+        if(!eventLists.isEmpty()){
+            return eventLists.stream().map(el -> eventListMapper.toModel(el)).flatMap(list -> list.getEvents().stream()).collect(Collectors.toList());
+
         } else {
             throw new EventListNotFound("EventList not found for this listId:" + listId);
+        }
+    }
+
+    public EventList getEventListByListId(String listId) {
+        Map<String, String> conditions = new HashMap<>();
+        conditions.put("listId", listId);
+
+        List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
+
+        if(!eventLists.isEmpty()){
+            return eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList()).get(0);
+
+        } else {
+            throw new EventListNotFound("EventList not found for this listId: " + listId);
         }
     }
 }

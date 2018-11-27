@@ -1,6 +1,8 @@
 package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Category;
+import com.eventacs.event.model.EventList;
+import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,14 +77,21 @@ public class Validaciones {
 
     }
 
-    public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token) {
+    public static boolean idListaValida(String listId, StringBuilder mensajeDeError, String token, String userId, TacsBot tacsBot) {
 
-        if(EventacsCommands.getEventList(token, listId) == null){
+        /*if(EventacsCommands.getEventList(token, listId) == null){
             mensajeDeError.append("El id de lista ingresado no existe");
             return false;
         }
         else
-            return true;
+            return true;*/
+        //TODO usar EventacsCommands y crear un recurso para obtenerlo por Get a /event-lists (problema como obtener el userId)
+        EventService eventService = tacsBot.getEventService();
+        List<EventList> listas = eventService.getEventLists(userId);
+
+        mensajeDeError.append("El id de lista ingresado no es válido");
+
+        return listas.stream().anyMatch(l->l.getListId().equalsIgnoreCase(listId));
 
     }
 

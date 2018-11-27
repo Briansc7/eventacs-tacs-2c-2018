@@ -8,6 +8,6 @@ public interface TelegramUsersRepository {
     Map<Long,String> findAll();
     String findByChatId(long chatId);
     String findUserIdByChatId(long chatId);
-    void update(final long chatId, final String accessToken);
+    void update(final long chatId, final GetAccessToken accessToken);
     void save(final long chatId, final GetAccessToken accessToken);
 }

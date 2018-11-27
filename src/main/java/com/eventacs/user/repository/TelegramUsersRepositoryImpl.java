@@ -35,31 +35,36 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
     @Override
     public String findByChatId(final long chatId) {
         try{
-            return (String)hashOperations.get("CHATID",chatId);
+            String value =(String) hashOperations.get("CHATID",chatId);
+            return value.substring(0,value.indexOf("/"));
         }
         catch(Exception e){
+            //e.printStackTrace();
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getTokenAccess();
         }
     }
     @Override
     public String findUserIdByChatId(final long chatId) {
-        //try{
-        //    return (String)hashOperations.get("CHATID",chatId);
-        //}
-        //catch(Exception e){
+        try{
+            String value =(String) hashOperations.get("CHATID",chatId);
+            return value.substring(value.indexOf("/")+1);
+        }
+        catch(Exception e){
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getUserName();
-        //}
+        }
     }
 
     @Override
-    public void update(final long chatId, final String accessToken) {
-        hashOperations.put("CHATID",chatId,accessToken);
+    public void update(final long chatId, final GetAccessToken accessToken) {
+        String value = accessToken.getAccess_token()+"/"+accessToken.getUsername();
+        hashOperations.put("CHATID",chatId,value);
     }
 
     @Override
     public void save(final long chatId, final GetAccessToken accessToken) {
         try{
-            hashOperations.put("CHATID",chatId,accessToken.getAccess_token());
+            String value = accessToken.getAccess_token()+"/"+accessToken.getUsername();
+            hashOperations.put("CHATID",chatId,value);
         }
         catch (Exception e){
             e.printStackTrace();

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class AlarmDTO {
 
-    private Optional<String> id;
+    private Optional<String> alarmId;
     private String userId;
     private SearchDTO search;
 
@@ -17,18 +17,18 @@ public class AlarmDTO {
         this.search = search;
     }
 
-    public AlarmDTO(Optional<String> id, String userId, SearchDTO search) {
-        this.id = id;
+    public AlarmDTO(Optional<String> alarmId, String userId, SearchDTO search) {
+        this.alarmId = alarmId;
         this.userId = userId;
         this.search = search;
     }
 
-    public Optional<String> getId() {
-        return id;
+    public Optional<String> getAlarmId() {
+        return alarmId;
     }
 
-    public void setId(Optional<String> id) {
-        this.id = id;
+    public void setAlarmId(Optional<String> alarmId) {
+        this.alarmId = alarmId;
     }
 
     public String getUserId() {

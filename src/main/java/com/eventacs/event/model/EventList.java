@@ -1,14 +1,15 @@
 package com.eventacs.event.model;
 
+
 import java.util.List;
 
 public class EventList {
-    private String id;
+    private String listId;
     private String listName;
     private List<Event> events;
 
-    public EventList(String id, String listName, List<Event> events) {
-        this.id = id;
+    public EventList(String listId, String listName, List<Event> events) {
+        this.listId = listId;
         this.listName = listName;
         this.events = events;
     }
@@ -16,12 +17,12 @@ public class EventList {
     public EventList() {
     }
 
-    public String getId() {
-        return id;
+    public String getListId() {
+        return listId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setListId(String listId) {
+        this.listId = listId;
     }
 
     public String getListName() {

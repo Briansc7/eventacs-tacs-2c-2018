@@ -90,8 +90,8 @@ public class EventService {
         // TODO por ahora usar este user generico
         UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
-        List<Event> events = eventListRepository.getEventListByListId(listId);
-        List<Event> moreEvents =eventListRepository.getEventListByListId(anotherListId);
+        List<Event> events = eventListRepository.getEventsListByListId(listId);
+        List<Event> moreEvents =eventListRepository.getEventsListByListId(anotherListId);
 
         return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
 
@@ -109,9 +109,15 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public List<EventList> getEventList(String listId, String userId) {
-        return eventListRepository.getEventListByUserId(userId);
+    public EventList getEventList(String listId) {
+        //return eventListRepository.getEventListByUserId(userId);
+        return eventListRepository.getEventListByListId(listId);
       // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
+    }
+
+    public List<EventList> getEventLists(String userId) {
+        return eventListRepository.getEventListByUserId(userId);
+
     }
 
 }

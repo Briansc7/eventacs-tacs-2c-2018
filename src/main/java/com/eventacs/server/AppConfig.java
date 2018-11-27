@@ -1,6 +1,7 @@
 package com.eventacs.server;
 
 import com.eventacs.account.service.AccountService;
+import com.eventacs.event.dto.EventListMapper;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.client.EventbriteClient;
@@ -8,6 +9,7 @@ import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
@@ -43,6 +45,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -166,8 +169,10 @@ public class AppConfig {
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
 
     @Bean
+    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient, EventListMapper eventListMapper) { return new EventListRepository(eventacsMongoClient, eventListMapper); }
 
-    public EventListRepository eventListRepository(EventacsMongoClient eventacsMongoClient) { return new EventListRepository(eventacsMongoClient); }
+    @Bean
+    public EventListMapper eventListMapper(){return new EventListMapper();}
 
     @Bean
     public EventacsMongoClient eventacsMongoClient() { return new EventacsMongoClient(); }

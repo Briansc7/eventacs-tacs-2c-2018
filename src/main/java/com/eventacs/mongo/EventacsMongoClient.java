@@ -1,8 +1,9 @@
 package com.eventacs.mongo;
 
-import com.eventacs.event.model.EventList;
+import com.eventacs.event.dto.EventListDTO;
+import com.eventacs.httpclient.LocalDateTimeConverter;
+import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.exception.EventListNotFound;
-import com.eventacs.user.exception.UserNotFound;
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Component
 public class EventacsMongoClient {
@@ -24,6 +26,7 @@ public class EventacsMongoClient {
         this.mongoClient = new MongoClient("localhost", 27017);
         this.database = mongoClient.getDB("eventacs");
         this.morphia = new Morphia();
+        morphia.getMapper().getConverters().addConverter(new LocalDateTimeConverter());
     }
 
 
@@ -47,12 +50,13 @@ public class EventacsMongoClient {
 
         DBCursor cursor = collection.find(searchQuery);
 
-        queryResult.add(cursor.getQuery());
+        cursor.getQuery();
 
         while (cursor.hasNext()) {
             queryResult.add(cursor.next());
         }
 
+        morphia.map(clazz);
         queryResult.forEach(qr -> result.add(morphia.fromDBObject(datastore, clazz, qr)));
 
         return result;
@@ -72,15 +76,15 @@ public class EventacsMongoClient {
         DBCollection collection = this.getCollection("eventLists");
 
         conditions.put("listId", listId);
-        List<EventList> eventlists = getElementsAs(EventList.class, conditions, "eventLists", "eventacs");
+        List<EventListDTO> eventlists = getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
 
         deleteQuery.put("listId", listId);
 
         if(eventlists.size() != 0) {
             collection.remove(deleteQuery);
-            return eventlists.get(0).getId();
+            return eventlists.get(0).getListId();
         } else {
-            throw new EventListNotFound("User not found for this event list Id" + listId);
+            throw new EventListNotFound("User not found for this event list Id: " + listId);
         }
     }
 
@@ -93,6 +97,20 @@ public class EventacsMongoClient {
         query.put(idName, id);
         newDocument.putAll(documentElements);
         updateObject.put("$set", newDocument);
+
+        collection.update(query, updateObject);
+
+        return id;
+    }
+
+    public String addEvents(String idName, String id, BasicDBList documentElements, String collectionName) {
+        BasicDBObject query = new BasicDBObject();
+        DBCollection collection = this.getCollection(collectionName);
+        BasicDBObject updateObject = new BasicDBObject();
+
+        query.put(idName, id);
+
+        updateObject.append("$set", new BasicDBObject("events", documentElements));
 
         collection.update(query, updateObject);
 
@@ -118,7 +136,7 @@ public class EventacsMongoClient {
 
             queryResult.add(cursor.getQuery());
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventList.class, queryResult.get(0)).getId());
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventListDTO.class, queryResult.get(0)).getListId());
 
             return lastId + 1;
         }
@@ -142,7 +160,7 @@ public class EventacsMongoClient {
 
             queryResult.add(cursor.getQuery());
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventList.class, queryResult.get(0)).getId());
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, AlarmDTO.class, queryResult.get(0)).getAlarmId().get());
 
             return lastId + 1;
         }

@@ -2,6 +2,7 @@ package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
+import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.EventsResponse;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
@@ -196,9 +197,14 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoLogin.login(parts, chatStates, chatId, this);
                 break;
             /*case "/test":
-
-                mensajeAEnviar.append("prueba");
-                enviarMensajeConBoton(mensajeAEnviar, chatId);
+                mensajeAEnviar.append("Token: "+getAccessToken(chatId));
+                mensajeAEnviar.append("\nUserId: "+getUserId(chatId));
+                enviarMensaje(mensajeAEnviar, chatId);
+                //enviarMensajeConBoton(mensajeAEnviar, chatId);
+                //eventService.addEvent("1","50534572266",getUserId(chatId));
+                //eventService.getEventList("2",getUserId(chatId));
+                //eventService.changeListName("2","Nuevo nombre");
+                eventService.deleteEventList("2");
                 break;*/
             default:
                 mensajeAEnviar.append("Comando no válido");
@@ -485,8 +491,8 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     public String getUserId(long chatId){
-        //return telegramUsersRepository.findUserIdByChatId(chatId);
-        return usuarios.get(chatId);
+        return telegramUsersRepository.findUserIdByChatId(chatId);
+        //return usuarios.get(chatId);
         //return "id1";
     }
 
@@ -494,10 +500,10 @@ public class TacsBot extends TelegramLongPollingBot {
         return !Objects.isNull(getAccessToken(chatId));
     }
 
-    public StringBuilder categoriasDisponibles(){
+    public StringBuilder categoriasDisponibles(long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        List<Category> listaCategorias = this.eventService.getCategories();
+        List<Category> listaCategorias = EventacsCommands.getCategories(getAccessToken(chatId));
 
         if(listaCategorias.isEmpty()){
             mensajeAEnviar.append("No se encontraron categorias");
@@ -506,6 +512,29 @@ public class TacsBot extends TelegramLongPollingBot {
             mensajeAEnviar = getIdNombreCategoriasEncontradas(listaCategorias, mensajeAEnviar);
         }
 
+        return mensajeAEnviar;
+    }
+
+    public StringBuilder listasDeEventosDisponibles(long chatId){
+
+        StringBuilder mensajeAEnviar = new StringBuilder ();
+        List<EventList> listasDeEventos = eventService.getEventLists(getUserId(chatId));
+
+        if(listasDeEventos.isEmpty()){
+            mensajeAEnviar.append("No se encontraron listas de eventos\nIngrese /cancelar para salir\n");
+        }
+        else{
+            mensajeAEnviar = getIdNombreListasEncontradas(listasDeEventos, mensajeAEnviar);
+        }
+
+        return mensajeAEnviar;
+    }
+
+    private StringBuilder getIdNombreListasEncontradas(List<EventList> listasDeEventos, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("Listas Disponibles:\n");
+        StringBuilder finalMensajeAEnviar = mensajeAEnviar;
+        listasDeEventos.forEach(e -> agregarLista(e, finalMensajeAEnviar));
+        mensajeAEnviar = finalMensajeAEnviar;
         return mensajeAEnviar;
     }
 
@@ -520,5 +549,10 @@ public class TacsBot extends TelegramLongPollingBot {
     private void agregarCategoria(Category e, StringBuilder mensajeAEnviar) {
         mensajeAEnviar.append("ID: /").append(e.getId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(e.getName()).append("\n\n");
+    }
+
+    private void agregarLista(EventList lista, StringBuilder mensajeAEnviar) {
+        mensajeAEnviar.append("ID: /").append(lista.getListId()).append("\n");
+        mensajeAEnviar.append("Nombre: ").append(lista.getListName()).append("\n\n");
     }
 }
