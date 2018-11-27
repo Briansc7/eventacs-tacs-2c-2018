@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface TelegramUsersRepository {
 
-    Map<Long,GetAccessToken> findAll();
+    Map<Long,String> findAll();
     String findByChatId(long chatId);
     String findUserIdByChatId(long chatId);
     void update(final long chatId, final GetAccessToken accessToken);

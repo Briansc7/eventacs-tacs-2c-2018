@@ -146,13 +146,10 @@ public class AppConfig {
     }
 
     @Bean
-    public RedisTemplate<Long, GetAccessToken> redisTemplate(){
-        RedisTemplate<Long,GetAccessToken> template = new RedisTemplate<Long,GetAccessToken>();
+    public RedisTemplate<Long, String> redisTemplate(){
+        RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
         template.setConnectionFactory(jedisConnectionFactory());
-        //template.setValueSerializer(new LdapFailAwareRedisObjectSerializer());
-        //template.setKeySerializer(new LongRedisSerializer());
-        //template.setHashKeySerializer(new LongRedisSerializer());
-        template.setHashValueSerializer(new LdapFailAwareRedisObjectSerializer());
+        template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
         return template;
     }
     /*
