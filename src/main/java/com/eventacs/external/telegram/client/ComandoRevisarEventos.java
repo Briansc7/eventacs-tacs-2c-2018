@@ -35,13 +35,14 @@ public class ComandoRevisarEventos {
 
         switch (revisarEventosStates.get(chatId)){
             case inicio:
+                mensajeAEnviar = tacsBot.listasDeEventosDisponibles(chatId);
                 mensajeAEnviar.append("Ingrese el ID de la lista de la cual desea ver todos los eventos");
                 tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                 revisarEventosStates.put(chatId, estadosRevisarEventos.esperaIdLista);
                 break;
             case esperaIdLista:
 
-                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId), tacsBot.getUserId(chatId))){
+                if(!Validaciones.idListaValida(Validaciones.formatearId(parts[0]), mensajeDeError, tacsBot.getAccessToken(chatId), tacsBot.getUserId(chatId), tacsBot)){
                     mensajeAEnviar.append(mensajeDeError.toString()+"\n");
                     mensajeAEnviar.append("Ingrese el ID de la lista a la cual desea agregar el evento");
                     tacsBot.enviarMensaje(mensajeAEnviar, chatId);

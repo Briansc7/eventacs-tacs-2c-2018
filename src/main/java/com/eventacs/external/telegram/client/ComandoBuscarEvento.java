@@ -115,7 +115,7 @@ public class ComandoBuscarEvento {
                     case "si":
 //                    case "Si":
 //                    case "SI":
-                        mensajeAEnviar = tacsBot.categoriasDisponibles();
+                        mensajeAEnviar = tacsBot.categoriasDisponibles(chatId);
                         mensajeAEnviar.append("\nIngrese el id de la categoría");
                         tacsBot.enviarMensaje(mensajeAEnviar, chatId);
                         buscarEventoStates.put(chatId, estadosBuscarEvento.esperaCategoria);

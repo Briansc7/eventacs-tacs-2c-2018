@@ -115,4 +115,9 @@ public class EventService {
       // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 
+    public List<EventList> getEventLists(String userId) {
+        return eventListRepository.getEventListByUserId(userId);
+
+    }
+
 }
