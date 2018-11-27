@@ -195,13 +195,15 @@ public class TacsBot extends TelegramLongPollingBot {
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
                 break;
-            case "/test":
+            /*case "/test":
                 //mensajeAEnviar.append("Token: "+getAccessToken(chatId));
                 //enviarMensaje(mensajeAEnviar, chatId);
                 //enviarMensajeConBoton(mensajeAEnviar, chatId);
-                eventService.addEvent("1","50534572266",getUserId(chatId));
+                //eventService.addEvent("1","50534572266",getUserId(chatId));
                 //eventService.getEventList("2",getUserId(chatId));
-                break;
+                //eventService.changeListName("2","Nuevo nombre");
+                eventService.deleteEventList("2");
+                break;*/
             default:
                 mensajeAEnviar.append("Comando no válido");
                 enviarMensaje(mensajeAEnviar,chatId);

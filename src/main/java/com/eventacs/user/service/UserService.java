@@ -104,14 +104,14 @@ public class UserService {
     public String deleteEventList(String listId) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
 
-        List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getListId().equals(listId))).collect(Collectors.toList());
+        /*List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getListId().equals(listId))).collect(Collectors.toList());
         List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getListId().contains(listId))).collect(Collectors.toList());
 
         if(filteredUsers.size() == 0 || eventListsToBeRemoved.size() == 0){
             throw new UserNotFound("User not found for this event list Id" + listId);
-        } else {
+        } else {*/
             return this.eventListRepository.deleteEventList(listId);
-        }
+        //}
     }
 
 }
