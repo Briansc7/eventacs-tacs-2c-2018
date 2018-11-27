@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Modal from '@material-ui/core/Modal';
-import Cookie from "react-cookie";
+//import Cookie from "react-cookie";
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import { Redirect } from 'react-router-dom'
@@ -248,7 +248,8 @@ class SignIn extends React.Component {
             .then(data => this.handleResponseSignIn(data));
     }
 
-    setRedirect = () => {
+    //setRedirect = () => {
+    redirectToHome  = () => {
         this.setState({
             redirect: true
         })
@@ -281,7 +282,7 @@ class SignIn extends React.Component {
     }
 
     notLogin(){
-        this.clearForm();
+        this.clearForms();
         this.setState({
             modalTitle: 'Login incorrecto',
             modalBody: 'Verifique usuario y contraseña'
@@ -391,11 +392,11 @@ class SignIn extends React.Component {
                         </Grid>
                         <form className={classes.form} onSubmit={(e) => {this.submitSignIn(e)}}>
                             <FormControl error={this.state.isValidUserNameSignIn} margin="normal" fullWidth>
-                                <InputLabel htmlFor="text">Username</InputLabel>
+                                <InputLabel htmlFor="usernameSignIn">Username</InputLabel>
                                 <Input onChange={(e) => {this.validateUserNameSignIn(e)}} id="text" name="usernameSignIn" autoComplete="text" autoFocus />
                             </FormControl>
                             <FormControl error={this.state.isValidPasswordSignIn} margin="normal" fullWidth>
-                                <InputLabel htmlFor="password">Password</InputLabel>
+                                <InputLabel htmlFor="passwordSignIn">Password</InputLabel>
                                 <Input onChange={(e) => {this.validatePasswordSignIn(e)}} name="passwordSignIn" type="password" id="password" autoComplete="current-password" />
                             </FormControl>
                             <Button
@@ -424,19 +425,19 @@ class SignIn extends React.Component {
                     </Grid>
                         <form className={classes.form} onSubmit={(e) => {this.submitSignUp(e)}}>
                             <FormControl error={this.state.isValidUserNameSignUp} margin="normal" fullWidth>
-                                <InputLabel htmlFor="text">Username</InputLabel>
+                                <InputLabel htmlFor="userNameSignUp">Username</InputLabel>
                                 <Input id="text" name="userNameSignUp" onChange={(e) => {this.validateUserNameSignUp(e)}} autoComplete="text" autoFocus />
                             </FormControl>
                             <FormControl error={this.state.isValidFullNameSignUp} margin="normal" fullWidth>
-                                <InputLabel htmlFor="text">Full Name</InputLabel>
+                                <InputLabel htmlFor="fullNameSignUp">Full Name</InputLabel>
                                 <Input id="text" name="fullNameSignUp" onChange={(e) => {this.validateFullNameSignUp(e)}} autoComplete="text" />
                             </FormControl>
                             <FormControl error={this.state.isValidEmailSignUp} margin="normal" fullWidth>
-                                <InputLabel htmlFor="text">Email</InputLabel>
+                                <InputLabel htmlFor="emailSignUp">Email</InputLabel>
                                 <Input id="email" name="emailSignUp" onChange={(e) => {this.validateEmailSignUp(e)}}  autoComplete="text" />
                             </FormControl>
                             <FormControl error={this.state.isValidPasswordSignUp} margin="normal" fullWidth>
-                                <InputLabel htmlFor="password">Password</InputLabel>
+                                <InputLabel htmlFor="passwordSignUp">Password</InputLabel>
                                 <Input name="passwordSignUp" type="password" onChange={(e) => {this.validatePasswordSignUp(e)}} id="password" autoComplete="new-password"/>
                             </FormControl>
                             <FormControl error={this.state.isValidRePasswordSignUp} margin="normal" fullWidth>

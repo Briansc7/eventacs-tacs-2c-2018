@@ -5,7 +5,7 @@ import Home from './Home';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import EventsTable from './EventsTable';
 import EventListEdit from './EventListEdit';
-import LoginForm from './LoginForm3';
+import LoginForm from './SignInAndUp';
 
 class App extends Component {
     render() {
