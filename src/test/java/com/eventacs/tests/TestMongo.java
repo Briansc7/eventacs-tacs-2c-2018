@@ -27,7 +27,7 @@ public class TestMongo {
         eventListCreationDTO = new EventListCreationDTO("Figo", "Tiraste gas");
 
         repository.createEventList(eventListCreationDTO, "1");
-        repository.createEventList(new EventListCreationDTO("brian", "lista"), "2");
+        repository.createEventList(new EventListCreationDTO("User1", "lista"), "2");
 
         repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");
         repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "1");

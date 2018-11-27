@@ -109,8 +109,9 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public List<EventList> getEventList(String listId, String userId) {
-        return eventListRepository.getEventListByUserId(userId);
+    public EventList getEventList(String listId) {
+        //return eventListRepository.getEventListByUserId(userId);
+        return eventListRepository.getEventListByListId(listId);
       // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 

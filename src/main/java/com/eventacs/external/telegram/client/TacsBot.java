@@ -200,6 +200,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 //enviarMensaje(mensajeAEnviar, chatId);
                 //enviarMensajeConBoton(mensajeAEnviar, chatId);
                 eventService.addEvent("1","50534572266",getUserId(chatId));
+                //eventService.getEventList("2",getUserId(chatId));
                 break;
             default:
                 mensajeAEnviar.append("Comando no válido");
@@ -397,7 +398,7 @@ public class TacsBot extends TelegramLongPollingBot {
     public void revisarEventos(String idLista, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
-        List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista, getUserId(chatId)).getEvents();
+        List<Event> listaEventos = EventacsCommands.getEventList(getAccessToken(chatId), idLista).getEvents();
 
         if(listaEventos.isEmpty()){
             mensajeAEnviar.append("No se encontraron eventos");
