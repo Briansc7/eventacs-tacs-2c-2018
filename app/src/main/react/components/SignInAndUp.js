@@ -11,19 +11,13 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Modal from '@material-ui/core/Modal';
-//import Cookie from "react-cookie";
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import { Redirect } from 'react-router-dom'
 import withStyles from '@material-ui/core/styles/withStyles';
 
-// function rand() {
-//     return Math.round(Math.random() * 20) - 10;
-// }
 
 function getModalStyle() {
-    // const top = 50 + rand();
-    // const left = 50 + rand();
     const top = 50;
     const left = 50;
     return {
@@ -92,7 +86,6 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-//function SignIn(props)
 class SignIn extends React.Component {
     constructor(props) {
         super(props);
@@ -233,8 +226,6 @@ class SignIn extends React.Component {
     }
 
     login(e){
-        console.log("Valor Username: " + e.target.usernameSignIn.value);
-        console.log("Valor Clave: " + e.target.passwordSignIn.value);
         fetch('https://eventacs.com:9001/oauth-server/oauth/token', {
             method: 'POST',
             headers: {
@@ -248,7 +239,6 @@ class SignIn extends React.Component {
             .then(data => this.handleResponseSignIn(data));
     }
 
-    //setRedirect = () => {
     redirectToHome  = () => {
         this.setState({
             redirect: true
@@ -265,20 +255,11 @@ class SignIn extends React.Component {
             this.state.tokenAccess=res;
             console.log(res);
         if(this.state.tokenAccess.access_token){
-            //this.setCookies(this.state.tokenAccess);
             localStorage.setItem("dataSession", JSON.stringify(this.state.tokenAccess));
             this.redirectToHome();
         } else {
             this.notLogin();
         }
-        // if(res.principal !== undefined) {
-        //     console.log("Datos: "+res+" principal: "+res.principal);
-        //     Cookie.set('access_token', res);
-        //     this.setRedirect();
-        // } else {
-        //     this.setState({modalTitle: 'Datos Incorrectos', modalBody: 'El usuario o clave no son correctas. Intentelo nuevamente.',});
-        //     this.handleOpen();
-        // }
     }
 
     notLogin(){
