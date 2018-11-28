@@ -4,16 +4,24 @@ Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Con
 
 ### Creacion de certificados
 La variable de entorno JAVA_HOME debe estar seteada
-En el directorio resources de el servidor de recursos, ejecuta estos 3 comandos:
+En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:
+
  -keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650
+ (contraseña eventacs, nombre y organización eventacs.com)
+ 
  -keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer
+ (contraseña eventacs)
+ 
  -sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
- -contraseña eventacs
- -sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
-contraseña changeit o changeme
+(contraseña changeit o changeme)
+
+Si el tercer comando ya había sido ejecutado anteriormente, es necesario primero ejecutar el siguiente comando:
+sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
+(contraseña changeit o changeme)
+
  -archivo hosts agregar la siguiente linea sin comentar
 127.0.0.1       eventacs.com    eventacs        localhost
- -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados al resources del servidor de oauth
+ -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados a la carpeta resources del servidor de oauth
 
 ###Para los certificados del front
  Crear el directorio certificate (en el raiz de la app, del front). Pararse en ese directorio y ejecutar los siguientes comandos
@@ -25,7 +33,11 @@ contraseña changeit o changeme
 
 
 ### Install
-Para levantar la aplicacion ejecutar desde una consola:
+Luego de instalar los certificados, realizar los siguientes pasos:
+Primero levantar el servidor de Mongo y el de Redis.
+Luego ubicarse en la carpeta oauth-authorization-server y ejecutar desde una consola el siguiente comando para levantar el servidor de autenticación:
+$- mvn clean compile exec:java
+Finalmente ubicarse en la carpeta raíz (eventacs-tacs-2c-2018) y ejecutar desde una consola el siguiente comando para levantar el servidor de recursos (levanta al bot de telegram):
 $- mvn clean compile exec:java
 
 ### Telegram
