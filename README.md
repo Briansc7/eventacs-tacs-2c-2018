@@ -6,45 +6,62 @@ Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Con
 La variable de entorno JAVA_HOME debe estar seteada
 En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:
 
- -keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650
- (contraseña eventacs, nombre y organización eventacs.com)
+ ``keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650``
+ (contraseña eventacs, nombre y organización eventacs.com, los demás datos no es necesario completarlos)
  
- -keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer
+ ``keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer``
  (contraseña eventacs)
  
- -sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
+ ``sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
 (contraseña changeit o changeme)
 
 Si el tercer comando ya había sido ejecutado anteriormente, es necesario primero ejecutar el siguiente comando:
-sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)
+``sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
 (contraseña changeit o changeme)
 
  -archivo hosts agregar la siguiente linea sin comentar
-127.0.0.1       eventacs.com    eventacs        localhost
+``127.0.0.1       eventacs.com    eventacs        localhost``
+
  -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados a la carpeta resources del servidor de oauth
 
 ###Para los certificados del front
  Crear el directorio certificate (en el raiz de la app, del front). Pararse en ese directorio y ejecutar los siguientes comandos
- -openssl genrsa -out server.key 2048
- -openssl rsa -in server.key -out server.key
- -openssl req -sha256 -new -key server.key -out server.csr -subj '/CN=eventacs.com'
- -openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
- -cat server.crt server.key > server.pem
+ 
+ ``openssl genrsa -out server.key 2048``
+ 
+ ``openssl rsa -in server.key -out server.key``
+ 
+ ``openssl req -sha256 -new -key server.key -out server.csr -subj '/CN=eventacs.com'``
+ 
+ ``openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt``
+ 
+ ``cat server.crt server.key > server.pem``
 
+
+### Mysql
+Instalar Mysql y crear el usuario pds. Para ello loguearse en Mysql como root y ejecutar los siguientes comandos:
+
+``CREATE USER 'pds'@'localhost' IDENTIFIED BY 'clave';``
+
+``GRANT ALL PRIVILEGES ON * . * TO 'pds'@'localhost';``
 
 ### Install
-Luego de instalar los certificados, realizar los siguientes pasos:
+Luego de instalar los certificados y crear el usuario de Mysql, realizar los siguientes pasos:
 Primero levantar el servidor de Mongo y el de Redis.
 Luego ubicarse en la carpeta oauth-authorization-server y ejecutar desde una consola el siguiente comando para levantar el servidor de autenticación:
-$- mvn clean compile exec:java
+
+$- ``mvn clean compile exec:java``
+
 Finalmente ubicarse en la carpeta raíz (eventacs-tacs-2c-2018) y ejecutar desde una consola el siguiente comando para levantar el servidor de recursos (levanta al bot de telegram):
-$- mvn clean compile exec:java
+
+$- ``mvn clean compile exec:java``
 
 ### Telegram
 El bot de telegram implementado es **@TacsBot**. 
 Para realizar las pruebas, se tienen los siguientes usuarios:
 
 **Usuario 1:**``username: User1, password: Pw1, IdlistaEventos: 2``
+
 **Usuario 2:**``username: User2, password: Pw2, IdlistaEventos: no tiene``
 
 ### Comandos disponibles Telegram
