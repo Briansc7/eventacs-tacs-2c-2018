@@ -19,7 +19,7 @@ Si el tercer comando ya había sido ejecutado anteriormente, es necesario primer
 ``sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
 (contraseña changeit o changeme)
 
- -archivo hosts agregar la siguiente linea sin comentar
+ -archivo hosts (ubicado en linux en /etc/hosts) agregar la siguiente linea sin comentar
 ``127.0.0.1       eventacs.com    eventacs        localhost``
 
  -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados a la carpeta resources del servidor de oauth
