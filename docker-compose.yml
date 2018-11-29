@@ -11,18 +11,19 @@ services:
       - mongo
 
   oauth-server:
-    build: ./oauth-authorization-server
+    build: ./oauth-authorization-server/.
     ports:
       - "9001:9001"
     depends_on:
       - backend
+#      - mysql
 
-  frontend:
-    build: ./app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - oauth-server
+#  frontend:
+#    build: ./app
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - oauth-server
 
   mysql:
     image: mysql
@@ -30,10 +31,12 @@ services:
      - db_data:/var/lib/mysql
     restart: always
     environment:
-     MYSQL_ROOT_PASSWORD: password
-     MYSQL_DATABASE: wordpress
-     MYSQL_USER: pds
-     MYSQL_PASSWORD: clave
+     MYSQL_ROOT_PASSWORD: "password"
+     MYSQL_DATABASE: "oauth2"
+     MYSQL_USER: "pds"
+     MYSQL_PASSWORD: "clave"
+    ports:
+     - "3306:3306"
 
   redis:
     image: redis:5.0.0-alpine
