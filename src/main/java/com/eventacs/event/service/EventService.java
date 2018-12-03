@@ -120,4 +120,27 @@ public class EventService {
 
     }
 
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public EventbriteFacade getEventbriteFacade() {
+        return eventbriteFacade;
+    }
+
+    public void setEventbriteFacade(EventbriteFacade eventbriteFacade) {
+        this.eventbriteFacade = eventbriteFacade;
+    }
+
+    public EventListRepository getEventListRepository() {
+        return eventListRepository;
+    }
+
+    public void setEventListRepository(EventListRepository eventListRepository) {
+        this.eventListRepository = eventListRepository;
+    }
 }
