@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
@@ -38,7 +39,7 @@ import static java.lang.Math.toIntExact;
 import java.sql.*;
 
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento, login
+    inicio, agregarevento, revisareventos, buscarevento, login, crearlista
 }
 
 @Component
@@ -57,6 +58,7 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
     ComandoBuscarEvento comandoBuscarEvento = new ComandoBuscarEvento();
     ComandoLogin comandoLogin = new ComandoLogin();
+    ComandoCrearLista comandoCrearLista = new ComandoCrearLista();
 
     @Autowired
     private EventService eventService;
@@ -122,7 +124,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         switch (chatStates.get(chatId)){
             case inicio:
-                mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
+                mostrar_mensaje_inicial(messageTextReceived, mensajeAEnviar, update, chatStates, this);
                 break;
             case agregarevento:
                 comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
@@ -135,6 +137,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case login:
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case crearlista:
+                comandoCrearLista.crearLista(messageTextReceived,chatStates,chatId, this);
                 break;
             default:
                 break;
@@ -166,9 +171,11 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
 
-    private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
+    private void mostrar_mensaje_inicial(String messageTextReceived, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
 
         final long chatId = update.getMessage().getChatId();
+
+        String[] parts = messageTextReceived.split(" ");
 
         switch (parts[0]) {
             case "/start":
@@ -195,6 +202,10 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case "/crearlista":
+                TacsBot.chatStates.put(chatId, crearlista);
+                comandoCrearLista.crearLista(messageTextReceived,chatStates,chatId, this);
                 break;
             /*case "/test":
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
@@ -226,15 +237,15 @@ public class TacsBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // Se devuelve el nombre que dimos al bot al crearlo con el BotFather
-        return "TacsBot";
-        //return "TacsTestBot";
+        //return "TacsBot";
+        return "TacsTestBot";
     }
 
     @Override
     public String getBotToken() {
         // Se devuelve el token que nos generó el BotFather de nuestro bot
-        return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
-        //return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
+        //return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
+        return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
     }
 
     public void agregarDatosEvento(Event e, StringBuilder mensajeAEnviar) {
@@ -316,7 +327,10 @@ public class TacsBot extends TelegramLongPollingBot {
         keyboardButton4.setText("/agregarevento");
 
         KeyboardButton keyboardButton5 = new KeyboardButton();
-        keyboardButton5.setText("/login");
+        keyboardButton5.setText("/crearlista");
+
+        KeyboardButton keyboardButton6 = new KeyboardButton();
+        keyboardButton6.setText("/login");
 
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboardRow.add(keyboardButton1);
@@ -333,12 +347,16 @@ public class TacsBot extends TelegramLongPollingBot {
         KeyboardRow keyboardRow5 = new KeyboardRow();
         keyboardRow5.add(keyboardButton5);
 
+        KeyboardRow keyboardRow6 = new KeyboardRow();
+        keyboardRow6.add(keyboardButton6);
+
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
         keyboardRowArrayList.add(keyboardRow);
         keyboardRowArrayList.add(keyboardRow2);
         keyboardRowArrayList.add(keyboardRow3);
         keyboardRowArrayList.add(keyboardRow4);
         keyboardRowArrayList.add(keyboardRow5);
+        keyboardRowArrayList.add(keyboardRow6);
 
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboardRowArrayList);
@@ -554,5 +572,11 @@ public class TacsBot extends TelegramLongPollingBot {
     private void agregarLista(EventList lista, StringBuilder mensajeAEnviar) {
         mensajeAEnviar.append("ID: /").append(lista.getListId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(lista.getListName()).append("\n\n");
+    }
+
+    public void crearLista(String nombreLista, long chatId) {
+        EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
+        //EventacsCommands.createEventList(getAccessToken(chatId), eventList);
+        eventService.createEventList(eventList);
     }
 }

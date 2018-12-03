@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client.httprequest;
 
+import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
@@ -53,6 +54,17 @@ public class EventacsCommands {
             String jsonString = "{\"userId\":\""+userID+"\"}";
             httpClient.execute(
                     (new RequestWitnToken("putRequest","https://eventacs.com:9000/eventacs/event-lists/"+listID+"/"+eventID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                            .build()).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createEventList(String accessToken, EventListCreationDTO eventListCreation) {
+        try {
+            String jsonString = "{\"eventListCreation\":\""+eventListCreation+"\"}";
+            httpClient.execute(
+                    (new RequestWitnToken("postRequest","https://eventacs.com:9000/eventacs/event-lists/", accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
