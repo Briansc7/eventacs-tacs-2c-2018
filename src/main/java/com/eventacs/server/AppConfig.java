@@ -152,10 +152,6 @@ public class AppConfig {
         template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
         return template;
     }
-    /*
-    @Repository
-    public interface UsersRepo extends CrudRepository<Long,String>  {
-    }*/
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
@@ -199,5 +195,8 @@ public class AppConfig {
         dataSource.setPassword(env.getProperty("jdbc.pass"));
         return dataSource;
     }
+
+    @Bean
+    public MongoContext mongoContext() { return new MongoContext();}
 
 }
