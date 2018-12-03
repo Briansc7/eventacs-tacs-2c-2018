@@ -237,15 +237,15 @@ public class TacsBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // Se devuelve el nombre que dimos al bot al crearlo con el BotFather
-        //return "TacsBot";
-        return "TacsTestBot";
+        return "TacsBot";
+        //return "TacsTestBot";
     }
 
     @Override
     public String getBotToken() {
         // Se devuelve el token que nos generó el BotFather de nuestro bot
-        //return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
-        return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
+        return "696368973:AAHhYOg8QAs5ytQO96_VhQue7k75h3f7rO4";
+        //return "736121445:AAEGjBEwTBmjDFXSiQRw2Eox7Ry9Ulk9FXI";
     }
 
     public void agregarDatosEvento(Event e, StringBuilder mensajeAEnviar) {
