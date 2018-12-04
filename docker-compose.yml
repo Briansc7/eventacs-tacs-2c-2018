@@ -5,10 +5,16 @@ services:
     build: .
     ports:
       - "9000:9000"
+#    hostname: backend.eventacs.com
+    networks:
+      redis-net:
+        aliases:
+          - backend.eventacs.com
     depends_on:
       - mysql
       - redis
       - mongo
+      - mysqlfailover
 
   oauth-server:
     build: ./oauth-authorization-server/.
@@ -17,13 +23,23 @@ services:
     depends_on:
       - backend
       - mysql
+ #   hostname: oauth-server.eventacs.com
+    networks: 
+      redis-net:
+        aliases:
+          - oauth-server.eventacs.com
 
-  frontend:
-    build: ./app/.
-    ports:
-      - "3000:3000"
-    depends_on:
-      - oauth-server
+ # frontend:
+ #   build: ./app/.
+ #   ports:
+ #     - "3000:3000"
+ #   hostname: frontend.eventacs.com
+ #   networks:
+#      redis-net:
+ #       aliases:
+ #         - frontend.eventacs.com
+ #   depends_on:
+ #     - oauth-server
 
   mysql:
     image: mysql
@@ -37,6 +53,25 @@ services:
      MYSQL_PASSWORD: "clave"
     ports:
      - "3306:3306"
+    networks:
+     - redis-net
+
+  mysqlfailover:
+    image: mysql
+    volumes:
+     - db_data2:/var/lib/mysql
+    restart: always
+    environment:
+     MYSQL_ROOT_PASSWORD: "password"
+     MYSQL_DATABASE: "eventacsTelegram"
+     MYSQL_USER: "pds"
+     MYSQL_PASSWORD: "clave"
+    hostname: "mysqlfailover"
+    ports:
+     - "3307:3306"
+    networks:
+     - redis-net
+
 
   redis:
     image: redis:5.0.0-alpine
@@ -60,10 +95,13 @@ services:
       MONGO_INIT_DATABASE: "eventacs"
     ports:
       - "27017:27017"
+    networks:
+      - redis-net
 
 networks:
   redis-net:
 
 volumes:
   db_data:
+  db_data2:
   redis-data:

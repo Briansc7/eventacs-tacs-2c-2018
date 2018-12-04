@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
@@ -141,8 +142,10 @@ public class AppConfig {
     JdbcDaoTelegramUserData jdbcDaoTelegramUserData() { return new JdbcDaoTelegramUserData(dataSource()); };
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory(){
-        return new JedisConnectionFactory();
+    JedisConnectionFactory jedisConnectionFactory()
+    {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration("redis",6379);
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
@@ -150,6 +153,7 @@ public class AppConfig {
         RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
+
         return template;
     }
     /*
@@ -177,6 +181,7 @@ public class AppConfig {
     @Bean
     public EventacsMongoClient eventacsMongoClient() { return new EventacsMongoClient(); }
 
+    @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
         final DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);

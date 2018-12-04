@@ -23,7 +23,7 @@ public class EventacsMongoClient {
     private Morphia morphia;
 
     public EventacsMongoClient() {
-        this.mongoClient = new MongoClient("localhost", 27017);
+        this.mongoClient = new MongoClient("mongo", 27017);
         this.database = mongoClient.getDB("eventacs");
         this.morphia = new Morphia();
         morphia.getMapper().getConverters().addConverter(new LocalDateTimeConverter());
