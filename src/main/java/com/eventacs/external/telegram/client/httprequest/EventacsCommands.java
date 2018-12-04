@@ -65,7 +65,7 @@ public class EventacsCommands {
         try {
 
             httpClient.execute(
-                    (new RequestWitnToken("deleteRequest","https://eventacs.com:9000/eventacs/event-lists/"+listID, accessToken))
+                    (new RequestWitnToken("deleteRequest","http://backend:9000/eventacs/event-lists/"+listID, accessToken))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,7 +76,7 @@ public class EventacsCommands {
         try {
             String jsonString = "{\"eventListCreation\":\""+eventListCreation+"\"}";
             httpClient.execute(
-                    (new RequestWitnToken("postRequest","https://eventacs.com:9000/eventacs/event-lists/", accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    (new RequestWitnToken("postRequest","http://backend:9000/eventacs/event-lists/", accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();

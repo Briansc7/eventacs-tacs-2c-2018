@@ -55,7 +55,7 @@ export default class LoginForm extends Component {
 
     }
     login(){
-        fetch('https://eventacs.com:9001/oauth-server/oauth/token', {
+        fetch('http://oauth-server:9001/oauth-server/oauth/token', {
             method: 'POST',
             headers: {
                 'Authorization': 'Basic ZXZlbnRhY3NDbGllbnRJZDpzZWNyZXQ=',
@@ -69,7 +69,7 @@ export default class LoginForm extends Component {
     }
 
     signUp(){
-        fetch('https://eventacs.com:9000/eventacs/signup', {
+        fetch('http://backend:9000/eventacs/signup', {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json'},

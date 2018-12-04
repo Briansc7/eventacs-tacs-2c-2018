@@ -5,7 +5,7 @@ services:
     build: .
     ports:
       - "9000:9000"
-#    hostname: backend.eventacs.com
+ #   hostname: backend.eventacs.com
     networks:
       redis-net:
         aliases:
@@ -29,17 +29,17 @@ services:
         aliases:
           - oauth-server.eventacs.com
 
- # frontend:
- #   build: ./app/.
- #   ports:
- #     - "3000:3000"
+  frontend:
+    build: ./app/.
+    ports:
+      - "3000:3000"
  #   hostname: frontend.eventacs.com
- #   networks:
-#      redis-net:
- #       aliases:
- #         - frontend.eventacs.com
- #   depends_on:
- #     - oauth-server
+    networks:
+      redis-net:
+        aliases:
+          - frontend.eventacs.com
+    depends_on:
+      - oauth-server
 
   mysql:
     image: mysql

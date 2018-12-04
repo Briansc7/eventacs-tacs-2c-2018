@@ -71,14 +71,14 @@ public class UserService {
     }
 
     public void addEventList(EventListCreationDTO eventListCreation, String listId) {
-        Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
+        //Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
 
-        if (user.isPresent()) {
-            this.usersRepository.update(user.get());
+        //if (user.isPresent()) {
+         //   this.usersRepository.update(user.get());
             this.eventListRepository.createEventList(eventListCreation, listId);
-        } else {
-            throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
-        }
+        //} else {
+         //   throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
+        //}
     }
 
     public void addEvent(String listId, Event event, String userId) {
