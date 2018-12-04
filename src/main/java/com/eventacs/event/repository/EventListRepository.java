@@ -132,4 +132,8 @@ public class EventListRepository {
             throw new EventListNotFound("EventList not found for this listId: " + listId);
         }
     }
+
+    public void dropDatabase(){
+        this.eventacsMongoClient.dropDatabase();
+    }
 }

@@ -123,21 +123,27 @@ public class EventacsMongoClient {
             return 1;
         } else {
             List<DBObject> queryResult = new ArrayList<>();
-            BasicDBObject searchQuery = new BasicDBObject();
             BasicDBObject sorting = new BasicDBObject();
             Datastore datastore = this.getDatastore("eventacs");
             DBCollection collection = this.getCollection("eventLists");
 
             sorting.put("listId", -1);
 
-            searchQuery.put("$orderby", sorting);
+            DBCursor cursor = collection.find().sort(sorting);
 
-            DBCursor cursor = collection.find(searchQuery);
+            cursor.getQuery();
 
-            queryResult.add(cursor.getQuery());
+            while (cursor.hasNext()) {
+                queryResult.add(cursor.next());
+            }
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, EventListDTO.class, queryResult.get(0)).getListId());
+            morphia.map(EventListDTO.class);
 
+            EventListDTO eventListDTO = morphia.fromDBObject(datastore, EventListDTO.class, queryResult.get(0));
+
+            String id = eventListDTO.getListId();
+
+            int lastId = Integer.parseInt(id);
             return lastId + 1;
         }
     }
@@ -164,5 +170,9 @@ public class EventacsMongoClient {
 
             return lastId + 1;
         }
+    }
+
+    public void dropDatabase(){
+        this.database.dropDatabase();
     }
 }

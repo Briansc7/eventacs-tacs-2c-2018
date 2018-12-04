@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
@@ -35,10 +36,8 @@ import java.util.Optional;
 import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
 
-import java.sql.*;
-
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento, login
+    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista
 }
 
 @Component
@@ -48,8 +47,6 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private static HashMap<Long, estados> chatStates = new HashMap<Long, estados>();
 
-    private static HashMap<Long, String> usuarios = new HashMap<Long, String>();
-
     private static TelegramUsersRepository telegramUsersRepository;
 
     ComandoAyuda comandoAyuda = new ComandoAyuda();
@@ -57,10 +54,11 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoRevisarEventos comandoRevisarEventos = new ComandoRevisarEventos();
     ComandoBuscarEvento comandoBuscarEvento = new ComandoBuscarEvento();
     ComandoLogin comandoLogin = new ComandoLogin();
+    ComandoCrearLista comandoCrearLista = new ComandoCrearLista();
+    ComandoEliminarLista comandoEliminarLista = new ComandoEliminarLista();
 
     @Autowired
     private EventService eventService;
-    private int numero = 0;
 
     public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository) {
         this.eventService = eventService;
@@ -122,7 +120,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         switch (chatStates.get(chatId)){
             case inicio:
-                mostrar_mensaje_inicial(parts, mensajeAEnviar, update, chatStates, this);
+                mostrar_mensaje_inicial(messageTextReceived, mensajeAEnviar, update, chatStates, this);
                 break;
             case agregarevento:
                 comandoAgregarEvento.agregarEvento(parts, chatStates, chatId, this);
@@ -135,6 +133,12 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case login:
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case crearlista:
+                comandoCrearLista.crearLista(messageTextReceived,chatStates,chatId, this);
+                break;
+            case eliminarLista:
+                comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
                 break;
             default:
                 break;
@@ -166,9 +170,11 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
 
-    private void mostrar_mensaje_inicial(String[] parts, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
+    private void mostrar_mensaje_inicial(String messageTextReceived, StringBuilder mensajeAEnviar, Update update, HashMap<Long, estados> chatStates, TacsBot tacsBot) {
 
         final long chatId = update.getMessage().getChatId();
+
+        String[] parts = messageTextReceived.split(" ");
 
         switch (parts[0]) {
             case "/start":
@@ -195,6 +201,14 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
                 comandoLogin.login(parts, chatStates, chatId, this);
+                break;
+            case "/crearlista":
+                TacsBot.chatStates.put(chatId, crearlista);
+                comandoCrearLista.crearLista(messageTextReceived,chatStates,chatId, this);
+                break;
+            case "/eliminarlista":
+                TacsBot.chatStates.put(chatId, eliminarLista);
+                comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
                 break;
             /*case "/test":
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
@@ -316,7 +330,13 @@ public class TacsBot extends TelegramLongPollingBot {
         keyboardButton4.setText("/agregarevento");
 
         KeyboardButton keyboardButton5 = new KeyboardButton();
-        keyboardButton5.setText("/login");
+        keyboardButton5.setText("/crearlista");
+
+        KeyboardButton keyboardButton6 = new KeyboardButton();
+        keyboardButton6.setText("/eliminarlista");
+
+        KeyboardButton keyboardButton7 = new KeyboardButton();
+        keyboardButton7.setText("/login");
 
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboardRow.add(keyboardButton1);
@@ -326,12 +346,14 @@ public class TacsBot extends TelegramLongPollingBot {
 
         KeyboardRow keyboardRow3 = new KeyboardRow();
         keyboardRow3.add(keyboardButton3);
+        keyboardRow3.add(keyboardButton4);
 
         KeyboardRow keyboardRow4 = new KeyboardRow();
-        keyboardRow4.add(keyboardButton4);
+        keyboardRow4.add(keyboardButton5);
+        keyboardRow4.add(keyboardButton6);
 
         KeyboardRow keyboardRow5 = new KeyboardRow();
-        keyboardRow5.add(keyboardButton5);
+        keyboardRow5.add(keyboardButton7);
 
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
         keyboardRowArrayList.add(keyboardRow);
@@ -455,45 +477,10 @@ public class TacsBot extends TelegramLongPollingBot {
         telegramUsersRepository.save(key,value);
     }
 
-    public static void guardarCuentaTelegram(long chatId, String username) {
-        usuarios.put(chatId, username);
-/*
-        try
-        {
-            // create a mysql database connection
-            String myDriver = "com.mysql.jdbc.Driver";
-            String myUrl = "jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true";
-            Class.forName(myDriver);
-            Connection conn = DriverManager.getConnection(myUrl, "pds", "clave");
 
-
-            // the mysql insert statement
-            String query = " update users set chatID = ?"
-                    + " where username = ?";
-
-            // create the mysql insert preparedstatement
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setLong (1, chatId);
-            preparedStmt.setString (2, username);
-
-            // execute the preparedstatement
-            preparedStmt.execute();
-
-            conn.close();
-        }
-        catch (Exception e)
-        {
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }*/
-
-    }
 
     public String getUserId(long chatId){
         return telegramUsersRepository.findUserIdByChatId(chatId);
-        //return usuarios.get(chatId);
-        //return "id1";
     }
 
     public boolean existeUserConChatID(long chatId) {
@@ -554,5 +541,15 @@ public class TacsBot extends TelegramLongPollingBot {
     private void agregarLista(EventList lista, StringBuilder mensajeAEnviar) {
         mensajeAEnviar.append("ID: /").append(lista.getListId()).append("\n");
         mensajeAEnviar.append("Nombre: ").append(lista.getListName()).append("\n\n");
+    }
+
+    public void crearLista(String nombreLista, long chatId) {
+        EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
+        //EventacsCommands.createEventList(getAccessToken(chatId), eventList);
+        eventService.createEventList(eventList);
+    }
+
+    public void eliminarLista(String listaId, long chatId) {
+        EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
     }
 }

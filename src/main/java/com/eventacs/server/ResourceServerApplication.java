@@ -11,6 +11,7 @@ public class ResourceServerApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         SpringApplication.run(ResourceServerApplication.class, args);
+        MongoContext.init();
     }
 
 }

@@ -74,7 +74,6 @@ public class UserService {
         Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
 
         if (user.isPresent()) {
-            user.get().addEventList(eventListCreation.getListName(), listId);
             this.usersRepository.update(user.get());
             this.eventListRepository.createEventList(eventListCreation, listId);
         } else {
@@ -114,4 +113,11 @@ public class UserService {
         //}
     }
 
+    public EventListRepository getEventListRepository() {
+        return eventListRepository;
+    }
+
+    public void setEventListRepository(EventListRepository eventListRepository) {
+        this.eventListRepository = eventListRepository;
+    }
 }
