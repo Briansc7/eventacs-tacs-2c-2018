@@ -234,6 +234,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>com.eventacs.server.ResourceServerApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

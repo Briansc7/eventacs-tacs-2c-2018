@@ -4,7 +4,7 @@ import '../styles/css/style.css'
 import AppNavbar from './AppNavbar';
 import EventsSearchBox from "./EventsSearchBox";
 import EventsCluster from './EventsCluster';
-import {Col, Row, Button} from "reactstrap";
+import {Col, Row} from "reactstrap";
 import './oauth.js';
 import { slide as Menu } from 'react-burger-menu'
 
@@ -12,9 +12,8 @@ class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {hasSearches: false, eventsResponse: {}, userLoggedIn: true, userData: {}, tokenAccess: ''};
-    this.setState({tokenAccess: JSON.parse(localStorage.getItem("dataSession"))});
-    this.setState({userData: JSON.parse(localStorage.getItem("dataSession")).principal})
+    this.state = {hasSearches: false, eventsResponse: {}, userLoggedIn: true, userData: {}};
+
     this.handleEventsSearch = this.handleEventsSearch.bind(this);
     this.handleNewSearches = this.handleNewSearches.bind(this);
     this.userLoginHandler = this.userLoginHandler.bind(this);
@@ -33,14 +32,6 @@ class Home extends Component {
       console.log(userData);
       this.setState({userLoggedIn: !this.state.userLoggedIn, userData: userData})
     }
-  }
-
-  logout() {
-      fetch('https://eventacs.com:9001/oauth-server/oauth/token/revokeById/'+JSON.parse(localStorage.getItem("dataSession")).access_token, {
-          method: 'POST',})
-          .then(response => response.json());
-      localStorage.clear();
-   //  this.props.dispatch(pushPath('/'));
   }
 
   render() {
@@ -71,9 +62,6 @@ class Home extends Component {
           <Col sm="6">
             {modalEventsCluster}
           </Col>
-            <Button onClick={this.logout}>
-                Logout
-            </Button>
         </Row>
       </div>
     );

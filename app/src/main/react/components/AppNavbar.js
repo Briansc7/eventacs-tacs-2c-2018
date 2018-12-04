@@ -14,7 +14,7 @@ export default class AppNavbar extends Component {
     // this.toggle = this.toggle.bind(this);
     // this.signin = this.signin.bind(this);
     // this.login = this.login.bind(this);
-     //this.logout = this.logout.bind(this);
+    // this.logout = this.logout.bind(this);
  //   this.toggleLoginForm = this.toggleLoginForm.bind(this);
  //   this.toggleSigninForm = this.toggleSigninForm.bind(this);
  //   this.onLoginForm = this.onLoginForm.bind(this);
