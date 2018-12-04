@@ -60,6 +60,17 @@ public class EventacsCommands {
         }
     }
 
+    public static void deleteEventList(String accessToken, String listID) {
+        try {
+
+            httpClient.execute(
+                    (new RequestWitnToken("deleteRequest","https://eventacs.com:9000/eventacs/event-lists/"+listID, accessToken))
+                            .build()).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void createEventList(String accessToken, EventListCreationDTO eventListCreation) {
         try {
             String jsonString = "{\"eventListCreation\":\""+eventListCreation+"\"}";
