@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -73,10 +74,13 @@ public class EventacsCommands {
 
     public static void createEventList(String accessToken, EventListCreationDTO eventListCreation) {
         try {
-            String jsonString = "{\"eventListCreation\":\""+eventListCreation+"\"}";
+            String jsonString = "{\"listName\":\""+eventListCreation.getListName()+"\",\"userId\":\""+eventListCreation.getUserId()+"\"}";
+
+            HttpUriRequest requestWitnToken = new RequestWitnToken("postRequest","https://eventacs.com:9000/eventacs/event-lists/", accessToken).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    .build();
+
             httpClient.execute(
-                    (new RequestWitnToken("postRequest","https://eventacs.com:9000/eventacs/event-lists/", accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
-                            .build()).getEntity().getContent();
+                    requestWitnToken).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
         }
