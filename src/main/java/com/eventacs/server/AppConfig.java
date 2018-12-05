@@ -11,6 +11,7 @@ import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
@@ -18,7 +19,9 @@ import com.eventacs.mongo.EventacsMongoClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
+import com.eventacs.user.model.User;
 import com.eventacs.event.repository.AlarmsRepository;
+import com.eventacs.user.repository.TelegramUsersRepository;
 import com.eventacs.user.repository.TelegramUsersRepositoryImpl;
 import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
@@ -55,7 +58,6 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Repository;
-
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
@@ -73,7 +75,7 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
-    public AccountService accountService() { return new AccountService(jdbcDaoTelegramUserData()); }
+    public AccountService accountService() { return new AccountService(jdbcDaoUserData()); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(eventacsMongoClient()), alarmsMapper(), eventListsMapper()); }
@@ -138,6 +140,8 @@ public class AppConfig {
         return mapper;
     }
 
+    JdbcDaoUserData jdbcDaoUserData() { return new JdbcDaoUserData(dataSourceUsers()); };
+
     @Bean
     JdbcDaoTelegramUserData jdbcDaoTelegramUserData() { return new JdbcDaoTelegramUserData(dataSource()); };
 
@@ -153,9 +157,12 @@ public class AppConfig {
         RedisTemplate<Long,String> template = new RedisTemplate<Long,String>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
-
         return template;
     }
+    /*
+    @Repository
+    public interface UsersRepo extends CrudRepository<Long,String>  {
+    }*/
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
@@ -202,6 +209,14 @@ public class AppConfig {
     }
 
     @Bean
+    public DataSource dataSourceUsers() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("jdbc.urlUsers"));
+        dataSource.setUsername(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        return dataSource;
+    }
+@Bean
     public MongoContext mongoContext() { return new MongoContext();}
-
 }

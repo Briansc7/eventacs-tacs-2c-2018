@@ -18,4 +18,5 @@ ADD ./ /app
 EXPOSE 3000 
 #CMD ["yarn", "install"]
 RUN npm install react-scripts -y
+RUN yarn
 CMD ["yarn", "start"]

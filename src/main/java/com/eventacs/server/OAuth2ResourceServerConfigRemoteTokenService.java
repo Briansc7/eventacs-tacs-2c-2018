@@ -27,9 +27,14 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-                http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .authorizeRequests().anyRequest().permitAll();
+                http
+                    .authorizeRequests()
+                        .antMatchers("/eventacs/signup").permitAll()
+                        .and()
+                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .and()
+                        .authorizeRequests()
+                        .anyRequest().authenticated();
                     //.authorizeRequests().anyRequest().authenticated();
         // @formatter:on                
     }
@@ -51,7 +56,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
 //        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 //        dataSource.setUrl("jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true");
-//        dataSource.setUsername("pds");
+//        dataSource.setUserName("pds");
 //        dataSource.setPassword("clave");
 //        return dataSource;
 //    }
