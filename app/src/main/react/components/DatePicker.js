@@ -22,7 +22,7 @@ const createOptionForDate = d => {
   };
 };
 
-const defaultOptions = ['today', 'tomorrow', 'yesterday'].map(i =>
+const defaultOptions = [].map(i =>
   createOptionForDate(chrono.parseDate(i))
 );
 
@@ -89,7 +89,7 @@ const daysHeaderStyles = {
 const daysHeaderItemStyles = {
   color: '#999',
   cursor: 'default',
-  fontSize: '75%',
+  fontSize: '50%',
   fontWeight: '500',
   display: 'inline-block',
   width: '12%',

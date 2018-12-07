@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import EventsTable from "./EventsTable";
+import EventsTable from "./EventsTable2";
 import Pages from "./Pages";
 import {Container} from "reactstrap";
 
@@ -9,7 +9,7 @@ class EventsCluster extends Component {
     return(
       <Container>
         <EventsTable data={this.props.data}/>
-        <Pages metadata={this.props.data.data.metadata} changePage={this.props.changePage}/>
+        {/*<Pages metadata={this.props.data.data.metadata} changePage={this.props.changePage}/>*/}
       </Container>
     );
   }

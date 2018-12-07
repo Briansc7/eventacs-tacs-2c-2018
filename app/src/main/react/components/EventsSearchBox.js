@@ -3,10 +3,11 @@ import SimpleDropdown from "./SimpleDropdown";
 import {Button, Container, Input} from 'reactstrap';
 import '../styles/EventsSearchBox.css';
 import DatePicker from "./DatePicker";
+import './oauth.js';
 import axios from 'axios';
 
 const containerStyle = {
-  width: '100%'
+  width: '30%'
 };
 
 const marginSmStyle = {

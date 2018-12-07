@@ -1,24 +1,16 @@
 import React, { Component } from 'react';
-import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
-//import LoginForm from "./LoginForm";
-//import SigninForm from "./SigninForm";
+import classnames from 'classnames';
 import axios from "axios";
 
 export default class AppNavbar extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {isOpen: false, isLoggedIn: false, toggleLoginForm: false, toggleSigninForm: false};
-    // this.signinData = {username: "", password: ""};
-    // this.toggle = this.toggle.bind(this);
-    // this.signin = this.signin.bind(this);
-    // this.login = this.login.bind(this);
-     //this.logout = this.logout.bind(this);
- //   this.toggleLoginForm = this.toggleLoginForm.bind(this);
- //   this.toggleSigninForm = this.toggleSigninForm.bind(this);
- //   this.onLoginForm = this.onLoginForm.bind(this);
-//    this.onSigninForm = this.onSigninForm.bind(this);
+    this.state = {isOpen: false, isLoggedIn: false, toggleLoginForm: false, toggleSigninForm: false, activeTab: '1'};
+      this.toggle = this.toggle.bind(this);
+
   }
 
   toggle() {
@@ -28,87 +20,40 @@ export default class AppNavbar extends Component {
     });
   }
 
-  // onLoginForm(username, password) {
-  //   this.login({username: username, password: password})
-  // };
-  //
-  // onSigninForm = (username, password) => {
-  //   this.signinData = {username, password}
-  // };
-  //
-  // async signin(signinData) {
-  //   await fetch(`/signin`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(signinData),
-  //   }).then(() => {
-  //
-  //   });
-  // }
+      toggleTabs(tab) {
+          if (this.state.activeTab !== tab) {
+              this.setState({
+                  activeTab: tab
+              });
+          }
+      }
 
-  // login(loginData) {
-  //   axios.post('/eventacs/login',
-  //               {name: loginData.username, encryptedPassword: loginData.password},
-  //               {headers: {
-  //                 'Accept': 'application/json',
-  //                 'Content-Type': 'application/json'}
-  //               })
-  //     .then(response => {
-  //       this.props.userLoginHandler(response.data)
-  //     })
-  //     .catch(error => {
-  //       console.log(error)
-  //     })
-  // }
-  //
-  // async logout(logoutData) {
-  //   await fetch(`/logout`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(logoutData),
-  //   }).then(() => {
-  //
-  //   });
-  // }
-
-  // toggleLoginForm() {
-  //   this.setState({toggleLoginForm: !this.state.toggleLoginForm});
-  // }
-  //
-  // toggleSigninForm() {
-  //   this.setState({toggleSigninForm: !this.state.toggleSigninForm, toggleLoginForm: this.state.toggleLoginForm});
-  // }
+    logout() {
+        fetch('http://eventacs.com:9001/oauth-server/oauth/token/revokeById/'+JSON.parse(localStorage.getItem("dataSession")).access_token, {
+            method: 'POST',})
+            .then(response => response.json());
+        localStorage.clear();
+    }
 
   render() {
-    let modalLogin, modalSignin;
-
-    // if(this.state.toggleLoginForm) { modalLogin = <LoginForm loginHandler={this.onLoginForm}/>; }
-    // if(this.state.toggleSigninForm) { modalSignin = <SigninForm signinHandler={this.onSigninForm}/>; }
 
     return (
       <Navbar color="dark" dark expand="md">
-        <NavbarBrand tag={Link} to="/">Home</NavbarBrand>
+        <NavbarBrand tag={Link} to="/Home">Home</NavbarBrand>
         <NavbarToggler onClick={this.toggle}/>
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
+              <NavItem>
+                  <NavLink>{JSON.parse(localStorage.getItem("dataSession")).principal.name}</NavLink>
+              </NavItem>
+
             <NavItem>
-              {/*<NavLink onClick={() => this.toggleLoginForm()}>Login</NavLink>*/}
-            </NavItem>
-            <NavItem>
-              {/*<NavLink onClick={() => this.toggleSigninForm()}>Signin</NavLink>*/}
+              <NavLink href="/" onClick={() => this.logout()}>Logout</NavLink>
             </NavItem>
           </Nav>
+
         </Collapse>
-        {modalLogin}
-        {modalSignin}
       </Navbar>
     );
   }
-
 }

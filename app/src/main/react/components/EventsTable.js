@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SimpleDropdown from "./SimpleDropdown";
 
 const tableStyle = {
-  width: '100%'
+  width: '10%'
 };
 
 class EventsTable extends Component {

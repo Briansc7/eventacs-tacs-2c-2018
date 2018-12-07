@@ -70,7 +70,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     @Bean
     public RemoteTokenServices tokenServices() {
         final RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setCheckTokenEndpointUrl("https://eventacs.com:9001/oauth-server/oauth/check_token");
+        tokenService.setCheckTokenEndpointUrl("http://eventacs.com:9001/oauth-server/oauth/check_token");
         tokenService.setClientId("eventacsClientId");
         tokenService.setClientSecret("secret");
         return tokenService;

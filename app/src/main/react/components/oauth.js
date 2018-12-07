@@ -4,12 +4,12 @@ import axios from 'axios';
 //import cookie from 'cookie-machine';
 
 axios.interceptors.request.use(function(config) {
-    //const token = cookie.get(__TOKEN_KEY__);
+    const token = JSON.parse(localStorage.getItem("dataSession")).access_token;
 
-    //if ( token != null ) {
-        //config.headers.Authorization = `Bearer ${token}`;
-        config.headers.Authorization = `Bearer 4eddcbf9-37a8-4dc6-b64a-dd07e4b36804`;
-  //  }
+    if ( token != null ) {
+        config.headers.Authorization = `Bearer ${token}`;
+        //config.headers.Authorization = `Bearer 4eddcbf9-37a8-4dc6-b64a-dd07e4b36804`;
+    }
 
     return config;
 }, function(err) {

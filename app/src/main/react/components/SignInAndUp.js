@@ -226,7 +226,7 @@ class SignIn extends React.Component {
     }
 
     login(e){
-        fetch('https://eventacs.com:9001/oauth-server/oauth/token', {
+        fetch('http://eventacs.com:9001/oauth-server/oauth/token', {
             method: 'POST',
             headers: {
                 'Authorization': 'Basic ZXZlbnRhY3NDbGllbnRJZDpzZWNyZXQ=',
@@ -279,7 +279,7 @@ class SignIn extends React.Component {
     }
 
     signUp(e) {
-        fetch('https://eventacs.com:9000/eventacs/signup', {
+        fetch('http://eventacs.com:9000/eventacs/signup', {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json'
@@ -433,7 +433,7 @@ class SignIn extends React.Component {
                                 color="primary"
                                 className={classes.submit}
                             >
-                                Sign in
+                                SignUp
                             </Button>
                         </form></TabContainer>}
                 </Paper>

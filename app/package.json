@@ -23,9 +23,9 @@
     "react-select": "^2.1.0",
     "reactstrap": "6.3.0"
   },
-  "proxy": "https://eventacs.com:9000",
+  "proxy": "http://eventacs.com:9000",
   "scripts": {
-    "start": "export HTTPS=true&&react-scripts start",
+    "start": "yarn&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

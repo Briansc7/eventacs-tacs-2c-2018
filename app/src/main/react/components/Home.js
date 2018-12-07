@@ -5,20 +5,56 @@ import AppNavbar from './AppNavbar';
 import EventsSearchBox from "./EventsSearchBox";
 import EventsCluster from './EventsCluster';
 import {Col, Row, Button} from "reactstrap";
+import Grid from '@material-ui/core/Grid';
 import './oauth.js';
 import { slide as Menu } from 'react-burger-menu'
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import NoSsr from '@material-ui/core/NoSsr';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 
+function TabContainer(props) {
+    return (
+        <Typography component="div" style={{ padding: 8 * 3 }}>
+            {props.children}
+        </Typography>
+    );
+}
+
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
+function LinkTab(props) {
+    return <Tab component="a" onClick={event => event.preventDefault()} {...props} />;
+}
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+    },
+});
 class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {hasSearches: false, eventsResponse: {}, userLoggedIn: true, userData: {}, tokenAccess: ''};
+    this.state = {hasSearches: false, eventsResponse: {}, userLoggedIn: true, userData: {}, tokenAccess: '', value: 0};
     this.setState({tokenAccess: JSON.parse(localStorage.getItem("dataSession"))});
     this.setState({userData: JSON.parse(localStorage.getItem("dataSession")).principal})
     this.handleEventsSearch = this.handleEventsSearch.bind(this);
     this.handleNewSearches = this.handleNewSearches.bind(this);
     this.userLoginHandler = this.userLoginHandler.bind(this);
   }
+
+
+
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
 
   handleEventsSearch(eventsResponse) {
     this.setState({hasSearches: true, eventsResponse: eventsResponse})
@@ -35,17 +71,11 @@ class Home extends Component {
     }
   }
 
-  logout() {
-      fetch('https://eventacs.com:9001/oauth-server/oauth/token/revokeById/'+JSON.parse(localStorage.getItem("dataSession")).access_token, {
-          method: 'POST',})
-          .then(response => response.json());
-      localStorage.clear();
-   //  this.props.dispatch(pushPath('/'));
-  }
-
   render() {
 
-    let modalEventsCluster, actualPage, modalEventSearchBox;
+      const { classes } = this.props;
+      const { value } = this.state;
+    let modalEventsCluster, actualPage, modalEventSearchBox, headerTabs;
 
     if(this.state.hasSearches) {
       modalEventsCluster = <EventsCluster data={this.state.eventsResponse} />;
@@ -62,24 +92,42 @@ class Home extends Component {
     }
 
     return (
-      <div>
+        <Grid>
+        <Grid>
         <AppNavbar userLoginHandler={this.userLoginHandler}/>
-        <Row>
-          <Col xs="3">
-            {modalEventSearchBox}
-          </Col>
-          <Col sm="6">
-            {modalEventsCluster}
-          </Col>
-            <Button onClick={this.logout}>
-                Logout
-            </Button>
-        </Row>
-      </div>
+        </Grid>
+          <Grid>
+              <NoSsr>
+                  <div className={classes.root}>
+                      <AppBar position="static">
+                          <Tabs fullWidth value={value} onChange={this.handleChange}>
+                              <LinkTab label="Busqueda" href="page1" />
+                              <LinkTab label="Alarmas" href="page2" />
+                              <LinkTab label="Listas" href="page3" />
+                              <LinkTab label="Listas de eventos" href="page3" />
+                          </Tabs>
+                      </AppBar>
+                      {value === 0 && <TabContainer>{modalEventSearchBox}</TabContainer>}
+                      {value === 1 && <TabContainer>{modalEventsCluster}</TabContainer>}
+                      {value === 2 && <TabContainer>Page Three</TabContainer>}
+                  </div>
+              </NoSsr>
+          </Grid>
+<Grid>
+
+</Grid>
+
+          </Grid>
     );
 
   }
 
 }
 
-export default Home;
+Home.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Home);
+
+//export default Home;
