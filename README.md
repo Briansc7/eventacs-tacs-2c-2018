@@ -3,7 +3,18 @@
 Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Construcción de Software
 
 ### Pasos con docker
-hacer cd al directorio raíz de evectacs-tacs-2c-2018 y ejecutar el siguiente comando:
+Modificar el archivo hosts con el siguiente comando:
+``sudo nano /etc/hosts``
+
+Agregar al archivo hosts las siguientes dos líneas:
+
+``172.10.0.8	backend``
+
+``172.10.0.9 	oauth-server``
+
+(esto solo es necesario hacerlo una vez)
+
+Hacer cd al directorio raíz de evectacs-tacs-2c-2018 y ejecutar el siguiente comando para levantar la app:
 ``sudo docker-compose up``
 
 Una vez terminado se puede probar el bot de telegram mandandole mensajes a @TacsBot (ver sección de telegram de este documento).
