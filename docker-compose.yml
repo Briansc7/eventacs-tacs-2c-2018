@@ -10,7 +10,7 @@ services:
       redis-net:
         aliases:
           - backend.eventacs.com
-        ipv4_address: 172.19.0.8
+        ipv4_address: 172.10.0.8
     depends_on:
       - mysql
       - redis
@@ -29,7 +29,7 @@ services:
       redis-net:
         aliases:
           - oauth-server.eventacs.com
-        ipv4_address: 172.19.0.9
+        ipv4_address: 172.10.0.9
 
   frontend:
     build: ./app/.
@@ -38,7 +38,7 @@ services:
  #   hostname: frontend.eventacs.com
     networks:
       redis-net:
-        ipv4_address: 172.19.0.10
+        ipv4_address: 172.10.0.10
         aliases:
           - frontend.eventacs.com
     depends_on:
@@ -104,8 +104,10 @@ services:
 networks:
   redis-net:
     ipam:
+#      driver: bridge
       config:
-        - subnet: 172.19.0.0/24
+        - subnet: 172.10.0.1/12
+          getway: 172.10.0.1
 
 volumes:
   db_data:
