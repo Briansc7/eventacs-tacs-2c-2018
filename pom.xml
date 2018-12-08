@@ -228,13 +228,18 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
+
                     <execution>
                         <goals>
                             <goal>java</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <mainClass>com.eventacs.server.ResourceServerApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
+
