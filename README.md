@@ -8,7 +8,7 @@ hacer cd al directorio raíz de evectacs-tacs-2c-2018 y ejecutar el siguiente co
 
 Una vez terminado se puede probar el bot de telegram mandandole mensajes a @TacsBot (ver sección de telegram de este documento).
 
-También se puede probar el front accediendo desde un navegador a http://127.19.0.10:3000/ (se estableció una ip fija)
+También se puede probar el front accediendo desde un navegador a http://172.10.0.10:3000/ (se estableció una ip fija)
 
 Al finalizar las pruebas, ejecutar:
 ``sudo docker-compose down``
