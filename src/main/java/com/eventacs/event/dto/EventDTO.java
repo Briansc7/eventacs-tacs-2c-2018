@@ -9,8 +9,7 @@ public class EventDTO {
     private String description;
     private String category;
     private String logoUrl;
-
-
+    private Date registerDate;
     private Date start;
     private Date end;
 
@@ -73,7 +72,16 @@ public class EventDTO {
         this.end = end;
     }
 
-    public EventDTO(String id, String name, String description, String category, String logoUrl, Date start, Date end) {
+
+    public Date getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Date registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public EventDTO(String id, String name, String description, String category, String logoUrl, Date start, Date end, Date registerDate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -81,5 +89,6 @@ public class EventDTO {
         this.logoUrl = logoUrl;
         this.start = start;
         this.end = end;
+        this.registerDate = registerDate;
     }
 }

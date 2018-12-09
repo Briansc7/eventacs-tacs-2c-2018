@@ -1,5 +1,6 @@
 package com.eventacs.event.repository;
 
+import com.eventacs.event.dto.EventDTO;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.dto.EventListMapper;
@@ -13,6 +14,8 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -131,6 +134,21 @@ public class EventListRepository {
         } else {
             throw new EventListNotFound("EventList not found for this listId: " + listId);
         }
+    }
+
+    public int getEventsCountByTime(String listId) {
+        List<EventListDTO> eventLists = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
+
+        if(!eventLists.isEmpty()){
+            return eventLists.stream().map(el -> el.getEvents()).flatMap(List::stream).filter(event-> getEventtWithCondition(event)).collect(Collectors.toList()).size();
+
+        } else {
+            throw new EventListNotFound("EventList not found for this listId: " + listId);
+        }
+    }
+
+    private boolean getEventtWithCondition(EventDTO event) {
+        return true;//event.getRegisterDate().after(LocalDate.now().minusDays(7));
     }
 
     public void dropDatabase(){

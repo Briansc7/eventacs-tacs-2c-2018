@@ -96,7 +96,7 @@ public class EventController {
 
     @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
     @ResponseBody
-    public List<UserInfoDTO> getWatchers(@PathVariable String eventId) {
+    public int getWatchers(@PathVariable String eventId) {
         LOGGER.info("/eventacs/{}/watchers [get]", eventId);
         return this.eventService.getWatchers(eventId);
     }

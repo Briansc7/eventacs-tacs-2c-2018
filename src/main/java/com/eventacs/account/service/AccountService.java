@@ -2,7 +2,9 @@ package com.eventacs.account.service;
 
 import com.eventacs.account.dto.UserAccountDTO;
 import com.eventacs.account.dto.UserLoginDTO;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
+import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.user.dto.UserInfoDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -28,8 +30,8 @@ public class AccountService {
         return userCreated;
     }
 
-    public UserInfoDTO login(UserLoginDTO userLoginDTO) {
-        return new UserInfoDTO("testid", userLoginDTO.getName(),  "lastName", new ArrayList<>());
+    public GetAccessToken login(UserLoginDTO userLoginDTO) {
+        return EventacsCommands.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
     }
 
     public UserInfoDTO logout(String sessionCookieId) {

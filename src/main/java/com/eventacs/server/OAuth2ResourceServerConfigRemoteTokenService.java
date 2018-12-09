@@ -30,6 +30,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
                 http
                     .authorizeRequests()
                         .antMatchers("/eventacs/signup").permitAll()
+                        .antMatchers("/eventacs/login").permitAll()
                         .and()
                         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .and()

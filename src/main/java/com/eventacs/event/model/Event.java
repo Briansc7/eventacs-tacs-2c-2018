@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Event {
@@ -14,6 +15,10 @@ public class Event {
     private String description;
     private String category;
     private String logoUrl;
+
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime registerDate;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -34,6 +39,17 @@ public class Event {
         this.start = start;
         this.end = end;
         this.logoUrl = logoUrl;
+    }
+
+    public Event(String id, String name, String description, String category, LocalDateTime start, LocalDateTime end, String logoUrl, LocalDateTime registerDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.start = start;
+        this.end = end;
+        this.logoUrl = logoUrl;
+        this.registerDate = registerDate;
     }
 
     public String getId() {
@@ -91,4 +107,13 @@ public class Event {
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
     }
+
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(LocalDateTime registerDate) {
+        this.registerDate = registerDate;
+    }
+
 }

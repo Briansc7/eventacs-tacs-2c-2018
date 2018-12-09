@@ -76,15 +76,20 @@ public class EventService {
 
     }
 
-    public int getWatchers(String eventId) {
-        // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
-        return eventListRepository.getEventsListsByEventId(eventId).size();
+    public int
 
-       /* List<UserInfoDTO> watchers = new ArrayList<>();
-        watchers.add(new UserInfoDTO("id1", "name1", "lastname1", new ArrayList<>()));
-        watchers.add(new UserInfoDTO("id2", "name2", "lastname2", new ArrayList<>()));
-        eventListRepository.getEventListByListId(listId);
-        return watchers;*/
+
+
+    getWatchers(String eventId) {
+//        // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
+//        return eventListRepository.getEventsListsByEventId(eventId).size();
+//
+//       /* List<UserInfoDTO> watchers = new ArrayList<>();
+//        watchers.add(new UserInfoDTO("id1", "name1", "lastname1", new ArrayList<>()));
+//        watchers.add(new UserInfoDTO("id2", "name2", "lastname2", new ArrayList<>()));
+//        eventListRepository.getEventListByListId(listId);
+        //return watchers;*/
+        return 3;
     }
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
