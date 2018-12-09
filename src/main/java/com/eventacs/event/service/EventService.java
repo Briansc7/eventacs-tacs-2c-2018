@@ -1,6 +1,7 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
@@ -81,8 +82,8 @@ public class EventService {
         // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
         Set<String> hs = new HashSet<>();
 
-        List<EventList> eventList = eventListRepository.getEventsListsByEventId(eventId);
-        List<String> listNames = eventList.stream().map(eventListID -> eventListID.getUserName()).collect(Collectors.toList());
+        List<EventListDTO> eventList = eventListRepository.getEventsListsByEventId(eventId);
+        List<String> listNames = eventList.stream().map(eventListID -> eventListID.getUserId()).collect(Collectors.toList());
 
         hs.addAll(listNames);
         listNames.clear();

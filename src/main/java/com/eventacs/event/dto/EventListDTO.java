@@ -1,10 +1,13 @@
 package com.eventacs.event.dto;
 
+import com.mysql.cj.util.StringUtils;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.google.api.client.repackaged.com.google.common.base.Strings.nullToEmpty;
 
 public class EventListDTO {
 
@@ -65,11 +68,14 @@ public class EventListDTO {
     }
 
     public boolean existEventInList(List<EventDTO> events, String eventId) {
-        List<EventDTO> eventMatched =  events.stream().filter(eventDTO -> eventDTO.getId().equals(eventId)).collect(Collectors.toList());
-        if(eventMatched.isEmpty()){
-            return true;
-        }
-        else
-            {return false;}
+
+        //List<EventDTO>events.stream().filter(eventDTO -> !(eventDTO.isEmpty());
+             try{
+                 return events.stream().anyMatch(eventDTO -> eventId.contentEquals(eventDTO.getId()));}
+             catch (NullPointerException npe)
+             {
+                 return false;
+             }
+
     }
 }

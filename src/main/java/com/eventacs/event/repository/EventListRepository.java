@@ -157,20 +157,17 @@ public class EventListRepository {
         this.eventacsMongoClient.dropDatabase();
     }
 
-    public List<EventList> getEventsListsByEventId(String eventId) {
+    public List<EventListDTO> getEventsListsByEventId(String eventId) {
 
-        //List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
-
-        //List<EventListDTO> eventLists = eventacsMongoClient.getAllElements();
         List<EventListDTO> eventListsDTO = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
         List<EventListDTO> eventListDTOMatch = eventListsDTO.stream().filter(eventListDTO -> eventListDTO.existEventInList(eventListDTO.getEvents(),eventId)).collect(Collectors.toList());
-        List<EventList> eventList = eventListDTOMatch.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
+        //List<EventList> eventList = eventListDTOMatch.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
 
-        if(!eventList.isEmpty()){
+        if(!eventListDTOMatch.isEmpty()){
 
              //stream().filter(eventDTO -> eventDTO.getId().equals(eventId)));
             //eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
-            return eventList;
+            return eventListDTOMatch;
 
         } else {
             throw new EventListNotFound("Event not found for this eventId: " + eventId);
