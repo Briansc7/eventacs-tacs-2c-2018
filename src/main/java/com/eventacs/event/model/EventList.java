@@ -6,6 +6,7 @@ import java.util.List;
 public class EventList {
     private String listId;
     private String listName;
+    private String userName;
     private List<Event> events;
 
     public EventList(String listId, String listName, List<Event> events) {
@@ -15,6 +16,14 @@ public class EventList {
     }
 
     public EventList() {
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getListId() {

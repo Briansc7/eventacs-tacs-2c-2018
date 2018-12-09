@@ -1,8 +1,13 @@
 package com.eventacs.event.dto;
 
+import com.mysql.cj.util.StringUtils;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.google.api.client.repackaged.com.google.common.base.Strings.nullToEmpty;
 
 public class EventListDTO {
 
@@ -10,6 +15,7 @@ public class EventListDTO {
     private String _id;
     private String listId;
     private String listName;
+    private String userId;
     private List<EventDTO> events;
 
     public EventListDTO() {
@@ -22,6 +28,13 @@ public class EventListDTO {
         this.events = events;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public String getListId() {
         return listId;
     }
@@ -54,4 +67,15 @@ public class EventListDTO {
         this._id = _id;
     }
 
+    public boolean existEventInList(List<EventDTO> events, String eventId) {
+
+        //List<EventDTO>events.stream().filter(eventDTO -> !(eventDTO.isEmpty());
+             try{
+                 return events.stream().anyMatch(eventDTO -> eventId.contentEquals(eventDTO.getId()));}
+             catch (NullPointerException npe)
+             {
+                 return false;
+             }
+
+    }
 }
