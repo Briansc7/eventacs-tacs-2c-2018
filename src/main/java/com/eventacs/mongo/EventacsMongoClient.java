@@ -62,6 +62,27 @@ public class EventacsMongoClient {
         return result;
     }
 
+    public <T> List<T> getAllElements(Class<T> clazz, String collectionName, String dbName) {
+        List<DBObject> queryResult = new ArrayList<>();
+        Datastore datastore = this.getDatastore(dbName);
+        List<T> result = new ArrayList<>();
+
+        DBCollection collection = this.getCollection(collectionName);
+
+        DBCursor cursor = collection.find();
+
+        cursor.getQuery();
+
+        while (cursor.hasNext()) {
+            queryResult.add(cursor.next());
+        }
+
+        morphia.map(clazz);
+        queryResult.forEach(qr -> result.add(morphia.fromDBObject(datastore, clazz, qr)));
+
+        return result;
+    }
+
     public void createDocument(String collectionName, Map<String, Object> documentElements) {
         BasicDBObject document = new BasicDBObject();
         DBCollection collection = this.getCollection(collectionName);
