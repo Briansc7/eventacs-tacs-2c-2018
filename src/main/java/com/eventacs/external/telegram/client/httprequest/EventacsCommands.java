@@ -1,10 +1,7 @@
 package com.eventacs.external.telegram.client.httprequest;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventsResponse;
+import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,6 +79,17 @@ public class EventacsCommands {
 
             httpClient.execute(
                     requestWitnToken).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void changeListName(String accessToken, String listID, ListName listName){
+        try {
+            String jsonString = "{\"listName\":\""+listName.getListName()+"\"}";
+            httpClient.execute(
+                    (new RequestWitnToken("putRequest","http://backend:9000/eventacs/event-lists/"+listID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                            .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,10 +1,7 @@
 package com.eventacs.external.telegram.client;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventsResponse;
+import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
@@ -37,7 +34,7 @@ import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
 
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista
+    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista, cambiarnombrelista
 }
 
 @Component
@@ -56,6 +53,7 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoLogin comandoLogin = new ComandoLogin();
     ComandoCrearLista comandoCrearLista = new ComandoCrearLista();
     ComandoEliminarLista comandoEliminarLista = new ComandoEliminarLista();
+    ComandoCambiarNombreLista comandoCambiarNombreLista = new ComandoCambiarNombreLista();
 
     @Autowired
     private EventService eventService;
@@ -140,6 +138,9 @@ public class TacsBot extends TelegramLongPollingBot {
             case eliminarLista:
                 comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
                 break;
+            case cambiarnombrelista:
+                comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
+                break;
             default:
                 break;
 
@@ -209,6 +210,10 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/eliminarlista":
                 TacsBot.chatStates.put(chatId, eliminarLista);
                 comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
+                break;
+            case "/cambiarnombrelista":
+                TacsBot.chatStates.put(chatId, cambiarnombrelista);
+                comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
                 break;
             /*case "/test":
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
@@ -336,7 +341,10 @@ public class TacsBot extends TelegramLongPollingBot {
         keyboardButton6.setText("/eliminarlista");
 
         KeyboardButton keyboardButton7 = new KeyboardButton();
-        keyboardButton7.setText("/login");
+        keyboardButton7.setText("/cambiarnombrelista");
+
+        KeyboardButton keyboardButton8 = new KeyboardButton();
+        keyboardButton8.setText("/login");
 
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboardRow.add(keyboardButton1);
@@ -351,9 +359,10 @@ public class TacsBot extends TelegramLongPollingBot {
         KeyboardRow keyboardRow4 = new KeyboardRow();
         keyboardRow4.add(keyboardButton5);
         keyboardRow4.add(keyboardButton6);
+        keyboardRow4.add(keyboardButton7);
 
         KeyboardRow keyboardRow5 = new KeyboardRow();
-        keyboardRow5.add(keyboardButton7);
+        keyboardRow5.add(keyboardButton8);
 
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
         keyboardRowArrayList.add(keyboardRow);
@@ -547,6 +556,12 @@ public class TacsBot extends TelegramLongPollingBot {
         EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
         EventacsCommands.createEventList(getAccessToken(chatId), eventList);
         //eventService.createEventList(eventList);
+    }
+
+    public void cambiarNombreLista(String listId, String newName, long chatId) {
+        //EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
+        EventacsCommands.changeListName(getAccessToken(chatId), listId, new ListName(newName));
+        //eventService.changeListName(listId, newName);
     }
 
     public void eliminarLista(String listaId, long chatId) {
