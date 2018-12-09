@@ -78,7 +78,16 @@ public class EventService {
 
     public int getWatchers(String eventId) {
         // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
-        return eventListRepository.getEventsListsByEventId(eventId).size();
+        Set<String> hs = new HashSet<>();
+
+        List<EventList> eventList = eventListRepository.getEventsListsByEventId(eventId);
+        List<String> listNames = eventList.stream().map(eventListID -> eventListID.getUserName()).collect(Collectors.toList());
+
+        hs.addAll(listNames);
+        listNames.clear();
+        listNames.addAll(hs);
+
+        return listNames.size();
 
        /* List<UserInfoDTO> watchers = new ArrayList<>();
         watchers.add(new UserInfoDTO("id1", "name1", "lastname1", new ArrayList<>()));

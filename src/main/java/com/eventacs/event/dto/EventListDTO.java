@@ -3,6 +3,8 @@ package com.eventacs.event.dto;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EventListDTO {
 
@@ -10,6 +12,7 @@ public class EventListDTO {
     private String _id;
     private String listId;
     private String listName;
+    private String userId;
     private List<EventDTO> events;
 
     public EventListDTO() {
@@ -22,6 +25,13 @@ public class EventListDTO {
         this.events = events;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public String getListId() {
         return listId;
     }
@@ -54,4 +64,12 @@ public class EventListDTO {
         this._id = _id;
     }
 
+    public boolean existEventInList(List<EventDTO> events, String eventId) {
+        List<EventDTO> eventMatched =  events.stream().filter(eventDTO -> eventDTO.getId().equals(eventId)).collect(Collectors.toList());
+        if(eventMatched.isEmpty()){
+            return true;
+        }
+        else
+            {return false;}
+    }
 }

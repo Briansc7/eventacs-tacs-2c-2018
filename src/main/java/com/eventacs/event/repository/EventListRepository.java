@@ -1,5 +1,6 @@
 package com.eventacs.event.repository;
 
+import com.eventacs.event.dto.EventDTO;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.dto.EventListMapper;
@@ -9,8 +10,10 @@ import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
+import com.eventacs.user.dto.UserInfoDTO;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.time.ZoneId;
@@ -136,4 +139,25 @@ public class EventListRepository {
     public void dropDatabase(){
         this.eventacsMongoClient.dropDatabase();
     }
+
+    public List<EventList> getEventsListsByEventId(String eventId) {
+
+        //List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
+
+        //List<EventListDTO> eventLists = eventacsMongoClient.getAllElements();
+        List<EventListDTO> eventListsDTO = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
+        List<EventListDTO> eventListDTOMatch = eventListsDTO.stream().filter(eventListDTO -> eventListDTO.existEventInList(eventListDTO.getEvents(),eventId)).collect(Collectors.toList());
+        List<EventList> eventList = eventListDTOMatch.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
+
+        if(!eventList.isEmpty()){
+
+             //stream().filter(eventDTO -> eventDTO.getId().equals(eventId)));
+            //eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
+            return eventList;
+
+        } else {
+            throw new EventListNotFound("Event not found for this eventId: " + eventId);
+        }
+    }
+
 }
