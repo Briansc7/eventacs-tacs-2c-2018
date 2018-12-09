@@ -41,10 +41,12 @@ public class ComandoBuscarEvento {
     private Validaciones validaciones = new Validaciones();
 
 
-    public void buscarEventos(String[] parts, HashMap<Long, estados> chatStates, long chatId, TacsBot tacsBot) {
+    public void buscarEventos(String messageTextReceived, HashMap<Long, estados> chatStates, long chatId, TacsBot tacsBot) {
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         StringBuilder mensajeDeError = new StringBuilder ();
+
+        String[] parts = messageTextReceived.split(" ");
 
         String fechaParcial, dia, mes, anio;
 
@@ -104,7 +106,7 @@ public class ComandoBuscarEvento {
                 break;
 
             case esperaKeyword:
-                keywordGuardado.put(chatId, Optional.of(parts[0]));
+                keywordGuardado.put(chatId, Optional.of(messageTextReceived));
                 mensajeAEnviar.append("Desea agregar una categoría a su búsqueda?\nIngrese Si/No");
                 tacsBot.enviarMensajeConOpcionSiNo(mensajeAEnviar, chatId);
                 buscarEventoStates.put(chatId, estadosBuscarEvento.preguntaQuiereCategoria);

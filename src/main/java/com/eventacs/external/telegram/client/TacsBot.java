@@ -127,7 +127,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
                 break;
             case buscarevento:
-                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                comandoBuscarEvento.buscarEventos(messageTextReceived, chatStates, chatId, this);
                 break;
             case login:
                 comandoLogin.login(parts, chatStates, chatId, this);
@@ -197,7 +197,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case "/buscarevento":
                 TacsBot.chatStates.put(chatId, buscarevento);
-                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                comandoBuscarEvento.buscarEventos(messageTextReceived, chatStates, chatId, this);
                 break;
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
