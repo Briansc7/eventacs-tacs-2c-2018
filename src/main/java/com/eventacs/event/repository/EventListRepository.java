@@ -87,7 +87,8 @@ public class EventListRepository {
         dbEvent.append("category", e.getCategory());
         dbEvent.append("logoUrl", e.getLogoUrl());
         dbEvent.append("end", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
-        dbEvent.append("start", Date.from(e.getEnd().atZone(ZoneId.systemDefault()).toInstant()).toString());
+        dbEvent.append("start", Date.from(e.getStart().atZone(ZoneId.systemDefault()).toInstant()).toString());
+        dbEvent.append("registerDate", Date.from(e.getRegisterDate().atZone(ZoneId.systemDefault()).toInstant()).toString());
 
         return dbEvent;
     }

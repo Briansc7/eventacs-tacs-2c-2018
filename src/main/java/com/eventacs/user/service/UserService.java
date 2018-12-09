@@ -83,7 +83,7 @@ public class UserService {
 
     public void addEvent(String listId, Event event, String userId) {
 
-        Optional<User> user = this.usersRepository.getByUserId(userId);
+        //Optional<User> user = this.usersRepository.getByUserId(userId);
 
         //List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
 

@@ -42,7 +42,8 @@ public class EventController {
     @ResponseBody
     public Event getEvent(@PathVariable String eventId) {
         LOGGER.info("/eventacs/events/{} [GET]", eventId);
-        return this.eventService.getEvent(eventId);
+        Event event = this.eventService.getEvent(eventId);
+        return event;
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)

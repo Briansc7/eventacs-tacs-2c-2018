@@ -39,6 +39,7 @@ public class Event {
         this.start = start;
         this.end = end;
         this.logoUrl = logoUrl;
+        this.registerDate = LocalDateTime.now();
     }
 
     public Event(String id, String name, String description, String category, LocalDateTime start, LocalDateTime end, String logoUrl, LocalDateTime registerDate) {

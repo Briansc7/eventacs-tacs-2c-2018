@@ -3,6 +3,8 @@ package com.eventacs.external.eventbrite.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class EventResponse {
 
@@ -15,6 +17,15 @@ public class EventResponse {
     private EventDate start;
     private EventDate end;
     private Logo logo;
+    private LocalDateTime registerDate;
+
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(LocalDateTime registerDate) {
+        this.registerDate = registerDate;
+    }
 
     public EventResponse() {
 
@@ -85,5 +96,6 @@ public class EventResponse {
         this.start = start;
         this.end = end;
         this.logo = logo;
+        this.registerDate = LocalDateTime.now();
     }
 }
