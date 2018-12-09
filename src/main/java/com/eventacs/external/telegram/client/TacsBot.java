@@ -545,8 +545,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void crearLista(String nombreLista, long chatId) {
         EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
-        //EventacsCommands.createEventList(getAccessToken(chatId), eventList);
-        eventService.createEventList(eventList);
+        EventacsCommands.createEventList(getAccessToken(chatId), eventList);
+        //eventService.createEventList(eventList);
     }
 
     public void eliminarLista(String listaId, long chatId) {
