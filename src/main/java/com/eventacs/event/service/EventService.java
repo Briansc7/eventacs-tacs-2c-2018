@@ -89,12 +89,28 @@ public class EventService {
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
         // TODO por ahora usar este user generico
-        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
+        //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         List<Event> events = eventListRepository.getEventsListByListId(listId);
         List<Event> moreEvents =eventListRepository.getEventsListByListId(anotherListId);
 
-        return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
+
+
+        List<Event> shared = new ArrayList<>();
+
+        //por cada evento de una lista, si esta en la otra lista lo agrega a la lista shared
+        events.forEach(e -> {
+
+            if(moreEvents.stream().anyMatch(m->m.getId().equalsIgnoreCase(e.getId()))) {
+                    shared.add(e);
+                }
+        }
+        );
+
+
+        return shared;
+
+        //return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
 
     }
 
