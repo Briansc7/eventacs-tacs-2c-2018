@@ -89,7 +89,7 @@ public class EventController {
 
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
-    public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
+    public int count(@RequestParam("timelapse") Timelapse timelapse) {
         LOGGER.info("/eventacs/events/count [get] Timelapse: {}", timelapse.getValue());
         return this.eventService.count(timelapse);
     }

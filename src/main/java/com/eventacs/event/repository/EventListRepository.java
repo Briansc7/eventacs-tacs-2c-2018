@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,12 +54,24 @@ public class EventListRepository {
         } catch (EventListNotFound e) {
         Map<String, Object> documentElements =  new HashMap<>();
 
+        ArrayList<Event> listaeventos = new ArrayList<Event>();
+        listaeventos.add(new Event("1","nombre1","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+//            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 6,0,0,0)));
+//            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 3,0,0,0)));
+//            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,11, 17,0,0,0)));
+//            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2010,11, 17,0,0,0)));
+
         documentElements.put("userId", eventListCreationDTO.getUserId());
         documentElements.put("listName", eventListCreationDTO.getListName());
         documentElements.put("listId", listId);
         documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
         eventacsMongoClient.createDocument("eventLists", documentElements);
+        listaeventos.forEach(ev -> addEventsToEventList(ev, "1"));
         }
     }
 
@@ -136,19 +149,23 @@ public class EventListRepository {
         }
     }
 
-    public int getEventsCountByTime(String listId) {
+    public int getEventsCountByTime(int daysBefore) {
         List<EventListDTO> eventLists = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
 
         if(!eventLists.isEmpty()){
-            return eventLists.stream().map(el -> el.getEvents()).flatMap(List::stream).filter(event-> getEventtWithCondition(event)).collect(Collectors.toList()).size();
+            return eventLists.stream().map(el -> el.getEvents()).flatMap(List::stream).filter(event-> getEventtWithCondition(event, daysBefore)).collect(Collectors.toList()).size();
 
         } else {
-            throw new EventListNotFound("EventList not found for this listId: " + listId);
+            throw new EventListNotFound("EventList not found for this daysBefore: " + daysBefore);
         }
     }
 
-    private boolean getEventtWithCondition(EventDTO event) {
-        return true;//event.getRegisterDate().after(LocalDate.now().minusDays(7));
+    private boolean getEventtWithCondition(EventDTO event, int daysBefore) {
+        return event.getRegisterDate().after(dateFrom(daysBefore));
+    }
+
+    public static Date dateFrom(int daysBefore) {
+        return Date.from(LocalDate.now().minusDays(daysBefore).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public void dropDatabase(){

@@ -62,18 +62,10 @@ public class EventService {
         return userService.deleteEventList(listId);
     }
 
-    public BigDecimal count(Timelapse timelapse) {
+    public int count(Timelapse timelapse) {
         // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
         // TODO falta filtrar por TIMELAPSE
-
-        List<UserInfoDTO> users = this.userService.getUsers();
-
-        List<EventList> eventLists = users.stream().map(UserInfoDTO::getEventLists).flatMap(List::stream).collect(Collectors.toList());
-
-        List<Event> events = eventLists.stream().map(EventList::getEvents).flatMap(List::stream).collect(Collectors.toList());
-
-        return BigDecimal.valueOf(events.size());
-
+        return eventListRepository.getEventsCountByTime(timelapse.getValue());
     }
 
     public int
