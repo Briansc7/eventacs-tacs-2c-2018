@@ -3,6 +3,7 @@ package com.eventacs.account.controller;
 import com.eventacs.account.dto.UserLoginDTO;
 import com.eventacs.account.service.AccountService;
 import com.eventacs.account.dto.UserAccountDTO;
+import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.user.dto.UserInfoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,8 @@ public class AccountController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public UserInfoDTO login(@RequestBody UserLoginDTO userLoginDTO) {
-        LOGGER.info("/eventacs/login [POST] Username: {}", userLoginDTO.getName());
+    public GetAccessToken login(@RequestBody UserLoginDTO userLoginDTO) {
+        LOGGER.info("/eventacs/login [POST] Username: {}", userLoginDTO.getUsername());
         return this.accountService.login(userLoginDTO);
     }
 

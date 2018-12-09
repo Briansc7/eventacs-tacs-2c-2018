@@ -76,6 +76,7 @@ public class EventService {
 
     }
 
+
     public int getWatchers(String eventId) {
         // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
         Set<String> hs = new HashSet<>();
@@ -95,6 +96,7 @@ public class EventService {
         eventListRepository.getEventListByListId(listId);
         return watchers;*/
     }
+
 
     public List<Event> getSharedEvents(String listId, String anotherListId) {
         // TODO por ahora usar este user generico
