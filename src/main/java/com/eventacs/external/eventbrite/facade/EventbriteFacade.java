@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class EventbriteFacade {
 
     public Event getEvent(String eventId) {
         EventResponse eventResponse = this.eventbriteClient.getEvent(eventId);
+        eventResponse.setRegisterDate(LocalDateTime.now());
         return eventMapper.fromResponseToModel(eventResponse);
     }
 

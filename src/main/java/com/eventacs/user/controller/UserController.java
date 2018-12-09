@@ -8,12 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.QueryParam;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -39,11 +37,18 @@ public class UserController {
         return this.userService.getUsers();
     }
 
-    @RequestMapping(value = "/users/alarms", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/{username}/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public AlarmDTO createAlarm(@RequestBody (required = false) SearchDTO searchDTO) {
-        LOGGER.info("/users/alarms [POST] {}", searchDTO);
-        return this.userService.createAlarm(searchDTO);
+    public AlarmDTO createAlarm(@PathVariable String username, @RequestBody (required = false) SearchDTO searchDTO) {
+        LOGGER.info("/users/alarms [POST] {} for {}", searchDTO, username);
+        return this.userService.createAlarm(searchDTO, username);
+    }
+
+    @RequestMapping(value = "/users/{username}/alarms/count", method = RequestMethod.GET)
+    @ResponseBody
+    public BigDecimal countAlarms(@PathVariable String username) {
+        LOGGER.info("/users/{}/alarms/count [GET]", username);
+        return this.userService.countAlarms(username);
     }
 
 }

@@ -2,6 +2,7 @@ package com.eventacs.mongo;
 
 import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.httpclient.LocalDateTimeConverter;
+import com.eventacs.user.dto.AlarmDAO;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.exception.EventListNotFound;
 import com.mongodb.*;
@@ -174,20 +175,21 @@ public class EventacsMongoClient {
             return 1;
         } else {
             List<DBObject> queryResult = new ArrayList<>();
-            BasicDBObject searchQuery = new BasicDBObject();
             BasicDBObject sorting = new BasicDBObject();
             Datastore datastore = this.getDatastore("eventacs");
             DBCollection collection = this.getCollection("alarms");
 
             sorting.put("alarmId", -1);
 
-            searchQuery.put("$orderby", sorting);
+            DBCursor cursor = collection.find().sort(sorting);
 
-            DBCursor cursor = collection.find(searchQuery);
+            DBObject alarm = cursor.next();
 
-            queryResult.add(cursor.getQuery());
+            queryResult.add(alarm);
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, AlarmDTO.class, queryResult.get(0)).getAlarmId().get());
+            morphia.map(AlarmDAO.class);
+
+            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, AlarmDAO.class, queryResult.get(0)).getAlarmId());
 
             return lastId + 1;
         }

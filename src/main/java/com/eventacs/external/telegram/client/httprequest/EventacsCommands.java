@@ -1,15 +1,13 @@
 package com.eventacs.external.telegram.client.httprequest;
 
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventsResponse;
+import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -74,9 +72,23 @@ public class EventacsCommands {
 
     public static void createEventList(String accessToken, EventListCreationDTO eventListCreation) {
         try {
-            String jsonString = "{\"eventListCreation\":\""+eventListCreation+"\"}";
+            String jsonString = "{\"listName\":\""+eventListCreation.getListName()+"\",\"userId\":\""+eventListCreation.getUserId()+"\"}";
+
+            HttpUriRequest requestWitnToken = new RequestWitnToken("postRequest","http://backend:9000/eventacs/event-lists/", accessToken).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    .build();
+
             httpClient.execute(
-                    (new RequestWitnToken("postRequest","http://backend:9000/eventacs/event-lists/", accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    requestWitnToken).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void changeListName(String accessToken, String listID, ListName listName){
+        try {
+            String jsonString = "{\"listName\":\""+listName.getListName()+"\"}";
+            httpClient.execute(
+                    (new RequestWitnToken("putRequest","http://backend:9000/eventacs/event-lists/"+listID, accessToken)).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                             .build()).getEntity().getContent();
         } catch (IOException e) {
             e.printStackTrace();

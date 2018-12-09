@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.model.User;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,10 +61,9 @@ public class UserService {
         return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
     }
 
-    public AlarmDTO createAlarm(SearchDTO searchDTO) {
-        // TODO luego utilizar el id de la session del user para saber de quien es la nueva alarma
-        UserInfoDTO user = this.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Users repository without users"));
-        return alarmsRepository.createAlarm(searchDTO, user.getId(), alarmIdGenerator());
+    public AlarmDTO createAlarm(SearchDTO searchDTO, String username) {
+        // UserInfoDTO userInfo = this.getUsers().stream().filter(user -> user.getName().equals(username)).findFirst().orElseThrow(() -> new UserNotFound("User with name: " + username + " not found"));
+        return alarmsRepository.createAlarm(searchDTO, username, alarmIdGenerator());
     }
 
     private String alarmIdGenerator() {
@@ -83,7 +83,7 @@ public class UserService {
 
     public void addEvent(String listId, Event event, String userId) {
 
-        Optional<User> user = this.usersRepository.getByUserId(userId);
+        //Optional<User> user = this.usersRepository.getByUserId(userId);
 
         //List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
 
@@ -113,11 +113,12 @@ public class UserService {
         //}
     }
 
-    public EventListRepository getEventListRepository() {
-        return eventListRepository;
-    }
-
     public void setEventListRepository(EventListRepository eventListRepository) {
         this.eventListRepository = eventListRepository;
     }
+
+    public BigDecimal countAlarms(String username) {
+        return BigDecimal.valueOf(this.alarmsRepository.findAllByUserId(username).size());
+    }
+
 }
