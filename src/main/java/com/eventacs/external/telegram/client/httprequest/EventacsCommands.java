@@ -3,8 +3,12 @@ package com.eventacs.external.telegram.client.httprequest;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
+import com.eventacs.user.dto.SearchDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -14,6 +18,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +80,37 @@ public class EventacsCommands {
             String jsonString = "{\"listName\":\""+eventListCreation.getListName()+"\",\"userId\":\""+eventListCreation.getUserId()+"\"}";
 
             HttpUriRequest requestWitnToken = new RequestWitnToken("postRequest","http://backend:9000/eventacs/event-lists/", accessToken).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
+                    .build();
+
+            httpClient.execute(
+                    requestWitnToken).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createAlarm(String accessToken, String username, SearchDTO searchDTO) {
+        try {
+/*
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .registerModule(new ParameterNamesModule())
+                    .registerModule(new Jdk8Module())
+                    .registerModule(new JavaTimeModule());
+
+            String jsonString = objectMapper.writeValueAsString(searchDTO);
+*/
+
+            String jsonString = "{\"keyword\":"
+                    +(searchDTO.getKeyword().equals(Optional.empty())?null:"\""+searchDTO.getKeyword().get()+"\"")+
+                    ",\"categories\":"
+                    +(searchDTO.getCategories().equals(Optional.empty())?"[]":searchDTO.getCategories().get())+
+                    ",\"startDate\":\""
+                    +(searchDTO.getStartDate().equals(Optional.empty())?"":searchDTO.getStartDate().get())+
+                    "\",\"endDate\":\""
+                    +(searchDTO.getEndDate().equals(Optional.empty())?"":searchDTO.getEndDate().get())+
+                            "\"}";
+
+            HttpUriRequest requestWitnToken = new RequestWitnToken("postRequest","http://backend:9000/eventacs/users/"+username+"/alarms", accessToken).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
                     .build();
 
             httpClient.execute(

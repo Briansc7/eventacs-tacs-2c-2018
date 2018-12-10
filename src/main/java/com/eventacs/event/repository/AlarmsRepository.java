@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Repository
@@ -34,10 +36,16 @@ public class AlarmsRepository {
 
         documentElements.put("userId", userId);
         documentElements.put("alarmId", alarmId);
-        searchJson.put("keyword", searchDTO.getKeyword().orElse(""));
+        searchJson.put("keyword", searchDTO.getKeyword().orElseGet(()->""));
+        //searchJson.put("keyword", searchDTO.getKeyword().orElse(""));
         searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
-        searchJson.put("endDate", Date.from(searchDTO.getEndDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        searchJson.put("startDate", Date.from(searchDTO.getStartDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        //searchJson.put("endDate", Date.from(searchDTO.getEndDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        //searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(d->d.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(()->""));// get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        //
+        //searchJson.put("startDate", Date.from(searchDTO.getStartDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))));
+        searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
 
         documentElements.put("search", searchJson);
 

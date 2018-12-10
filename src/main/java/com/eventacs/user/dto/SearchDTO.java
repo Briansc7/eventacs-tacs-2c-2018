@@ -1,9 +1,12 @@
 package com.eventacs.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SearchDTO {
 
     private Optional<String> keyword;
