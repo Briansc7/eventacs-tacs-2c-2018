@@ -5,6 +5,7 @@ import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
+import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.repository.TelegramUsersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,8 @@ import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
 
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista, cambiarnombrelista
+    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista, cambiarnombrelista,
+    crearalarma
 }
 
 @Component
@@ -54,6 +56,7 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoCrearLista comandoCrearLista = new ComandoCrearLista();
     ComandoEliminarLista comandoEliminarLista = new ComandoEliminarLista();
     ComandoCambiarNombreLista comandoCambiarNombreLista = new ComandoCambiarNombreLista();
+    ComandoCrearAlarma comandoCrearAlarma = new ComandoCrearAlarma();
 
     @Autowired
     private EventService eventService;
@@ -141,6 +144,9 @@ public class TacsBot extends TelegramLongPollingBot {
             case cambiarnombrelista:
                 comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
                 break;
+            case crearalarma:
+                comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
+                break;
             default:
                 break;
 
@@ -214,6 +220,10 @@ public class TacsBot extends TelegramLongPollingBot {
             case "/cambiarnombrelista":
                 TacsBot.chatStates.put(chatId, cambiarnombrelista);
                 comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
+                break;
+            case "/crearalarma":
+                TacsBot.chatStates.put(chatId, crearalarma);
+                comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
                 break;
             /*case "/test":
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
@@ -322,50 +332,54 @@ public class TacsBot extends TelegramLongPollingBot {
     public void enviarMensajeConTecladoComandos(StringBuilder mensajeAEnviar, long chatId){
 
 
-        KeyboardButton keyboardButton1 = new KeyboardButton();
-        keyboardButton1.setText("/ayuda");
+        KeyboardButton ayudaButton = new KeyboardButton();
+        ayudaButton.setText("/ayuda");
 
-        KeyboardButton keyboardButton2 = new KeyboardButton();
-        keyboardButton2.setText("/buscarevento");
+        KeyboardButton buscareventoButton = new KeyboardButton();
+        buscareventoButton.setText("/buscarevento");
 
-        KeyboardButton keyboardButton3 = new KeyboardButton();
-        keyboardButton3.setText("/revisareventos");
+        KeyboardButton revisareventosButton = new KeyboardButton();
+        revisareventosButton.setText("/revisareventos");
 
-        KeyboardButton keyboardButton4 = new KeyboardButton();
-        keyboardButton4.setText("/agregarevento");
+        KeyboardButton agregareventoButton = new KeyboardButton();
+        agregareventoButton.setText("/agregarevento");
 
-        KeyboardButton keyboardButton5 = new KeyboardButton();
-        keyboardButton5.setText("/crearlista");
+        KeyboardButton crearlistaButton = new KeyboardButton();
+        crearlistaButton.setText("/crearlista");
 
-        KeyboardButton keyboardButton6 = new KeyboardButton();
-        keyboardButton6.setText("/eliminarlista");
+        KeyboardButton eliminarlistaButton = new KeyboardButton();
+        eliminarlistaButton.setText("/eliminarlista");
 
-        KeyboardButton keyboardButton7 = new KeyboardButton();
-        keyboardButton7.setText("/cambiarnombrelista");
+        KeyboardButton cambiarnombrelistaButton = new KeyboardButton();
+        cambiarnombrelistaButton.setText("/cambiarnombrelista");
 
-        KeyboardButton keyboardButton8 = new KeyboardButton();
-        keyboardButton8.setText("/login");
+        KeyboardButton crearalarmaButton = new KeyboardButton();
+        crearalarmaButton.setText("/crearalarma");
 
-        KeyboardRow keyboardRow = new KeyboardRow();
-        keyboardRow.add(keyboardButton1);
+        KeyboardButton loginButton = new KeyboardButton();
+        loginButton.setText("/login");
+
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(ayudaButton);
 
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        keyboardRow2.add(keyboardButton2);
+        keyboardRow2.add(buscareventoButton);
+        keyboardRow2.add(crearalarmaButton);
 
         KeyboardRow keyboardRow3 = new KeyboardRow();
-        keyboardRow3.add(keyboardButton3);
-        keyboardRow3.add(keyboardButton4);
+        keyboardRow3.add(revisareventosButton);
+        keyboardRow3.add(agregareventoButton);
 
         KeyboardRow keyboardRow4 = new KeyboardRow();
-        keyboardRow4.add(keyboardButton5);
-        keyboardRow4.add(keyboardButton6);
-        keyboardRow4.add(keyboardButton7);
+        keyboardRow4.add(crearlistaButton);
+        keyboardRow4.add(eliminarlistaButton);
+        keyboardRow4.add(cambiarnombrelistaButton);
 
         KeyboardRow keyboardRow5 = new KeyboardRow();
-        keyboardRow5.add(keyboardButton8);
+        keyboardRow5.add(loginButton);
 
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
-        keyboardRowArrayList.add(keyboardRow);
+        keyboardRowArrayList.add(keyboardRow1);
         keyboardRowArrayList.add(keyboardRow2);
         keyboardRowArrayList.add(keyboardRow3);
         keyboardRowArrayList.add(keyboardRow4);
@@ -461,7 +475,14 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public void mostrarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
+    public void crearAlarma(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
+
+        SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate);
+
+        EventacsCommands.createAlarm(getAccessToken(chatId),getUserId(chatId),searchDTO);
+    }
+
+        public void mostrarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         EventsResponse eventsResponse = EventacsCommands.getEvents(getAccessToken(chatId), keyword, categories, startDate, endDate, page);
