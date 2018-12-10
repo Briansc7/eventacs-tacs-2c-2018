@@ -39,7 +39,6 @@ public class UserController {
 //        return this.userService.getUsers();
 //    }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{username}/alarms", method = RequestMethod.POST)
     @ResponseBody
     public AlarmDTO createAlarm(@PathVariable String username, @RequestBody (required = false) SearchDTO searchDTO) {
