@@ -74,6 +74,11 @@ public class AlarmsRepository {
         return this.eventacsMongoClient.getElementsAs(AlarmDAO.class, conditions, "alarms", "eventacs");
     }
 
+    public List<AlarmDAO> findAll(){
+        Map<String, String> conditions = new HashMap<>();
+        return this.eventacsMongoClient.getAllElements(AlarmDAO.class, "alarms", "eventacs");
+    }
+
     public Integer alarmIdGenerator() {
         return eventacsMongoClient.alarmIdGenerator();
     }

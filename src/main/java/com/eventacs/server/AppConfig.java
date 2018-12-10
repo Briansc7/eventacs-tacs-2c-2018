@@ -56,6 +56,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -63,6 +64,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.sql.DataSource;
 
 @EnableWebMvc
+@EnableScheduling
 @Configuration
 @PropertySource({ "classpath:persistence.properties" })
 @ComponentScan(basePackages = "com.eventacs")
@@ -170,7 +172,7 @@ public class AppConfig {
     }
 
     @Bean
-    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl()); }
+    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl(), userService()); }
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }

@@ -5,11 +5,15 @@ import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
+import com.eventacs.user.dto.AlarmDAO;
+import com.eventacs.user.dto.SearchDAO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.repository.TelegramUsersRepository;
+import com.eventacs.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
@@ -24,12 +28,10 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
@@ -61,9 +63,13 @@ public class TacsBot extends TelegramLongPollingBot {
     @Autowired
     private EventService eventService;
 
-    public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository) {
+    @Autowired
+    private UserService userService;
+
+    public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository, UserService userService) {
         this.eventService = eventService;
         this.telegramUsersRepository = telegramUsersRepository;
+        this.userService = userService;
     }
 
     public EventService getEventService() {
@@ -588,4 +594,87 @@ public class TacsBot extends TelegramLongPollingBot {
     public void eliminarLista(String listaId, long chatId) {
         EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
     }
+
+    //@Scheduled(cron="0 0 11 * * *") //Se ejecuta todos los dias a las 11:00:00
+    //@Scheduled(cron="0 47 10 10 12 ?") //Para probar en una hora determinada de un dia determinado
+    private void avisarEventosNuevos(){
+
+        List<AlarmDAO> alarmDAOS = new ArrayList<>();
+
+        //System.out.println("hola");
+
+        //get todas las alarmas
+        alarmDAOS = userService.getAllAlarms();
+
+        //for each para atender cada alarma
+
+        alarmDAOS.forEach(a->ejecutarAlarma(a));
+
+    }
+
+    private void ejecutarAlarma(AlarmDAO alarmDAO){
+
+        String userId = alarmDAO.getUserId();
+        SearchDAO searchDAO = alarmDAO.getSearch();
+        Optional<String> keyword;
+        Optional<List<String>> categories;
+        Optional<LocalDate> startDate;
+        Optional<LocalDate> endDate;
+
+        List<Event> eventList;
+
+        EventsResponse eventsResponse;
+
+        StringBuilder mensajeAEnviar = new StringBuilder();
+
+        if(dateToLocalDate(searchDAO.getEndDate()).isBefore(LocalDate.now())){
+            //Ya no ejecuto la alarma por eventos viejos
+            //TODO eliminar la alarma vieja
+            return;
+        }
+
+        keyword = (searchDAO.getKeyword().isEmpty()?
+                Optional.empty():Optional.of(searchDAO.getKeyword()));
+        categories = (searchDAO.getCategories().isEmpty()?
+                Optional.empty():Optional.of(searchDAO.getCategories()));
+        startDate = (dateToLocalDate(searchDAO.getStartDate()).isBefore(LocalDate.now())?
+                Optional.of(LocalDate.now()):Optional.of(dateToLocalDate(searchDAO.getStartDate())));
+        endDate = Optional.of(dateToLocalDate(searchDAO.getEndDate()));
+
+
+        //obtener el chat id a partir del userid
+
+        String chatId;
+
+        //obtener la mayor fecha de modificacion para el filtrado de mysql
+
+        //ejecutar la busqueda
+
+        //TODO considerar mas que la primer pagina
+        eventsResponse = eventService.getEvents(keyword, categories, startDate, endDate, Optional.of(BigInteger.ONE));
+
+        //filtrar eventos por fecha de modificacion mayor a la fecha guardada
+
+
+        //eventList = eventsResponse.getEvents().stream().filter(e->e.);
+
+
+        //buscar entre los eventos filtrados la nueva fecha de modificacion mayor y guardarla en mysql
+
+        //eventList.stream().max();
+
+        //armar el mensaje y enviar eventos nuevos encontrados
+
+        mensajeAEnviar.append("Nuevos eventos encontrados de alarma "+alarmDAO.getAlarmId()+"\n\n");
+
+        //enviarMensaje(mensajeAEnviar, chatId);
+
+        //eventList.forEach(event -> mostrarUnEvento(event, chatId));
+
+    }
+
+    private LocalDate dateToLocalDate(Date date){
+        return LocalDate.from(Instant.ofEpochMilli(date.getTime()));
+    }
+
 }

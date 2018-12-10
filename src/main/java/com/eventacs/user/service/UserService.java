@@ -4,6 +4,7 @@ import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.repository.EventListRepository;
+import com.eventacs.user.dto.AlarmDAO;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.dto.UserInfoDTO;
@@ -64,6 +65,10 @@ public class UserService {
     public AlarmDTO createAlarm(SearchDTO searchDTO, String username) {
         // UserInfoDTO userInfo = this.getUsers().stream().filter(user -> user.getName().equals(username)).findFirst().orElseThrow(() -> new UserNotFound("User with name: " + username + " not found"));
         return alarmsRepository.createAlarm(searchDTO, username, alarmIdGenerator());
+    }
+
+    public List<AlarmDAO> getAllAlarms(){
+        return alarmsRepository.findAll();
     }
 
     private String alarmIdGenerator() {
