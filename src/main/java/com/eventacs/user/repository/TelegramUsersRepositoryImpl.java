@@ -58,7 +58,7 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
 
     @Override
     public String findChatIdByUserId(final String userId) {
-            return jdbcDaoTelegramUserData.getChatIdByUserId(userId).get(0).getUserName();
+            return jdbcDaoTelegramUserData.getChatIdByUserId(userId).get(0).getChatId();
     }
 
     @Override
