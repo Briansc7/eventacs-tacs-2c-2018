@@ -83,25 +83,25 @@ public class TestMongo {
 
     }
 
-    @Test
-    public void CreateEventList(){
-        eventService = new EventService(new EventbriteFacade(new EventbriteClient(new RestClient()), new EventMapper(), new CategoryMapper(), new PaginationMapper()));
-        repository = new EventListRepository(new EventacsMongoClient(), new EventListMapper());
-        UserService userService = new UserService(new UsersRepository(), new UsersMapper(), new AlarmsRepository(), new AlarmsMapper(), new EventListsMapper());
-        eventListCreationDTO = new EventListCreationDTO("User1", "Favoritos");
-
-        eventService.setEventListRepository(repository);
-        eventService.setUserService(userService);
-        userService.setEventListRepository(repository);
-
-        String id = eventService.createEventList(eventListCreationDTO);
-
-        eventService.createEventList(new EventListCreationDTO("User2", "alta lista"));
-
-        eventService.addEvent(id, "50567727434", "User2");
-
-        Assert.assertTrue(!eventService.getEventList(id).getEvents().isEmpty());
-    }
+//    @Test
+//    public void CreateEventList(){
+//        eventService = new EventService(new EventbriteFacade(new EventbriteClient(new RestClient()), new EventMapper(), new CategoryMapper(), new PaginationMapper()));
+//        repository = new EventListRepository(new EventacsMongoClient(), new EventListMapper());
+//        UserService userService = new UserService(new UsersRepository(), new UsersMapper(), new AlarmsRepository(), new AlarmsMapper(), new EventListsMapper());
+//        eventListCreationDTO = new EventListCreationDTO("User1", "Favoritos");
+//
+//        eventService.setEventListRepository(repository);
+//        eventService.setUserService(userService);
+//        userService.setEventListRepository(repository);
+//
+//        String id = eventService.createEventList(eventListCreationDTO);
+//
+//        eventService.createEventList(new EventListCreationDTO("User2", "alta lista"));
+//
+//        eventService.addEvent(id, "50567727434", "User2");
+//
+//        Assert.assertTrue(!eventService.getEventList(id).getEvents().isEmpty());
+//    }
 
     @After
     public void after(){

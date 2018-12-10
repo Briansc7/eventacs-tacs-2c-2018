@@ -8,13 +8,10 @@ import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;

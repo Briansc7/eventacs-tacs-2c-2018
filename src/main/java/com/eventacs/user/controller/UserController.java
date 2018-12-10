@@ -2,7 +2,7 @@ package com.eventacs.user.controller;
 
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
-import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.dto.UserDataDTO;
 import com.eventacs.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +25,17 @@ public class UserController {
 
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    public UserInfoDTO getUser(@PathVariable String userId) {
+    public UserDataDTO getUser(@PathVariable String userId) {
         LOGGER.info("/users/{} [GET]", userId);
         return this.userService.getUser(userId);
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    @ResponseBody
-    public List<UserInfoDTO> getUsers() {
-        LOGGER.info("/users [GET]");
-        return this.userService.getUsers();
-    }
+//    @RequestMapping(value = "/users", method = RequestMethod.GET)
+//    @ResponseBody
+//    public List<UserInfoDTO> getUsers() {
+//        LOGGER.info("/users [GET]");
+//        return this.userService.getUsers();
+//    }
 
     @RequestMapping(value = "/users/{username}/alarms", method = RequestMethod.POST)
     @ResponseBody

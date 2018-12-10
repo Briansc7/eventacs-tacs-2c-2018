@@ -31,7 +31,9 @@ public class AccountService {
     }
 
     public GetAccessToken login(UserLoginDTO userLoginDTO) {
-        return EventacsCommands.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+        GetAccessToken token = EventacsCommands.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+        userData.insertUserDataLastLoginTimestamp(userLoginDTO.getUsername());
+        return token;
     }
 
     public UserInfoDTO logout(String sessionCookieId) {
