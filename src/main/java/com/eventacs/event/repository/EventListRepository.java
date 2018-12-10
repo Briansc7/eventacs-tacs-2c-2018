@@ -54,26 +54,22 @@ public class EventListRepository {
             getEventListByListId(listId);
             throw new EventListAlreadyExists("Event List already created for this user with this id! " + listId + ". This shouldn't happen, are you in a test?");
         } catch (EventListNotFound e) {
-        Map<String, Object> documentElements =  new HashMap<>();
+            Map<String, Object> documentElements =  new HashMap<>();
 
-        ArrayList<Event> listaeventos = new ArrayList<Event>();
-        listaeventos.add(new Event("1","nombre1","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-//            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 6,0,0,0)));
-//            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 3,0,0,0)));
-//            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,11, 17,0,0,0)));
-//            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2010,11, 17,0,0,0)));
+            ArrayList<Event> listaeventos = new ArrayList<Event>();
+            listaeventos.add(new Event("1","nombre1","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
+            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 6,0,0,0)));
+            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 3,0,0,0)));
+            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,11, 17,0,0,0)));
+            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2010,11, 17,0,0,0)));
 
-        documentElements.put("userId", eventListCreationDTO.getUserId());
-        documentElements.put("listName", eventListCreationDTO.getListName());
-        documentElements.put("listId", listId);
-        documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
+            documentElements.put("userId", eventListCreationDTO.getUserId());
+            documentElements.put("listName", eventListCreationDTO.getListName());
+            documentElements.put("listId", listId);
+            documentElements.put("events", new ArrayList<>()); // no va a tener eventos la primera vez q la crea
 
-        eventacsMongoClient.createDocument("eventLists", documentElements);
-        listaeventos.forEach(ev -> addEventsToEventList(ev, "1"));
+            eventacsMongoClient.createDocument("eventLists", documentElements);
+            listaeventos.forEach(ev -> addEventsToEventList(ev, "1"));
         }
     }
 
@@ -156,14 +152,16 @@ public class EventListRepository {
         List<EventListDTO> eventLists = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
 
         if(!eventLists.isEmpty()){
-            return eventLists.stream().map(el -> el.getEvents()).flatMap(List::stream).filter(event-> getEventtWithCondition(event, daysBefore)).collect(Collectors.toList()).size();
-
+            List<List<EventDTO>> listaListaEventos = eventLists.stream().map(el -> el.getEvents()).collect(Collectors.toList());
+            listaListaEventos.remove(null);
+            List<EventDTO> listaEventos = listaListaEventos.stream().flatMap(List::stream).collect(Collectors.toList());
+            return listaEventos.stream().filter(event-> getEventWithCondition(event, daysBefore)).collect(Collectors.toList()).size();
         } else {
             throw new EventListNotFound("EventList not found for this daysBefore: " + daysBefore);
         }
     }
 
-    private boolean getEventtWithCondition(EventDTO event, int daysBefore) {
+    private boolean getEventWithCondition(EventDTO event, int daysBefore) {
         return event.getRegisterDate().after(dateFrom(daysBefore));
     }
 
@@ -183,7 +181,7 @@ public class EventListRepository {
 
         if(!eventListDTOMatch.isEmpty()){
 
-             //stream().filter(eventDTO -> eventDTO.getId().equals(eventId)));
+            //stream().filter(eventDTO -> eventDTO.getId().equals(eventId)));
             //eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
             return eventListDTOMatch;
 
