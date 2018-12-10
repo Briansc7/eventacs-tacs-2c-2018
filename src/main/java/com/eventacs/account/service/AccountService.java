@@ -31,11 +31,13 @@ public class AccountService {
     }
 
     public GetAccessToken login(UserLoginDTO userLoginDTO) {
-        return EventacsCommands.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+        GetAccessToken token = EventacsCommands.login(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+        userData.insertUserDataLastLoginTimestamp(userLoginDTO.getUsername());
+        return token;
     }
 
-    public UserInfoDTO logout(String sessionCookieId) {
-        return new UserInfoDTO("testid", "testname",  "testLastName", new ArrayList<>());
+    public void logout(String token) {
+        EventacsCommands.logout(token);
     }
 
 }

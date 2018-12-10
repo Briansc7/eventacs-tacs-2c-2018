@@ -152,10 +152,10 @@ public class EventListRepository {
         List<EventListDTO> eventLists = eventacsMongoClient.getAllElements(EventListDTO.class, "eventLists", "eventacs");
 
         if(!eventLists.isEmpty()){
-            List<List<EventDTO>> listaListaEventos = eventLists.stream().map(el -> el.getEvents()).collect(Collectors.toList());
-            listaListaEventos.remove(null);
-            List<EventDTO> listaEventos = listaListaEventos.stream().flatMap(List::stream).collect(Collectors.toList());
-            return listaEventos.stream().filter(event-> getEventWithCondition(event, daysBefore)).collect(Collectors.toList()).size();
+            List<List<EventDTO>> listListOfEvents = eventLists.stream().map(el -> el.getEvents()).collect(Collectors.toList());
+            listListOfEvents.remove(null);
+            List<EventDTO> ListOfEvents = listListOfEvents.stream().flatMap(List::stream).collect(Collectors.toList());
+            return ListOfEvents.stream().filter(event-> getEventWithCondition(event, daysBefore)).collect(Collectors.toList()).size();
         } else {
             throw new EventListNotFound("EventList not found for this daysBefore: " + daysBefore);
         }

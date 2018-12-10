@@ -12,6 +12,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -184,5 +185,15 @@ public class EventacsCommands {
 
     private static List<String> getStringParameterList(Optional<Object> parameter) {
         return ((List<?>) parameter.get()).stream().map(e -> (String) e).collect(Collectors.toList());
+    }
+
+    public static void logout(String accessToken){
+        try {
+            httpClient.execute(
+                    (RequestBuilder.post("http://oauth-server:9001/oauth-server/oauth/token/revokeById/"+accessToken))
+                            .build()).getEntity().getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

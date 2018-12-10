@@ -9,7 +9,6 @@ import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
-import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
@@ -19,9 +18,7 @@ import com.eventacs.mongo.EventacsMongoClient;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
-import com.eventacs.user.model.User;
 import com.eventacs.event.repository.AlarmsRepository;
-import com.eventacs.user.repository.TelegramUsersRepository;
 import com.eventacs.user.repository.TelegramUsersRepositoryImpl;
 import com.eventacs.user.repository.UsersRepository;
 import com.eventacs.user.service.UserService;
@@ -40,18 +37,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.data.redis.connection.jedis.JedisConnection;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
@@ -77,6 +66,9 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
+    public UsersRepository usersRepository() { return new UsersRepository(jdbcDaoUserData()); }
+
+    @Bean
     public AccountService accountService() { return new AccountService(jdbcDaoUserData()); }
 
     @Bean
@@ -94,10 +86,10 @@ public class AppConfig {
     @Bean
     public AlarmsRepository alarmsRepository(EventacsMongoClient eventacsMongoClient) { return new AlarmsRepository(eventacsMongoClient); }
 
-    @Bean
-    public UsersRepository usersRepository() {
-        return new UsersRepository();
-    }
+//    @Bean
+//    public UsersRepository usersRepository() {
+//        return new UsersRepository();
+//    }
 
     @Bean
     public EventService eventService() {

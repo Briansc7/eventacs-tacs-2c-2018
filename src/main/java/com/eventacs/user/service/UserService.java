@@ -1,14 +1,12 @@
 package com.eventacs.user.service;
 
 import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.user.dto.AlarmDAO;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
-import com.eventacs.user.dto.UserInfoDTO;
-import com.eventacs.user.exception.EventListNotFound;
 import com.eventacs.user.mapping.AlarmsMapper;
 import com.eventacs.user.mapping.EventListsMapper;
 import com.eventacs.user.mapping.UsersMapper;
@@ -23,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.eventacs.user.dto.UserDataDTO;
 
 @Component
 public class UserService {
@@ -53,14 +52,16 @@ public class UserService {
         this.eventListsMapper = eventListsMapper;
     }
 
-    public UserInfoDTO getUser(String userId) {
-        Optional<User> user = this.usersRepository.getByUserId(userId);
-        return user.map(u -> this.usersMapper.fromModelToApi(u)).orElseThrow(() -> new UserNotFound("User " + userId + " not found"));
+    public UserDataDTO getUser(String userId) {
+        UserDataDTO userData = this.usersRepository.getUserDataByUserId(userId);
+        userData.setAlarmsCount(this.countAlarms(userId));
+        userData.setListCount(this.countEventList(userId));
+        return userData;
     }
 
-    public List<UserInfoDTO> getUsers() {
-        return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
-    }
+//    public List<UserDataDTO> getUsers() {
+//        return this.usersRepository.getUsers().stream().map(user -> this.usersMapper.fromModelToApi(user)).collect(Collectors.toList());
+//    }
 
     public AlarmDTO createAlarm(SearchDTO searchDTO, String username) {
         // UserInfoDTO userInfo = this.getUsers().stream().filter(user -> user.getName().equals(username)).findFirst().orElseThrow(() -> new UserNotFound("User with name: " + username + " not found"));
@@ -101,7 +102,6 @@ public class UserService {
 
     public String changeListName(String listId, String listName) {
         //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-        this.usersRepository.getUsers().stream().flatMap(user -> user.getEvents().stream().filter(list -> list.getListId().equals(listId))).forEach(list -> list.setListName(listName));
         return this.eventListRepository.changeListName(listId, listName);
     }
 
@@ -126,4 +126,7 @@ public class UserService {
         return BigDecimal.valueOf(this.alarmsRepository.findAllByUserId(username).size());
     }
 
+    public BigDecimal countEventList(String username) {
+        return BigDecimal.valueOf(this.eventListRepository.getEventListByUserId(username).size());
+    }
 }
