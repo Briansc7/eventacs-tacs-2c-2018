@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,6 +89,7 @@ public class EventController {
         return this.eventService.deleteEventList(listId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
     public int count(@RequestParam("timelapse") Timelapse timelapse) {
@@ -95,6 +97,7 @@ public class EventController {
         return this.eventService.count(timelapse);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
     @ResponseBody
     public int getWatchers(@PathVariable String eventId) {
@@ -102,6 +105,7 @@ public class EventController {
         return this.eventService.getWatchers(eventId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
     public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {

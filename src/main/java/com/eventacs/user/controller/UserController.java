@@ -7,6 +7,7 @@ import com.eventacs.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +24,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    public UserDataDTO getUser(@PathVariable String userId) {
+    public UserDataDTO getUserData(@PathVariable String userId) {
         LOGGER.info("/users/{} [GET]", userId);
         return this.userService.getUser(userId);
     }
@@ -37,6 +39,7 @@ public class UserController {
 //        return this.userService.getUsers();
 //    }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{username}/alarms", method = RequestMethod.POST)
     @ResponseBody
     public AlarmDTO createAlarm(@PathVariable String username, @RequestBody (required = false) SearchDTO searchDTO) {
@@ -44,6 +47,7 @@ public class UserController {
         return this.userService.createAlarm(searchDTO, username);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{username}/alarms/count", method = RequestMethod.GET)
     @ResponseBody
     public BigDecimal countAlarms(@PathVariable String username) {
