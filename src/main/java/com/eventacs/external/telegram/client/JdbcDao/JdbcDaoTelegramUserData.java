@@ -16,6 +16,7 @@ public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
     public static final String DEF_INSERT_TOKEN_CHATID_SQL = "insert into token_id_chat_id (token_access, chatid, user_name) values(?,?,?) ON DUPLICATE KEY UPDATE token_access = ?, user_name = ?";
     public static final String DEF_INSERT_USER_ACCOUNT_SQL = "insert into users (username, password, name, email) values(?,?,?,?)";
     public static final String DEF_SELECT_TOKEN_CHATID_USERNAME_SQL = "select token_access, chatid, user_name from token_id_chat_id where chatid = ?";
+    public static final String DEF_SELECT_TOKEN_USERNAME_SQL = "select token_access, chatid, user_name from token_id_chat_id where user_name = ?";
 
     public JdbcDaoTelegramUserData(DataSource datasource) {
         setDataSource(datasource);
@@ -40,6 +41,17 @@ public class JdbcDaoTelegramUserData extends JdbcDaoSupport {
 
     public List<DataUserTelegram> getDataByChatId(String chatId) {
         return this.getJdbcTemplate().query(DEF_SELECT_TOKEN_CHATID_USERNAME_SQL, new String[]{chatId}, new RowMapper<DataUserTelegram>() {
+            public DataUserTelegram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String tokenAccess = rs.getString(1);
+                String chatId = rs.getString(2);
+                String userName = rs.getString(3);
+                return new DataUserTelegram(tokenAccess, chatId, userName);
+            }
+        });
+    }
+
+    public List<DataUserTelegram> getChatIdByUserId(String userId) {
+        return this.getJdbcTemplate().query(DEF_SELECT_TOKEN_USERNAME_SQL, new String[]{userId}, new RowMapper<DataUserTelegram>() {
             public DataUserTelegram mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String tokenAccess = rs.getString(1);
                 String chatId = rs.getString(2);

@@ -43,6 +43,8 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getTokenAccess();
         }
     }
+
+
     @Override
     public String findUserIdByChatId(final long chatId) {
         try{
@@ -52,6 +54,11 @@ public class TelegramUsersRepositoryImpl implements TelegramUsersRepository {
         catch(Exception e){
             return jdbcDaoTelegramUserData.getDataByChatId(Long.toString(chatId)).get(0).getUserName();
         }
+    }
+
+    @Override
+    public String findChatIdByUserId(final String userId) {
+            return jdbcDaoTelegramUserData.getChatIdByUserId(userId).get(0).getUserName();
     }
 
     @Override
