@@ -41,7 +41,7 @@ public class AlarmsRepository {
         searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
         searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))));
         searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
-        searchJson.put("modifiedStartDate", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
+        searchJson.put("changed", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
 
         documentElements.put("search", searchJson);
 
