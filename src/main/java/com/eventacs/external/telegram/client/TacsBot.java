@@ -1,5 +1,6 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.comparator.ChangedDateComparator;
 import com.eventacs.event.dto.EventListCreationDTO;
 import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
@@ -487,6 +488,7 @@ public class TacsBot extends TelegramLongPollingBot {
     public void crearAlarma(String nameAlarm, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
 
         SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate, startDate, nameAlarm);//por ser la primera vez, le mando el changed como la fecha de inicio
+
 
         EventacsCommands.createAlarm(getAccessToken(chatId),getUserId(chatId),searchDTO);
     }
