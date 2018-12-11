@@ -2,7 +2,10 @@ package com.eventacs.external.eventbrite.mapping;
 
 import com.eventacs.event.model.Event;
 import com.eventacs.external.eventbrite.model.EventResponse;
+import com.google.api.client.util.DateTime;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -19,7 +22,7 @@ public class EventMapper {
                          eventResponse.getEnd().getLocal(),
                          getLogoUrl(eventResponse),
                          LocalDateTime.now(),
-                         eventResponse.getChanged());
+                         convertToLocalDateViaInstant(eventResponse.getChanged().toDate()));
     }
 
     private String getLogoUrl(EventResponse eventResponse) {
@@ -28,6 +31,11 @@ public class EventMapper {
         } else {
             return "Logo url is not present";
         }
+    }
+
+    public LocalDateTime convertToLocalDateViaInstant(Date dateToConvert) {
+         return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
     }
 
 }

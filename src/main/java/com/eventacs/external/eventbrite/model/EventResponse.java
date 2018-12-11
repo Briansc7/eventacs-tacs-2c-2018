@@ -2,8 +2,8 @@ package com.eventacs.external.eventbrite.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.joda.time.DateTime;
 
-import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class EventResponse {
@@ -16,7 +16,7 @@ public class EventResponse {
     private EventDate start;
     private EventDate end;
     private Logo logo;
-    private LocalDateTime changed;
+    private DateTime changed;
 
     public EventResponse() {
 
@@ -78,15 +78,15 @@ public class EventResponse {
         this.logo = logo;
     }
 
-    public LocalDateTime getChanged() {
+    public DateTime getChanged() {
         return changed;
     }
 
-    public void setChanged(LocalDateTime changed) {
+    public void setChanged(DateTime changed) {
         this.changed = changed;
     }
 
-    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, LocalDateTime changed) {
+    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, DateTime changed) {
 
         this.name = name;
         this.id = id;
