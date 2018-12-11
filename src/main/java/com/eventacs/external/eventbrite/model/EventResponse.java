@@ -18,6 +18,7 @@ public class EventResponse {
     private EventDate end;
     private Logo logo;
     private LocalDateTime registerDate;
+    private EventDate changed;
 
     public LocalDateTime getRegisterDate() {
         return registerDate;
@@ -87,7 +88,15 @@ public class EventResponse {
         this.logo = logo;
     }
 
-    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo) {
+    public EventDate getChanged() {
+        return changed;
+    }
+
+    public void setChanged(EventDate changed) {
+        this.changed = changed;
+    }
+
+    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, EventDate changed) {
 
         this.name = name;
         this.id = id;
@@ -97,5 +106,6 @@ public class EventResponse {
         this.end = end;
         this.logo = logo;
         this.registerDate = LocalDateTime.now();
+        this.changed = changed;
     }
 }

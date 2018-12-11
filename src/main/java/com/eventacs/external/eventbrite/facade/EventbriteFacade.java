@@ -52,6 +52,14 @@ public class EventbriteFacade {
                            eventResponse.getEventResponses().stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList()));
     }
 
+    public EventsResponse getEventsByChangedDate(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, LocalDate changedDate, Optional<BigInteger> page) {
+        EventbriteEventsResponse eventResponse = page.map(p -> this.eventbriteClient.getEventsByChangedDate(keyword, categories, startDate, endDate, changedDate, p))
+                .orElseGet(() -> this.eventbriteClient.getEvents(keyword, categories, startDate, endDate));
+
+        return new EventsResponse(this.paginationMapper.fromPaginationToEventsMetadata(eventResponse.getPagination()),
+                eventResponse.getEventResponses().stream().map(event -> this.eventMapper.fromResponseToModel(event)).collect(Collectors.toList()));
+    }
+
     public Event getEvent(String eventId) {
         EventResponse eventResponse = this.eventbriteClient.getEvent(eventId);
         eventResponse.setRegisterDate(LocalDateTime.now());

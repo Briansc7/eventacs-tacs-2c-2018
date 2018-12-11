@@ -27,7 +27,8 @@ public class EventListMapper {
         LocalDateTime start = dto.getStart().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime end = dto.getEnd().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime registerDate = dto.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return new Event(dto.getId(), dto.getName(), dto.getDescription(), dto.getCategory(), start, end, dto.getLogoUrl(), registerDate);
+        LocalDateTime changed = dto.getChanged().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        return new Event(dto.getId(), dto.getName(), dto.getDescription(), dto.getCategory(), start, end, dto.getLogoUrl(), registerDate, changed);
     }
 
     public EventListMapper() {

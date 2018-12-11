@@ -10,12 +10,14 @@ public class Search {
     private Optional<List<String>> categories;
     private Optional<LocalDate> startDate;
     private Optional<LocalDate> endDate;
+    private Optional<LocalDate> changed;
 
-    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<LocalDate> changed) {
         this.keyword = keyword;
         this.categories = categories;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.changed = changed;
     }
 
     public Optional<String> getKeyword() {
@@ -50,4 +52,11 @@ public class Search {
         this.endDate = endDate;
     }
 
+    public Optional<LocalDate> getChanged() {
+        return changed;
+    }
+
+    public void setChanged(Optional<LocalDate> changed) {
+        this.changed = changed;
+    }
 }

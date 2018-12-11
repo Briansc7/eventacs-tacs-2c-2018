@@ -9,7 +9,6 @@ import com.eventacs.user.exception.AlarmCreationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -46,6 +45,7 @@ public class AlarmsRepository {
 
         searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))));
         searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
+        searchJson.put("modifiedStartDate", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
 
         documentElements.put("search", searchJson);
 
@@ -63,7 +63,8 @@ public class AlarmsRepository {
             return new AlarmDTO(Optional.ofNullable(alarmId), alarmDAO.getUserId(), new SearchDTO(Optional.ofNullable(searchDAO.getKeyword()),
                                                                                                   Optional.ofNullable(searchDAO.getCategories()),
                                                                                                   Optional.of(LocalDate.from(searchDAO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())),
-                                                                                                  Optional.of(LocalDate.from(searchDAO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))));
+                                                                                                  Optional.of(LocalDate.from(searchDAO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())),
+                                                                                                  Optional.of(LocalDate.from(searchDAO.getModifiedStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))));
         }
 
     }

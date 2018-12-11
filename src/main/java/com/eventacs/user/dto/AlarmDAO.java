@@ -9,6 +9,7 @@ public class AlarmDAO {
   @Id
   private String _id;
 
+  private String alarmName;
   private String alarmId;
   private String userId;
   private SearchDAO search;
@@ -16,10 +17,11 @@ public class AlarmDAO {
   public AlarmDAO() {
   }
 
-  public AlarmDAO(String alarmId, String userId, SearchDAO search) {
+  public AlarmDAO(String alarmId, String userId, SearchDAO search, String alarmName) {
     this.alarmId = alarmId;
     this.userId = userId;
     this.search = search;
+    this.alarmName = alarmName;
   }
 
   public String getAlarmId() {
@@ -46,4 +48,11 @@ public class AlarmDAO {
     this.search = search;
   }
 
+  public String getAlarmName() {
+    return alarmName;
+  }
+
+  public void setAlarmName(String alarmName) {
+    this.alarmName = alarmName;
+  }
 }

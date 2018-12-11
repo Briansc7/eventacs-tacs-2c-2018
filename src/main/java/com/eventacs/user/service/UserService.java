@@ -64,7 +64,6 @@ public class UserService {
 //    }
 
     public AlarmDTO createAlarm(SearchDTO searchDTO, String username) {
-        // UserInfoDTO userInfo = this.getUsers().stream().filter(user -> user.getName().equals(username)).findFirst().orElseThrow(() -> new UserNotFound("User with name: " + username + " not found"));
         return alarmsRepository.createAlarm(searchDTO, username, alarmIdGenerator());
     }
 

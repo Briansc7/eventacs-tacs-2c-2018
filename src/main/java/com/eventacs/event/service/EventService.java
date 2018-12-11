@@ -37,6 +37,10 @@ public class EventService {
         return this.eventbriteFacade.getEvents(keyword, categories, startDate, endDate, page);
     }
 
+    public EventsResponse getEventsByChangedDate(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page, LocalDate changedDate) {
+        return this.eventbriteFacade.getEventsByChangedDate(keyword, categories, startDate, endDate, changedDate, page);
+    }
+
     public String createEventList(EventListCreationDTO eventListCreation) {
         String listId = listIdGenerator();
         try {

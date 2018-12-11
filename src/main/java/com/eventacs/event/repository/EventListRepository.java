@@ -57,11 +57,11 @@ public class EventListRepository {
             Map<String, Object> documentElements =  new HashMap<>();
 
             ArrayList<Event> listaeventos = new ArrayList<Event>();
-            listaeventos.add(new Event("1","nombre1","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now()));
-            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 6,0,0,0)));
-            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 3,0,0,0)));
-            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,11, 17,0,0,0)));
-            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2010,11, 17,0,0,0)));
+            listaeventos.add(new Event("1","nombre1","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.now(), LocalDateTime.now()));
+            listaeventos.add(new Event("2","nombre2","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 6,0,0,0), LocalDateTime.now()));
+            listaeventos.add(new Event("3","nombre3","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,12, 3,0,0,0), LocalDateTime.now()));
+            listaeventos.add(new Event("4","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2018,11, 17,0,0,0), LocalDateTime.now()));
+            listaeventos.add(new Event("5","nombre4","desc","cat2",LocalDateTime.now(),  LocalDateTime.now(), "", LocalDateTime.of(2010,11, 17,0,0,0), LocalDateTime.now()));
 
             documentElements.put("userId", eventListCreationDTO.getUserId());
             documentElements.put("listName", eventListCreationDTO.getListName());

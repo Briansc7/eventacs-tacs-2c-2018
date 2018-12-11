@@ -8,15 +8,17 @@ public class SearchDAO {
   private String keyword;
   private List<String> categories;
 
+  private Date modifiedStartDate;
   private Date startDate;
   private Date endDate;
 
   public SearchDAO() {
   }
 
-  public SearchDAO(String keyword, List<String> categories, Date startDate, Date endDate) {
+  public SearchDAO(String keyword, List<String> categories, Date modifiedStartDate, Date startDate, Date endDate) {
     this.keyword = keyword;
     this.categories = categories;
+    this.modifiedStartDate = modifiedStartDate;
     this.startDate = startDate;
     this.endDate = endDate;
   }
@@ -37,6 +39,14 @@ public class SearchDAO {
     this.categories = categories;
   }
 
+  public Date getModifiedStartDate() {
+    return modifiedStartDate;
+  }
+
+  public void setModifiedStartDate(Date modifiedStartDate) {
+    this.modifiedStartDate = modifiedStartDate;
+  }
+
   public Date getStartDate() {
     return startDate;
   }
@@ -52,5 +62,4 @@ public class SearchDAO {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
-
 }

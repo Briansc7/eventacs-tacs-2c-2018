@@ -14,7 +14,8 @@ public class AlarmsMapper {
         return new AlarmDTO(Optional.of(alarm.getId()), alarm.getUserId(), new SearchDTO(search.getKeyword(),
                                                                                          search.getCategories(),
                                                                                          search.getStartDate(),
-                                                                                         search.getEndDate()));
+                                                                                         search.getEndDate(),
+                                                                                         search.getChanged()));
     }
 
     public Alarm fromApiToModel(AlarmDTO alarmDTO) {
@@ -22,7 +23,8 @@ public class AlarmsMapper {
         return new Alarm(alarmDTO.getAlarmId().orElse(""), alarmDTO.getUserId(), new Search(searchDTO.getKeyword(),
                                                                                        searchDTO.getCategories(),
                                                                                        searchDTO.getStartDate(),
-                                                                                       searchDTO.getEndDate()));
+                                                                                       searchDTO.getEndDate(),
+                                                                                       searchDTO.getChanged()));
     }
 
 }

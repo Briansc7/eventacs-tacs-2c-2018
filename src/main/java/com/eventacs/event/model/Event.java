@@ -28,6 +28,10 @@ public class Event {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime end;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime changed;
+
     public Event() {
     }
 
@@ -42,7 +46,7 @@ public class Event {
         this.registerDate = LocalDateTime.now();
     }
 
-    public Event(String id, String name, String description, String category, LocalDateTime start, LocalDateTime end, String logoUrl, LocalDateTime registerDate) {
+    public Event(String id, String name, String description, String category, LocalDateTime start, LocalDateTime end, String logoUrl, LocalDateTime registerDate, LocalDateTime changed) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -51,6 +55,7 @@ public class Event {
         this.end = end;
         this.logoUrl = logoUrl;
         this.registerDate = registerDate;
+        this.changed = changed;
     }
 
     public String getId() {
@@ -117,4 +122,11 @@ public class Event {
         this.registerDate = registerDate;
     }
 
+    public LocalDateTime getChanged() {
+        return changed;
+    }
+
+    public void setChanged(LocalDateTime changed) {
+        this.changed = changed;
+    }
 }
