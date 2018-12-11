@@ -22,7 +22,7 @@ public class EventMapper {
                          eventResponse.getEnd().getLocal(),
                          getLogoUrl(eventResponse),
                          LocalDateTime.now(),
-                         convertToLocalDateViaInstant(eventResponse.getChanged().toDate()));
+                         toLocalDateTime(eventResponse.getChanged()));
     }
 
     private String getLogoUrl(EventResponse eventResponse) {
@@ -33,9 +33,10 @@ public class EventMapper {
         }
     }
 
-    public LocalDateTime convertToLocalDateViaInstant(Date dateToConvert) {
-         return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    private LocalDateTime toLocalDateTime(String text){
+        String[] date = text.split("Z");
 
+        return LocalDateTime.parse(date[0]);
     }
 
 }
