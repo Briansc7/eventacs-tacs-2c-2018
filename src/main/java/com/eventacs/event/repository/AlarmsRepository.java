@@ -35,15 +35,10 @@ public class AlarmsRepository {
 
         documentElements.put("userId", userId);
         documentElements.put("alarmId", alarmId);
+
         searchJson.put("keyword", searchDTO.getKeyword().orElseGet(()->""));
         searchJson.put("alarmName", searchDTO.getAlarmName());
-        //searchJson.put("keyword", searchDTO.getKeyword().orElse(""));
         searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
-        //searchJson.put("endDate", Date.from(searchDTO.getEndDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        //searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(d->d.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(()->""));// get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        //
-        //searchJson.put("startDate", Date.from(searchDTO.getStartDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-
         searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))));
         searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
         searchJson.put("modifiedStartDate", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
@@ -84,5 +79,28 @@ public class AlarmsRepository {
 
     public Integer alarmIdGenerator() {
         return eventacsMongoClient.alarmIdGenerator();
+    }
+
+    public void deleteAlarm(String alarmId) {
+        eventacsMongoClient.deleteAlarm(alarmId);
+    }
+
+    public String updateAlarm(AlarmDAO alarmDAO) {
+        Map<String, Object> documentElements =  new HashMap<>();
+        Map<String, Object> searchJson =  new HashMap<>();
+
+        documentElements.put("alarmId", alarmDAO.getAlarmId());
+        documentElements.put("userId", alarmDAO.getUserId());
+
+        searchJson.put("keyword", alarmDAO.getSearch().getKeyword());
+        searchJson.put("alarmName", alarmDAO.getSearch().getAlarmName());
+        searchJson.put("categories", alarmDAO.getSearch().getCategories());
+        searchJson.put("endDate", alarmDAO.getSearch().getEndDate());
+        searchJson.put("startDate", alarmDAO.getSearch().getStartDate());
+        searchJson.put("modifiedStartDate", alarmDAO.getSearch().getChanged());
+
+        documentElements.put("search", searchJson);
+
+        return eventacsMongoClient.update("alarmId", alarmDAO.getAlarmId(), documentElements, "alarms");
     }
 }

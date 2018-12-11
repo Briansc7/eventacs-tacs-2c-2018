@@ -128,4 +128,13 @@ public class UserService {
     public BigDecimal countEventList(String username) {
         return BigDecimal.valueOf(this.eventListRepository.getEventListByUserId(username).size());
     }
+
+    public void deleteAlarm(String alarmId) {
+        alarmsRepository.deleteAlarm(alarmId);
+    }
+
+    public void updateAlarm(AlarmDAO alarmDAO) {
+        alarmsRepository.updateAlarm(alarmDAO);
+    }
+
 }

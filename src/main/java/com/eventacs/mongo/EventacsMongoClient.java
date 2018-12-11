@@ -4,6 +4,7 @@ import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.httpclient.LocalDateTimeConverter;
 import com.eventacs.user.dto.AlarmDAO;
 import com.eventacs.user.dto.AlarmDTO;
+import com.eventacs.user.exception.AlarmNotFound;
 import com.eventacs.user.exception.EventListNotFound;
 import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
@@ -197,5 +198,23 @@ public class EventacsMongoClient {
 
     public void dropDatabase(){
         this.database.dropDatabase();
+    }
+
+    public void deleteAlarm(String alarmId) {
+        Map<String, String> conditions = new HashMap<>();
+        BasicDBObject deleteQuery = new BasicDBObject();
+        DBCollection collection = this.getCollection("alarms");
+
+        conditions.put("alarmId", alarmId);
+        List<AlarmDAO> alarms = getElementsAs(AlarmDAO.class, conditions, "alarms", "eventacs");
+
+        deleteQuery.put("alarmId", alarmId);
+
+        if(alarms.size() != 0) {
+            collection.remove(deleteQuery);
+            // return alarms.get(0).getAlarmId();
+        } else {
+            throw new AlarmNotFound("Alarm not found for this alarm Id : " + alarmId);
+        }
     }
 }
