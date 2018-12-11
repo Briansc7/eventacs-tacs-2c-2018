@@ -11,23 +11,12 @@ public class EventResponse {
     private NameResponse name;
     private String id;
     private DescriptionResponse description;
-
     @JsonProperty("category_id")
     private String category;
     private EventDate start;
     private EventDate end;
     private Logo logo;
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private LocalDateTime registerDate;
-    private EventDate changed;
-
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(LocalDateTime registerDate) {
-        this.registerDate = registerDate;
-    }
+    private LocalDateTime changed;
 
     public EventResponse() {
 
@@ -89,15 +78,15 @@ public class EventResponse {
         this.logo = logo;
     }
 
-    public EventDate getChanged() {
+    public LocalDateTime getChanged() {
         return changed;
     }
 
-    public void setChanged(EventDate changed) {
+    public void setChanged(LocalDateTime changed) {
         this.changed = changed;
     }
 
-    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, EventDate changed) {
+    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, LocalDateTime changed) {
 
         this.name = name;
         this.id = id;
@@ -106,7 +95,6 @@ public class EventResponse {
         this.start = start;
         this.end = end;
         this.logo = logo;
-        this.registerDate = LocalDateTime.now();
         this.changed = changed;
     }
 }

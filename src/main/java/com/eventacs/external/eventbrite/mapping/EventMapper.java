@@ -18,8 +18,8 @@ public class EventMapper {
                          eventResponse.getStart().getLocal(),
                          eventResponse.getEnd().getLocal(),
                          getLogoUrl(eventResponse),
-                         eventResponse.getRegisterDate(),
-                         eventResponse.getChanged().getLocal());
+                         LocalDateTime.now(),
+                         eventResponse.getChanged());
     }
 
     private String getLogoUrl(EventResponse eventResponse) {

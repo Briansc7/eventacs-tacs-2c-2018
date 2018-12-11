@@ -62,7 +62,6 @@ public class EventbriteFacade {
 
     public Event getEvent(String eventId) {
         EventResponse eventResponse = this.eventbriteClient.getEvent(eventId);
-        eventResponse.setRegisterDate(LocalDateTime.now());
         return eventMapper.fromResponseToModel(eventResponse);
     }
 
