@@ -11,13 +11,15 @@ public class Search {
     private Optional<LocalDate> startDate;
     private Optional<LocalDate> endDate;
     private Optional<LocalDate> changed;
+    private String alarmName;
 
-    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<LocalDate> changed) {
+    public Search(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<LocalDate> changed, String alarmName) {
         this.keyword = keyword;
         this.categories = categories;
         this.startDate = startDate;
         this.endDate = endDate;
         this.changed = changed;
+        this.alarmName = alarmName;
     }
 
     public Optional<String> getKeyword() {
@@ -58,5 +60,13 @@ public class Search {
 
     public void setChanged(Optional<LocalDate> changed) {
         this.changed = changed;
+    }
+
+    public String getAlarmName() {
+        return alarmName;
+    }
+
+    public void setAlarmName(String alarmName) {
+        this.alarmName = alarmName;
     }
 }

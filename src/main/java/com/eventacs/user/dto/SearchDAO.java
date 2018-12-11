@@ -8,19 +8,21 @@ public class SearchDAO {
   private String keyword;
   private List<String> categories;
 
-  private Date modifiedStartDate;
+  private Date changed;
   private Date startDate;
   private Date endDate;
+  private String alarmName;
 
   public SearchDAO() {
   }
 
-  public SearchDAO(String keyword, List<String> categories, Date modifiedStartDate, Date startDate, Date endDate) {
+  public SearchDAO(String keyword, List<String> categories, Date changed, Date startDate, Date endDate, String alarmName) {
     this.keyword = keyword;
     this.categories = categories;
-    this.modifiedStartDate = modifiedStartDate;
+    this.changed = changed;
     this.startDate = startDate;
     this.endDate = endDate;
+    this.alarmName = alarmName;
   }
 
   public String getKeyword() {
@@ -39,12 +41,12 @@ public class SearchDAO {
     this.categories = categories;
   }
 
-  public Date getModifiedStartDate() {
-    return modifiedStartDate;
+  public Date getChanged() {
+    return changed;
   }
 
-  public void setModifiedStartDate(Date modifiedStartDate) {
-    this.modifiedStartDate = modifiedStartDate;
+  public void setChanged(Date changed) {
+    this.changed = changed;
   }
 
   public Date getStartDate() {
@@ -57,6 +59,14 @@ public class SearchDAO {
 
   public Date getEndDate() {
     return endDate;
+  }
+
+  public String getAlarmName() {
+    return alarmName;
+  }
+
+  public void setAlarmName(String alarmName) {
+    this.alarmName = alarmName;
   }
 
   public void setEndDate(Date endDate) {

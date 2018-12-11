@@ -15,7 +15,8 @@ public class AlarmsMapper {
                                                                                          search.getCategories(),
                                                                                          search.getStartDate(),
                                                                                          search.getEndDate(),
-                                                                                         search.getChanged()));
+                                                                                         search.getChanged(),
+                                                                                         search.getAlarmName()));
     }
 
     public Alarm fromApiToModel(AlarmDTO alarmDTO) {
@@ -24,7 +25,8 @@ public class AlarmsMapper {
                                                                                        searchDTO.getCategories(),
                                                                                        searchDTO.getStartDate(),
                                                                                        searchDTO.getEndDate(),
-                                                                                       searchDTO.getChanged()));
+                                                                                       searchDTO.getChanged(),
+                                                                                       searchDTO.getAlarmName()));
     }
 
 }

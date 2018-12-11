@@ -36,6 +36,7 @@ public class AlarmsRepository {
         documentElements.put("userId", userId);
         documentElements.put("alarmId", alarmId);
         searchJson.put("keyword", searchDTO.getKeyword().orElseGet(()->""));
+        searchJson.put("alarmName", searchDTO.getAlarmName());
         //searchJson.put("keyword", searchDTO.getKeyword().orElse(""));
         searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
         //searchJson.put("endDate", Date.from(searchDTO.getEndDate().get().atStartOfDay(ZoneId.systemDefault()).toInstant()));
@@ -64,7 +65,8 @@ public class AlarmsRepository {
                                                                                                   Optional.ofNullable(searchDAO.getCategories()),
                                                                                                   Optional.of(LocalDate.from(searchDAO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())),
                                                                                                   Optional.of(LocalDate.from(searchDAO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())),
-                                                                                                  Optional.of(LocalDate.from(searchDAO.getModifiedStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))));
+                                                                                                  Optional.of(LocalDate.from(searchDAO.getChanged().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())),
+                                                                                                  searchDAO.getAlarmName()));
         }
 
     }
