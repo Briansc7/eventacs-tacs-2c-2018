@@ -29,9 +29,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 
 import static com.eventacs.external.telegram.client.estados.*;
@@ -636,7 +634,7 @@ public class TacsBot extends TelegramLongPollingBot {
 
         if(dateToLocalDate(searchDAO.getEndDate()).isBefore(LocalDate.now())){
             //Ya no ejecuto la alarma por eventos viejos
-            //TODO eliminar la alarma vieja
+            userService.deleteAlarm(alarmDAO.getAlarmId());
             return;
         }
 
@@ -666,11 +664,15 @@ public class TacsBot extends TelegramLongPollingBot {
 
         eventList = eventsResponse.getEvents();
 
-        //Date newChangedDate = eventList.sort(ChangedDateComparator.getInstance());;
+        eventList.sort(ChangedDateComparator.getInstance());
 
-        //searchDAO.setChanged(newChangedDate);
+        Date newChangedDate = localDateTimeToDate(eventList.get(0).getChanged());
+
+        searchDAO.setChanged(newChangedDate);
 
         alarmDAO.setSearch(searchDAO);
+
+        userService.updateAlarm(alarmDAO);
 
         //armar el mensaje y enviar eventos nuevos encontrados
 
@@ -684,6 +686,12 @@ public class TacsBot extends TelegramLongPollingBot {
 
     private LocalDate dateToLocalDate(Date date){
         return LocalDate.from(Instant.ofEpochMilli(date.getTime()));
+    }
+
+    private Date localDateTimeToDate(LocalDateTime ldt){
+        ZonedDateTime zdt = ldt.atZone(ZoneId.systemDefault());
+        Date output = Date.from(zdt.toInstant());
+        return output;
     }
 
 }
