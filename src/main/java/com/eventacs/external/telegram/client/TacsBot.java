@@ -232,6 +232,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
                 break;
             /*case "/test":
+                String chatIdleido = telegramUsersRepository.findChatIdByUserId("User1");
+                mensajeAEnviar.append("chatId: "+chatIdleido);
+                enviarMensaje(mensajeAEnviar, chatId);
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
                 mensajeAEnviar.append("\nUserId: "+getUserId(chatId));
                 enviarMensaje(mensajeAEnviar, chatId);
@@ -481,9 +484,9 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public void crearAlarma(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
+    public void crearAlarma(String nameAlarm, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
 
-        SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate);
+        SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate, startDate, nameAlarm);//por ser la primera vez, le mando el changed como la fecha de inicio
 
         EventacsCommands.createAlarm(getAccessToken(chatId),getUserId(chatId),searchDTO);
     }
@@ -621,6 +624,8 @@ public class TacsBot extends TelegramLongPollingBot {
         Optional<LocalDate> startDate;
         Optional<LocalDate> endDate;
 
+        String alarmName = searchDAO.getAlarmName();
+
         List<Event> eventList;
 
         EventsResponse eventsResponse;
@@ -644,32 +649,34 @@ public class TacsBot extends TelegramLongPollingBot {
 
         //obtener el chat id a partir del userid
 
-        String chatId;
+        Long chatId = Long.valueOf(telegramUsersRepository.findChatIdByUserId(userId));
 
-        //obtener la mayor fecha de modificacion para el filtrado de mysql
+        //obtener la mayor fecha de modificacion para el filtrado de mysql (guardar en mongo)
 
-        //ejecutar la busqueda
+        Date changedDate = searchDAO.getChanged();
+
+        //ejecutar la busqueda con eventos filtrados por fecha de modificacion mayor a la fecha guardada
 
         //TODO considerar mas que la primer pagina
-        eventsResponse = eventService.getEvents(keyword, categories, startDate, endDate, Optional.of(BigInteger.ONE));
-
-        //filtrar eventos por fecha de modificacion mayor a la fecha guardada
-
-
-        //eventList = eventsResponse.getEvents().stream().filter(e->e.);
-
+        eventsResponse = eventService.getEventsByChangedDate(keyword, categories, startDate, endDate, Optional.of(BigInteger.ONE), dateToLocalDate(changedDate));
 
         //buscar entre los eventos filtrados la nueva fecha de modificacion mayor y guardarla en mysql
 
-        //eventList.stream().max();
+        eventList = eventsResponse.getEvents();
+
+        //Date newChangedDate = eventList.sort(ChangedDateComparator.getInstance());;
+
+        //searchDAO.setChanged(newChangedDate);
+
+        alarmDAO.setSearch(searchDAO);
 
         //armar el mensaje y enviar eventos nuevos encontrados
 
-        mensajeAEnviar.append("Nuevos eventos encontrados de alarma "+alarmDAO.getAlarmId()+"\n\n");
+        mensajeAEnviar.append("Nuevos eventos encontrados para alarma "+alarmName+"\n\n");
 
-        //enviarMensaje(mensajeAEnviar, chatId);
+        enviarMensaje(mensajeAEnviar, chatId);
 
-        //eventList.forEach(event -> mostrarUnEvento(event, chatId));
+        eventList.forEach(event -> mostrarUnEvento(event, chatId));
 
     }
 

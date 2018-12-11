@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class ComandoCrearAlarma {
     enum estadosCrearAlarma {
-        inicio, esperaKeyword, esperaCategoria, esperaOtraCategoria, esperaFechaInicio, esperaFechaFin,
+        inicio, esperaNombre, esperaKeyword, esperaCategoria, esperaOtraCategoria, esperaFechaInicio, esperaFechaFin,
         esperaDiaFechInic, esperaMesFechInic, esperaAnioFechInic,
         esperaDiaFechFin, esperaMesFechFin, esperaAnioFechFin,
         preguntaQuiereKeyword, preguntaQuiereCategoria, preguntaQuiereFechaInicio, preguntaQuiereFechaFin,
@@ -22,6 +22,8 @@ public class ComandoCrearAlarma {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComandoBuscarEvento.class);
 
     private static HashMap<Long, estadosCrearAlarma> crearAlarmaStates = new HashMap<Long, estadosCrearAlarma>();
+
+    private static HashMap<Long, String> nombreGuardado = new HashMap<Long, String>();
 
     private static HashMap<Long, Optional<String>> keywordGuardado = new HashMap<Long, Optional<String>>();
 
@@ -72,6 +74,12 @@ public class ComandoCrearAlarma {
 
         switch (crearAlarmaStates.get(chatId)) {
             case inicio:
+                mensajeAEnviar.append("Ingrese el nombre para la nueva alarma");
+                tacsBot.enviarMensaje(mensajeAEnviar, chatId);
+                crearAlarmaStates.put(chatId, estadosCrearAlarma.esperaNombre);
+                break;
+            case esperaNombre:
+                nombreGuardado.put(chatId, messageTextReceived);
                 mensajeAEnviar.append("Desea agregar un keyword a su búsqueda?\nIngrese Si/No");
                 tacsBot.enviarMensajeConOpcionSiNo(mensajeAEnviar, chatId);
                 crearAlarmaStates.put(chatId, estadosCrearAlarma.preguntaQuiereKeyword);
@@ -300,7 +308,8 @@ public class ComandoCrearAlarma {
 //                    case "NO":
                         fechaFinGuardada.put(chatId, Optional.empty());
                         try{
-                            tacsBot.crearAlarma(keywordGuardado.get(chatId),
+                            tacsBot.crearAlarma(nombreGuardado.get(chatId),
+                                    keywordGuardado.get(chatId),
                                     categoriasGuardadas.get(chatId),
                                     fechaInicioGuardada.get(chatId),
                                     fechaFinGuardada.get(chatId),
@@ -415,7 +424,8 @@ public class ComandoCrearAlarma {
                 LOGGER.info("Fecha inicio guardada: " + fechaFinGuardada.get(chatId));
 
                 try{
-                    tacsBot.crearAlarma(keywordGuardado.get(chatId),
+                    tacsBot.crearAlarma(nombreGuardado.get(chatId),
+                            keywordGuardado.get(chatId),
                             categoriasGuardadas.get(chatId),
                             fechaInicioGuardada.get(chatId),
                             fechaFinGuardada.get(chatId),

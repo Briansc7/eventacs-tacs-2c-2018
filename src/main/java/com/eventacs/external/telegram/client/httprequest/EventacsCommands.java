@@ -109,6 +109,8 @@ public class EventacsCommands {
                     +(searchDTO.getStartDate().equals(Optional.empty())?"":searchDTO.getStartDate().get())+
                     "\",\"endDate\":\""
                     +(searchDTO.getEndDate().equals(Optional.empty())?"":searchDTO.getEndDate().get())+
+                    "\",\"alarmName\":\""
+                    +searchDTO.getAlarmName()+
                             "\"}";
 
             HttpUriRequest requestWitnToken = new RequestWitnToken("postRequest","http://backend:9000/eventacs/users/"+username+"/alarms", accessToken).addEntity(new ByteArrayEntity(jsonString.getBytes("UTF-8")))
