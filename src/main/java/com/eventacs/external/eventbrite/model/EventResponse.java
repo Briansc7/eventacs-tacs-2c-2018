@@ -17,6 +17,7 @@ public class EventResponse {
     private EventDate start;
     private EventDate end;
     private Logo logo;
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private LocalDateTime registerDate;
     private EventDate changed;
 
