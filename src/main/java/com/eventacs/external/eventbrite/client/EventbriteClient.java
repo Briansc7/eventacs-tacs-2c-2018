@@ -103,7 +103,7 @@ public class EventbriteClient {
         categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
         endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
-        endDate.map(this::toDate).map(e -> parameters.put("date_modified.range_start", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:dd'Z'").format(e)));
+        Optional.of(changedDate).map(this::toDate).map(e -> parameters.put("date_modified.range_start", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:dd'Z'").format(e)));
         parameters.put("page", String.valueOf(page));
 
         PaginatedEvents events = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
