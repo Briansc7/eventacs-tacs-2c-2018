@@ -685,7 +685,7 @@ public class TacsBot extends TelegramLongPollingBot {
     }
 
     private LocalDate dateToLocalDate(Date date){
-        return LocalDate.from(Instant.ofEpochMilli(date.getTime()));
+        return LocalDate.from(date.toInstant().atZone(ZoneId.systemDefault()));
     }
 
     private Date localDateTimeToDate(LocalDateTime ldt){

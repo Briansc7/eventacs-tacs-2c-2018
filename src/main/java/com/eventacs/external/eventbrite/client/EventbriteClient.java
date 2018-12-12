@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.DateFormatter;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -100,7 +103,7 @@ public class EventbriteClient {
         categories.map(c -> parameters.put("categories", String.join(",", c)));
         startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
         endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
-        endDate.map(this::toLocalDateTime).map(e -> parameters.put("date_modified.range_start", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        endDate.map(this::toDate).map(e -> parameters.put("date_modified.range_start", new SimpleDateFormat("YYYY-MM-DDThh:mm:ssZ").format(e)));
         parameters.put("page", String.valueOf(page));
 
         PaginatedEvents events = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
@@ -173,6 +176,10 @@ public class EventbriteClient {
 
     private LocalDateTime toLocalDateTime(LocalDate localDate) {
         return LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+    }
+
+    private Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
 }
