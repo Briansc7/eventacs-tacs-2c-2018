@@ -5,21 +5,30 @@ import com.eventacs.event.dto.EventListMapper;
 import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
+import com.eventacs.event.repository.AlarmsRepository;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.event.service.EventService;
 import com.eventacs.mongo.EventacsMongoClient;
+import com.eventacs.user.dto.AlarmDAO;
+import com.eventacs.user.dto.AlarmDTO;
+import com.eventacs.user.dto.SearchDTO;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class TestMongo {
 
 
     private EventListRepository repository;
+    private AlarmsRepository alarmsRepository;
     private EventListCreationDTO eventListCreationDTO;
+    private AlarmDTO alarmDTO;
+    private SearchDTO searchDTO;
     private EventService eventService;
 
 
@@ -32,9 +41,9 @@ public class TestMongo {
         repository.createEventList(eventListCreationDTO, "100");
         repository.createEventList(new EventListCreationDTO("User2", "lista"), "200");
 
-        repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "100");
-        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "100");
-        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http"), "200");
+        repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "100");
+        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "100");
+        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "200");
         List<Event> list = repository.getEventsListByListId("100");
         List<Event> list2 = repository.getEventsListByListId("200");
 
@@ -71,6 +80,19 @@ public class TestMongo {
 
     }
 
+    @Test
+    public void alarmTest(){
+        alarmsRepository = new AlarmsRepository(new EventacsMongoClient());
+
+        searchDTO = new SearchDTO(Optional.empty(), Optional.empty(), Optional.of(LocalDate.now()), Optional.of(LocalDate.now()), Optional.of(LocalDate.now()), "AlarmaFigo");
+
+        alarmsRepository.createAlarm(searchDTO,"User1", "1");
+        List<AlarmDAO> alarms = alarmsRepository.findAll();
+        Assert.assertEquals(1, alarms.size());
+    }
+
+
+
 //    @Test
 //    public void CreateEventList(){
 //        eventService = new EventService(new EventbriteFacade(new EventbriteClient(new RestClient()), new EventMapper(), new CategoryMapper(), new PaginationMapper()));
@@ -93,7 +115,11 @@ public class TestMongo {
 
     @After
     public void after(){
-        repository.dropDatabase();
+        if(repository != null) {
+            repository.dropDatabase();
+        } else {
+            alarmsRepository.dropDatabase();
+        }
     }
 
 }

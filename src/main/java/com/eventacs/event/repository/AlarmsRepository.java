@@ -39,9 +39,9 @@ public class AlarmsRepository {
         searchJson.put("keyword", searchDTO.getKeyword().orElseGet(()->""));
         searchJson.put("alarmName", searchDTO.getAlarmName());
         searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
-        searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))));
-        searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
-        searchJson.put("changed", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)));
+        searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))).toString());
+        searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)).toString());
+        searchJson.put("changed", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)).toString());
 
         documentElements.put("search", searchJson);
 
@@ -102,5 +102,9 @@ public class AlarmsRepository {
         documentElements.put("search", searchJson);
 
         return eventacsMongoClient.update("alarmId", alarmDAO.getAlarmId(), documentElements, "alarms");
+    }
+
+    public void dropDatabase(){
+        this.eventacsMongoClient.dropDatabase();
     }
 }

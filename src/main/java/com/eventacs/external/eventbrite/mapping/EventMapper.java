@@ -35,7 +35,6 @@ public class EventMapper {
 
     private LocalDateTime toLocalDateTime(String text){
         String[] date = text.split("Z");
-
         return LocalDateTime.parse(date[0]);
     }
 
