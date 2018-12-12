@@ -7,6 +7,7 @@ import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
 import com.eventacs.user.dto.AlarmDAO;
+import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDAO;
 import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.repository.TelegramUsersRepository;
@@ -673,15 +674,34 @@ public class TacsBot extends TelegramLongPollingBot {
         if(eventList.isEmpty())
             return; //no hay nuevos eventos
 
-        eventList.sort(ChangedDateComparator.getInstance());
+        eventList.sort(ChangedDateComparator.getInstance());//ordena por el maximo changed
 
-        Date newChangedDate = localDateTimeToDate(eventList.get(0).getChanged());
+        //creo nueva busqueda para update de alarma con el nuevo changed
+        SearchDTO searchDTO = new SearchDTO(Optional.of(searchDAO.getKeyword()),
+                Optional.of(searchDAO.getCategories()),
+                Optional.of(
+                        dateToLocalDate(searchDAO.getStartDate())
+                ),
+                Optional.of(
+                        dateToLocalDate(searchDAO.getEndDate())
+                ),
+                Optional.of(
+                        dateToLocalDate(
+                                localDateTimeToDate(eventList.get(0).getChanged())//nuevo changed
+                        )
+                ),
+                searchDAO.getAlarmName());
 
-        searchDAO.setChanged(newChangedDate);
+        //creo la alarma para el update
+        AlarmDTO modifiedAlarm = new AlarmDTO(Optional.of(alarmDAO.getAlarmId()), alarmDAO.getUserId(), searchDTO);
 
-        alarmDAO.setSearch(searchDAO);
+        //Date newChangedDate = localDateTimeToDate(eventList.get(0).getChanged());
 
-        userService.updateAlarm(alarmDAO);
+        //searchDAO.setChanged(newChangedDate);
+
+        //alarmDAO.setSearch(searchDAO);
+
+        userService.updateAlarm(modifiedAlarm);
 
         //armar el mensaje y enviar eventos nuevos encontrados
 
