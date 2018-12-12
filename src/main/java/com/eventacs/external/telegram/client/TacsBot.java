@@ -231,6 +231,9 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
                 break;
             /*case "/test":
+                avisarEventosNuevos();
+                break;*/
+                /*
                 String chatIdleido = telegramUsersRepository.findChatIdByUserId("User1");
                 mensajeAEnviar.append("chatId: "+chatIdleido);
                 enviarMensaje(mensajeAEnviar, chatId);
@@ -485,6 +488,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void crearAlarma(String nameAlarm, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
 
+        //Optional<LocalDate> changed = Optional.of(LocalDate.now().minusDays(7));
+
         SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate, startDate, nameAlarm);//por ser la primera vez, le mando el changed como la fecha de inicio
 
 
@@ -584,21 +589,22 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void crearLista(String nombreLista, long chatId) {
         EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
-        EventacsCommands.createEventList(getAccessToken(chatId), eventList);
-        //eventService.createEventList(eventList);
+        //EventacsCommands.createEventList(getAccessToken(chatId), eventList);
+        eventService.createEventList(eventList);
     }
 
     public void cambiarNombreLista(String listId, String newName, long chatId) {
         //EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
-        EventacsCommands.changeListName(getAccessToken(chatId), listId, new ListName(newName));
-        //eventService.changeListName(listId, newName);
+        //EventacsCommands.changeListName(getAccessToken(chatId), listId, new ListName(newName));
+        eventService.changeListName(Long.valueOf(listId), newName);
     }
 
     public void eliminarLista(String listaId, long chatId) {
-        EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
+        //EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
+        eventService.deleteEventList(Long.valueOf(listaId));
     }
 
-    //@Scheduled(cron="0 0 11 * * *") //Se ejecuta todos los dias a las 11:00:00
+    @Scheduled(cron="0 0 11 * * *") //Se ejecuta todos los dias a las 11:00:00
     //@Scheduled(cron="0 47 10 10 12 ?") //Para probar en una hora determinada de un dia determinado
     private void avisarEventosNuevos(){
 
@@ -663,6 +669,9 @@ public class TacsBot extends TelegramLongPollingBot {
         //buscar entre los eventos filtrados la nueva fecha de modificacion mayor y guardarla en mysql
 
         eventList = eventsResponse.getEvents();
+
+        if(eventList.isEmpty())
+            return; //no hay nuevos eventos
 
         eventList.sort(ChangedDateComparator.getInstance());
 
