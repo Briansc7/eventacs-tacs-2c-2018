@@ -1,15 +1,15 @@
 package com.eventacs.event.model;
 
 public enum Timelapse {
-    TODAY("TODAY"), FEW_DAYS("FEW_DAYS"), WEEK("WEEK"), MONTH("MONTH"), ALL("ALL");
+    TODAY(1), FEW_DAYS(4), WEEK(8), MONTH(31), ALL(4000);
 
-    private String value;
+    private int value;
 
-    public String getValue(){
+    public int getValue(){
         return this.value;
     }
 
-    Timelapse(String value) {
+    Timelapse(int value) {
         this.value = value;
     }
 }

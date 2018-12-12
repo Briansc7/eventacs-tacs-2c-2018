@@ -27,9 +27,15 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         // @formatter:off
-                http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .authorizeRequests().anyRequest().permitAll();
+                http
+                    .authorizeRequests()
+                        .antMatchers("/eventacs/signup").permitAll()
+                        .antMatchers("/eventacs/login").permitAll()
+                        .and()
+                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .and()
+                        .authorizeRequests()
+                        .anyRequest().authenticated();
                     //.authorizeRequests().anyRequest().authenticated();
         // @formatter:on                
     }
@@ -51,7 +57,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
 //        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 //        dataSource.setUrl("jdbc:mysql://localhost:3306/oauth2?createDatabaseIfNotExist=true");
-//        dataSource.setUsername("pds");
+//        dataSource.setUserName("pds");
 //        dataSource.setPassword("clave");
 //        return dataSource;
 //    }
@@ -65,7 +71,7 @@ public class OAuth2ResourceServerConfigRemoteTokenService extends ResourceServer
     @Bean
     public RemoteTokenServices tokenServices() {
         final RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setCheckTokenEndpointUrl("https://eventacs.com:9001/oauth-server/oauth/check_token");
+        tokenService.setCheckTokenEndpointUrl("http://oauth-server:9001/oauth-server/oauth/check_token");
         tokenService.setClientId("eventacsClientId");
         tokenService.setClientSecret("secret");
         return tokenService;

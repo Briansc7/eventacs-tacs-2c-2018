@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,8 @@ public class EventController {
     @ResponseBody
     public Event getEvent(@PathVariable String eventId) {
         LOGGER.info("/eventacs/events/{} [GET]", eventId);
-        return this.eventService.getEvent(eventId);
+        Event event = this.eventService.getEvent(eventId);
+        return event;
     }
 
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
@@ -54,56 +56,59 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.GET)
     @ResponseBody
-    public EventList getEventList(@PathVariable String listId) {
+    public EventList getEventList(@PathVariable Long listId) {
         LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
         return this.eventService.getEventList(listId);//TODO obtener el userId de la sesión
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
-    public String createEventList(@RequestBody EventListCreationDTO eventListCreation){
+    public Long createEventList(@RequestBody EventListCreationDTO eventListCreation){
         LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", eventListCreation.getUserId(), eventListCreation.getListName());
         return this.eventService.createEventList(eventListCreation);
     }
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody UserId userId) {
+    public void addEvent(@PathVariable Long listId, @PathVariable String eventId, @RequestBody UserId userId) {
         LOGGER.info("/eventacs/event-lists/{}/{} [PUT] for this userId: {}", listId, eventId, userId);
         this.eventService.addEvent(listId, eventId, userId.getUserId());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
-    public String changeListName(@PathVariable String listId, @RequestBody ListName listName) {
+    public Long changeListName(@PathVariable Long listId, @RequestBody ListName listName) {
         LOGGER.info("/eventacs/event-lists/{} [PUT] With listName: {} ", listId, listName);
         return this.eventService.changeListName(listId, listName.getListName());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public String deleteEventList(@PathVariable String listId) {
+    public Long deleteEventList(@PathVariable Long listId) {
         LOGGER.info("/eventacs/event-lists/{} [DELETE]", listId);
         return this.eventService.deleteEventList(listId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/events/count", method = RequestMethod.GET)
     @ResponseBody
-    public BigDecimal count(@RequestParam("timelapse") Timelapse timelapse) {
+    public int count(@RequestParam("timelapse") Timelapse timelapse) {
         LOGGER.info("/eventacs/events/count [get] Timelapse: {}", timelapse.getValue());
         return this.eventService.count(timelapse);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/events/{eventId}/watchers", method = RequestMethod.GET)
     @ResponseBody
-    public List<UserInfoDTO> getWatchers(@PathVariable String eventId) {
+    public int getWatchers(@PathVariable String eventId) {
         LOGGER.info("/eventacs/{}/watchers [get]", eventId);
         return this.eventService.getWatchers(eventId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
+    public List<Event> getSharedEvents(@RequestParam Long listId, @RequestParam Long anotherListId) {
         LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }

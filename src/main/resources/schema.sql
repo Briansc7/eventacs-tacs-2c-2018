@@ -4,4 +4,4 @@ create table token_id_chat_id (
   token_access VARCHAR(255),
   chatid VARCHAR(255) PRIMARY KEY,
   user_name VARCHAR(255)
-);
+)ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;

@@ -83,6 +83,7 @@ CREATE TABLE users (
         chatId varchar(50),
         celPhone varchar(20),
         telegramName varchar(50),
+        lastAccess BIGINT,
         enabled TINYINT(1)
 )ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
 

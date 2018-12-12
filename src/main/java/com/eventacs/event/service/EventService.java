@@ -1,19 +1,17 @@
 package com.eventacs.event.service;
 
 import com.eventacs.event.dto.EventListCreationDTO;
+import com.eventacs.event.dto.EventListDTO;
 import com.eventacs.event.model.Category;
 import com.eventacs.event.model.EventList;
 import com.eventacs.event.model.Timelapse;
 import com.eventacs.event.model.*;
 import com.eventacs.event.repository.EventListRepository;
 import com.eventacs.external.eventbrite.facade.EventbriteFacade;
-import com.eventacs.user.dto.UserInfoDTO;
 import com.eventacs.user.exception.UserNotFound;
 import com.eventacs.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;
@@ -39,8 +37,12 @@ public class EventService {
         return this.eventbriteFacade.getEvents(keyword, categories, startDate, endDate, page);
     }
 
-    public String createEventList(EventListCreationDTO eventListCreation) {
-        String listId = listIdGenerator();
+    public EventsResponse getEventsByChangedDate(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<BigInteger> page, LocalDate changedDate) {
+        return this.eventbriteFacade.getEventsByChangedDate(keyword, categories, startDate, endDate, changedDate, page);
+    }
+
+    public Long createEventList(EventListCreationDTO eventListCreation) {
+        Long listId = listIdGenerator();
         try {
             userService.addEventList(eventListCreation, listId);
             return listId;
@@ -49,56 +51,76 @@ public class EventService {
         }
     }
 
-    public void addEvent(String listId, String eventId, String userId) {
+    public void addEvent(Long listId, String eventId, String userId) {
         Event event = getEvent(eventId);
         userService.addEvent(listId, event, userId);
     }
 
-    public String changeListName(String listId, String listName) {
+    public Long changeListName(Long listId, String listName) {
         return userService.changeListName(listId, listName);
     }
 
-    public String deleteEventList(String listId) {
+    public Long deleteEventList(Long listId) {
         return userService.deleteEventList(listId);
     }
 
-    public BigDecimal count(Timelapse timelapse) {
+    public int count(Timelapse timelapse) {
         // TODO Consultar si se quiere saber la cantidad de eventos registrados en las listas de los usuarios.
         // TODO falta filtrar por TIMELAPSE
-
-        List<UserInfoDTO> users = this.userService.getUsers();
-
-        List<EventList> eventLists = users.stream().map(UserInfoDTO::getEventLists).flatMap(List::stream).collect(Collectors.toList());
-
-        List<Event> events = eventLists.stream().map(EventList::getEvents).flatMap(List::stream).collect(Collectors.toList());
-
-        return BigDecimal.valueOf(events.size());
-
+        return eventListRepository.getEventsCountByTime(timelapse.getValue());
     }
 
-    public List<UserInfoDTO> getWatchers(String eventId) {
-        // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
 
-        List<UserInfoDTO> watchers = new ArrayList<>();
+    public int getWatchers(String eventId) {
+        // TODO Buscar todos los users que tengan ese eventId en alguna de sus listas de eventos
+        Set<String> hs = new HashSet<>();
+
+        List<EventListDTO> eventList = eventListRepository.getEventsListsByEventId(eventId);
+        List<String> listNames = eventList.stream().map(eventListID -> eventListID.getUserId()).collect(Collectors.toList());
+
+        hs.addAll(listNames);
+        listNames.clear();
+        listNames.addAll(hs);
+
+        return listNames.size();
+
+       /* List<UserInfoDTO> watchers = new ArrayList<>();
         watchers.add(new UserInfoDTO("id1", "name1", "lastname1", new ArrayList<>()));
         watchers.add(new UserInfoDTO("id2", "name2", "lastname2", new ArrayList<>()));
-
-        return watchers;
+        eventListRepository.getEventListByListId(listId);
+        return watchers;*/
     }
 
-    public List<Event> getSharedEvents(String listId, String anotherListId) {
+
+    public List<Event> getSharedEvents(Long listId, Long anotherListId) {
         // TODO por ahora usar este user generico
-        UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
+        //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
         List<Event> events = eventListRepository.getEventsListByListId(listId);
         List<Event> moreEvents =eventListRepository.getEventsListByListId(anotherListId);
 
-        return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
+
+
+        List<Event> shared = new ArrayList<>();
+
+        //por cada evento de una lista, si esta en la otra lista lo agrega a la lista shared
+        events.forEach(e -> {
+
+            if(moreEvents.stream().anyMatch(m->m.getId().equalsIgnoreCase(e.getId()))) {
+                    shared.add(e);
+                }
+        }
+        );
+
+
+        return shared;
+
+        //return events.stream().filter(moreEvents::contains).collect(Collectors.toList());
 
     }
 
-    private String listIdGenerator() {
-        return eventListRepository.listIdGenerator().toString();
+    private Long listIdGenerator() {
+        return eventListRepository.listIdGenerator();
     }
 
     public Event getEvent(String eventId) {
@@ -109,10 +131,8 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public EventList getEventList(String listId) {
-        //return eventListRepository.getEventListByUserId(userId);
+    public EventList getEventList(Long listId) {
         return eventListRepository.getEventListByListId(listId);
-      // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 
     public List<EventList> getEventLists(String userId) {

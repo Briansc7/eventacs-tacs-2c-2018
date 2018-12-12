@@ -2,32 +2,32 @@ package com.eventacs.account.dto;
 
 public class UserLoginDTO {
 
-    private String name;
-    private String encryptedPassword;
+    private String username;
+    private String password;
 
     public UserLoginDTO() {
 
     }
 
-    public UserLoginDTO(String name, String encryptedPassword) {
-        this.name = name;
-        this.encryptedPassword = encryptedPassword;
+    public UserLoginDTO(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.DateFormatter;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -87,6 +90,28 @@ public class EventbriteClient {
 
     }
 
+    public EventbriteEventsResponse getEventsByChangedDate(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, LocalDate changedDate, BigInteger page) {
+
+        List<String> pathParts = new ArrayList<>();
+        Map<String, String> parameters = new HashMap<>();
+
+        pathParts.add("/v3");
+        pathParts.add("/events");
+        pathParts.add("/search");
+
+        keyword.map(k -> parameters.put("q", k));
+        categories.map(c -> parameters.put("categories", String.join(",", c)));
+        startDate.map(this::toLocalDateTime).map(s -> parameters.put("start_date.range_start", s.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        endDate.map(this::toLocalDateTime).map(e -> parameters.put("start_date.range_end", e.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':'mm':'ss"))));
+        Optional.of(changedDate).map(this::toDate).map(e -> parameters.put("date_modified.range_start", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:dd'Z'").format(e)));
+        parameters.put("page", String.valueOf(page));
+
+        PaginatedEvents events = this.restClient.get(this.buildURI(pathParts, parameters), PaginatedEvents.class);
+
+        return new EventbriteEventsResponse(events.getPagination(), events.getEventsResponse());
+
+    }
+
     public List<CategoryResponse> getCategories() {
 
         Pagination pagination = new Pagination();
@@ -151,6 +176,10 @@ public class EventbriteClient {
 
     private LocalDateTime toLocalDateTime(LocalDate localDate) {
         return LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+    }
+
+    private Date toDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
 }

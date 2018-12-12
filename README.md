@@ -2,6 +2,37 @@
 ### Description
 Trabajo Practico TACS - 2° Cuatrimestre 2018 - Tecnologías Avanzadas en la Construcción de Software
 
+### Pasos con docker
+Modificar el archivo hosts con el siguiente comando:
+``sudo nano /etc/hosts``
+
+Agregar al archivo hosts las siguientes tres líneas:
+
+``172.10.0.8	backend``
+
+``172.10.0.9 	oauth-server``
+
+``172.10.0.10 	frontend``
+
+(esto solo es necesario hacerlo una vez)
+
+Hacer cd al directorio raíz de evectacs-tacs-2c-2018 y ejecutar el siguiente comando para levantar la app:
+``sudo docker-compose up``
+
+Una vez terminado se puede probar el bot de telegram mandandole mensajes a @TacsBot (ver sección de telegram de este documento).
+
+También se puede probar el front accediendo desde un navegador a http://frontend:3000/ 
+
+Al finalizar las pruebas, ejecutar:
+``sudo docker-compose down``
+
+Si al probar una nueva versión de la app los cambios no se reflejan al levantar al app con docker, puede deberse a que docker esté usando imágenes viejas.
+
+Por lo tanto para probar una nueva versión de la app, puede ser necesario correr primero el siguiente comando:
+``sudo docker rmi $(sudo docker images)``
+
+
+### Pasos viejos sin docker
 ### Creacion de certificados
 La variable de entorno JAVA_HOME debe estar seteada
 En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:

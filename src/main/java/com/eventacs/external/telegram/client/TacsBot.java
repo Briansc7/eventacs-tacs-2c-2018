@@ -1,17 +1,21 @@
 package com.eventacs.external.telegram.client;
 
+import com.eventacs.event.comparator.ChangedDateComparator;
 import com.eventacs.event.dto.EventListCreationDTO;
-import com.eventacs.event.model.Category;
-import com.eventacs.event.model.Event;
-import com.eventacs.event.model.EventList;
-import com.eventacs.event.model.EventsResponse;
+import com.eventacs.event.model.*;
 import com.eventacs.event.service.EventService;
 import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.httprequest.EventacsCommands;
+import com.eventacs.user.dto.AlarmDAO;
+import com.eventacs.user.dto.AlarmDTO;
+import com.eventacs.user.dto.SearchDAO;
+import com.eventacs.user.dto.SearchDTO;
 import com.eventacs.user.repository.TelegramUsersRepository;
+import com.eventacs.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
@@ -26,18 +30,15 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.*;
+import java.util.*;
 
 import static com.eventacs.external.telegram.client.estados.*;
 import static java.lang.Math.toIntExact;
 
 enum estados{
-    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista
+    inicio, agregarevento, revisareventos, buscarevento, login, crearlista, eliminarLista, cambiarnombrelista,
+    crearalarma
 }
 
 @Component
@@ -56,13 +57,19 @@ public class TacsBot extends TelegramLongPollingBot {
     ComandoLogin comandoLogin = new ComandoLogin();
     ComandoCrearLista comandoCrearLista = new ComandoCrearLista();
     ComandoEliminarLista comandoEliminarLista = new ComandoEliminarLista();
+    ComandoCambiarNombreLista comandoCambiarNombreLista = new ComandoCambiarNombreLista();
+    ComandoCrearAlarma comandoCrearAlarma = new ComandoCrearAlarma();
 
     @Autowired
     private EventService eventService;
 
-    public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository) {
+    @Autowired
+    private UserService userService;
+
+    public TacsBot(EventService eventService, TelegramUsersRepository telegramUsersRepository, UserService userService) {
         this.eventService = eventService;
         this.telegramUsersRepository = telegramUsersRepository;
+        this.userService = userService;
     }
 
     public EventService getEventService() {
@@ -129,7 +136,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 comandoRevisarEventos.revisarEventos(parts, chatStates, chatId, this);
                 break;
             case buscarevento:
-                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                comandoBuscarEvento.buscarEventos(messageTextReceived, chatStates, chatId, this);
                 break;
             case login:
                 comandoLogin.login(parts, chatStates, chatId, this);
@@ -139,6 +146,12 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case eliminarLista:
                 comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
+                break;
+            case cambiarnombrelista:
+                comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
+                break;
+            case crearalarma:
+                comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
                 break;
             default:
                 break;
@@ -196,7 +209,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 break;
             case "/buscarevento":
                 TacsBot.chatStates.put(chatId, buscarevento);
-                comandoBuscarEvento.buscarEventos(parts, chatStates, chatId, this);
+                comandoBuscarEvento.buscarEventos(messageTextReceived, chatStates, chatId, this);
                 break;
             case "/login":
                 TacsBot.chatStates.put(chatId, login);
@@ -210,7 +223,21 @@ public class TacsBot extends TelegramLongPollingBot {
                 TacsBot.chatStates.put(chatId, eliminarLista);
                 comandoEliminarLista.eliminarLista(parts, chatStates, chatId, this);
                 break;
+            case "/cambiarnombrelista":
+                TacsBot.chatStates.put(chatId, cambiarnombrelista);
+                comandoCambiarNombreLista.cambiarNombreLista(messageTextReceived, chatStates, chatId, this);
+                break;
+            case "/crearalarma":
+                TacsBot.chatStates.put(chatId, crearalarma);
+                comandoCrearAlarma.crearAlarma(messageTextReceived, chatStates, chatId, this);
+                break;
             /*case "/test":
+                avisarEventosNuevos();
+                break;*/
+                /*
+                String chatIdleido = telegramUsersRepository.findChatIdByUserId("User1");
+                mensajeAEnviar.append("chatId: "+chatIdleido);
+                enviarMensaje(mensajeAEnviar, chatId);
                 mensajeAEnviar.append("Token: "+getAccessToken(chatId));
                 mensajeAEnviar.append("\nUserId: "+getUserId(chatId));
                 enviarMensaje(mensajeAEnviar, chatId);
@@ -317,46 +344,54 @@ public class TacsBot extends TelegramLongPollingBot {
     public void enviarMensajeConTecladoComandos(StringBuilder mensajeAEnviar, long chatId){
 
 
-        KeyboardButton keyboardButton1 = new KeyboardButton();
-        keyboardButton1.setText("/ayuda");
+        KeyboardButton ayudaButton = new KeyboardButton();
+        ayudaButton.setText("/ayuda");
 
-        KeyboardButton keyboardButton2 = new KeyboardButton();
-        keyboardButton2.setText("/buscarevento");
+        KeyboardButton buscareventoButton = new KeyboardButton();
+        buscareventoButton.setText("/buscarevento");
 
-        KeyboardButton keyboardButton3 = new KeyboardButton();
-        keyboardButton3.setText("/revisareventos");
+        KeyboardButton revisareventosButton = new KeyboardButton();
+        revisareventosButton.setText("/revisareventos");
 
-        KeyboardButton keyboardButton4 = new KeyboardButton();
-        keyboardButton4.setText("/agregarevento");
+        KeyboardButton agregareventoButton = new KeyboardButton();
+        agregareventoButton.setText("/agregarevento");
 
-        KeyboardButton keyboardButton5 = new KeyboardButton();
-        keyboardButton5.setText("/crearlista");
+        KeyboardButton crearlistaButton = new KeyboardButton();
+        crearlistaButton.setText("/crearlista");
 
-        KeyboardButton keyboardButton6 = new KeyboardButton();
-        keyboardButton6.setText("/eliminarlista");
+        KeyboardButton eliminarlistaButton = new KeyboardButton();
+        eliminarlistaButton.setText("/eliminarlista");
 
-        KeyboardButton keyboardButton7 = new KeyboardButton();
-        keyboardButton7.setText("/login");
+        KeyboardButton cambiarnombrelistaButton = new KeyboardButton();
+        cambiarnombrelistaButton.setText("/cambiarnombrelista");
 
-        KeyboardRow keyboardRow = new KeyboardRow();
-        keyboardRow.add(keyboardButton1);
+        KeyboardButton crearalarmaButton = new KeyboardButton();
+        crearalarmaButton.setText("/crearalarma");
+
+        KeyboardButton loginButton = new KeyboardButton();
+        loginButton.setText("/login");
+
+        KeyboardRow keyboardRow1 = new KeyboardRow();
+        keyboardRow1.add(ayudaButton);
 
         KeyboardRow keyboardRow2 = new KeyboardRow();
-        keyboardRow2.add(keyboardButton2);
+        keyboardRow2.add(buscareventoButton);
+        keyboardRow2.add(crearalarmaButton);
 
         KeyboardRow keyboardRow3 = new KeyboardRow();
-        keyboardRow3.add(keyboardButton3);
-        keyboardRow3.add(keyboardButton4);
+        keyboardRow3.add(revisareventosButton);
+        keyboardRow3.add(agregareventoButton);
 
         KeyboardRow keyboardRow4 = new KeyboardRow();
-        keyboardRow4.add(keyboardButton5);
-        keyboardRow4.add(keyboardButton6);
+        keyboardRow4.add(crearlistaButton);
+        keyboardRow4.add(eliminarlistaButton);
+        keyboardRow4.add(cambiarnombrelistaButton);
 
         KeyboardRow keyboardRow5 = new KeyboardRow();
-        keyboardRow5.add(keyboardButton7);
+        keyboardRow5.add(loginButton);
 
         List<KeyboardRow> keyboardRowArrayList = new ArrayList<>();
-        keyboardRowArrayList.add(keyboardRow);
+        keyboardRowArrayList.add(keyboardRow1);
         keyboardRowArrayList.add(keyboardRow2);
         keyboardRowArrayList.add(keyboardRow3);
         keyboardRowArrayList.add(keyboardRow4);
@@ -452,7 +487,17 @@ public class TacsBot extends TelegramLongPollingBot {
         return mensajeAEnviar;
     }
 
-    public void mostrarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
+    public void crearAlarma(String nameAlarm, Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId) {
+
+        Optional<LocalDate> changed = Optional.of(LocalDate.now().minusDays(1));
+
+        SearchDTO searchDTO = new SearchDTO(keyword, categories, startDate, endDate, changed, nameAlarm);//por ser la primera vez, le mando el changed como la fecha de inicio
+
+
+        EventacsCommands.createAlarm(getAccessToken(chatId),getUserId(chatId),searchDTO);
+    }
+
+        public void mostrarEventos(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate,Optional<BigInteger> page, long chatId){
 
         StringBuilder mensajeAEnviar = new StringBuilder ();
         EventsResponse eventsResponse = EventacsCommands.getEvents(getAccessToken(chatId), keyword, categories, startDate, endDate, page);
@@ -545,11 +590,139 @@ public class TacsBot extends TelegramLongPollingBot {
 
     public void crearLista(String nombreLista, long chatId) {
         EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
-        EventacsCommands.createEventList(getAccessToken(chatId), eventList);
-        //eventService.createEventList(eventList);
+        //EventacsCommands.createEventList(getAccessToken(chatId), eventList);
+        eventService.createEventList(eventList);
+    }
+
+    public void cambiarNombreLista(String listId, String newName, long chatId) {
+        //EventListCreationDTO eventList = new EventListCreationDTO(getUserId(chatId), nombreLista);
+        //EventacsCommands.changeListName(getAccessToken(chatId), listId, new ListName(newName));
+        eventService.changeListName(Long.valueOf(listId), newName);
     }
 
     public void eliminarLista(String listaId, long chatId) {
-        EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
+        //EventacsCommands.deleteEventList(getAccessToken(chatId),listaId);
+        eventService.deleteEventList(Long.valueOf(listaId));
     }
+
+    @Scheduled(cron="0 0 11 * * *") //Se ejecuta todos los dias a las 11:00:00
+    //@Scheduled(cron="0 47 10 10 12 ?") //Para probar en una hora determinada de un dia determinado
+    private void avisarEventosNuevos(){
+
+        List<AlarmDAO> alarmDAOS = new ArrayList<>();
+
+        //System.out.println("hola");
+
+        //get todas las alarmas
+        alarmDAOS = userService.getAllAlarms();
+
+        //for each para atender cada alarma
+
+        alarmDAOS.forEach(a->ejecutarAlarma(a));
+
+    }
+
+    private void ejecutarAlarma(AlarmDAO alarmDAO){
+
+        String userId = alarmDAO.getUserId();
+        SearchDAO searchDAO = alarmDAO.getSearch();
+        Optional<String> keyword;
+        Optional<List<String>> categories;
+        Optional<LocalDate> startDate;
+        Optional<LocalDate> endDate;
+
+        String alarmName = searchDAO.getAlarmName();
+
+        List<Event> eventList;
+
+        EventsResponse eventsResponse;
+
+        StringBuilder mensajeAEnviar = new StringBuilder();
+
+        if(dateToLocalDate(searchDAO.getEndDate()).isBefore(LocalDate.now())){
+            //Ya no ejecuto la alarma por eventos viejos
+            userService.deleteAlarm(alarmDAO.getAlarmId());
+            return;
+        }
+
+        keyword = (searchDAO.getKeyword().isEmpty()?
+                Optional.empty():Optional.of(searchDAO.getKeyword()));
+        categories = (searchDAO.getCategories().isEmpty()?
+                Optional.empty():Optional.of(searchDAO.getCategories()));
+        startDate = (dateToLocalDate(searchDAO.getStartDate()).isBefore(LocalDate.now())?
+                Optional.of(LocalDate.now()):Optional.of(dateToLocalDate(searchDAO.getStartDate())));
+        endDate = Optional.of(dateToLocalDate(searchDAO.getEndDate()));
+
+
+        //obtener el chat id a partir del userid
+
+        Long chatId = Long.valueOf(telegramUsersRepository.findChatIdByUserId(userId));
+
+        //obtener la mayor fecha de modificacion para el filtrado de mysql (guardar en mongo)
+
+        Date changedDate = searchDAO.getChanged();
+
+        //ejecutar la busqueda con eventos filtrados por fecha de modificacion mayor a la fecha guardada
+
+        //TODO considerar mas que la primer pagina
+        eventsResponse = eventService.getEventsByChangedDate(keyword, categories, startDate, endDate, Optional.of(BigInteger.ONE), dateToLocalDate(changedDate));
+
+        //buscar entre los eventos filtrados la nueva fecha de modificacion mayor y guardarla en mysql
+
+        eventList = eventsResponse.getEvents();
+
+        if(eventList.isEmpty())
+            return; //no hay nuevos eventos
+
+        eventList.sort(ChangedDateComparator.getInstance());//ordena por el maximo changed
+
+        LocalDateTime newChanged = eventList.get(0).getChanged();
+
+        //creo nueva busqueda para update de alarma con el nuevo changed
+        SearchDTO searchDTO = new SearchDTO(Optional.of(searchDAO.getKeyword()),
+                Optional.of(searchDAO.getCategories()),
+                Optional.of(
+                        dateToLocalDate(searchDAO.getStartDate())
+                ),
+                Optional.of(
+                        dateToLocalDate(searchDAO.getEndDate())
+                ),
+                Optional.of(
+                        dateToLocalDate(
+                                localDateTimeToDate(newChanged)//nuevo changed
+                        )
+                ),
+                searchDAO.getAlarmName());
+
+        //creo la alarma para el update
+        AlarmDTO modifiedAlarm = new AlarmDTO(Optional.of(alarmDAO.getAlarmId()), alarmDAO.getUserId(), searchDTO);
+
+        //Date newChangedDate = localDateTimeToDate(eventList.get(0).getChanged());
+
+        //searchDAO.setChanged(newChangedDate);
+
+        //alarmDAO.setSearch(searchDAO);
+
+        userService.updateAlarm(modifiedAlarm);
+
+        //armar el mensaje y enviar eventos nuevos encontrados
+
+        mensajeAEnviar.append("Nuevos eventos encontrados para alarma "+alarmName+"\n\n");
+
+        enviarMensaje(mensajeAEnviar, chatId);
+
+        eventList.forEach(event -> mostrarUnEvento(event, chatId));
+
+    }
+
+    private LocalDate dateToLocalDate(Date date){
+        return LocalDate.from(date.toInstant().atZone(ZoneId.systemDefault()));
+    }
+
+    private Date localDateTimeToDate(LocalDateTime ldt){
+        ZonedDateTime zdt = ldt.atZone(ZoneId.systemDefault());
+        Date output = Date.from(zdt.toInstant());
+        return output;
+    }
+
 }

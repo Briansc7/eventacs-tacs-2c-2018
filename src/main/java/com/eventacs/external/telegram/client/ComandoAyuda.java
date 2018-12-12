@@ -21,6 +21,7 @@ public class ComandoAyuda{
                 mensajeAEnviar.append("/revisareventos para ver eventos de una lista de eventos\n\n");
                 mensajeAEnviar.append("/crearlista para crear una lista de eventos a la cual se le puede agregar eventos posteriormente\n\n");
                 mensajeAEnviar.append("/eliminarlista para eliminar una lista de eventos\n\n");
+                mensajeAEnviar.append("/cambiarnombrelista para cambiar el nombre de una lista de eventos\n\n");
                 mensajeAEnviar.append("/login para hacer login con el nombre de usuario y contraseña de Eventacs\n\n");
                 mensajeAEnviar.append("/cancelar usar dentro de un comando para volver al menú inicial");
                 break;

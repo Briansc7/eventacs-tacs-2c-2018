@@ -2,6 +2,8 @@ package com.eventacs.external.eventbrite.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.api.client.util.DateTime;
+
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class EventResponse {
@@ -9,12 +11,12 @@ public class EventResponse {
     private NameResponse name;
     private String id;
     private DescriptionResponse description;
-
     @JsonProperty("category_id")
     private String category;
     private EventDate start;
     private EventDate end;
     private Logo logo;
+    private String changed;
 
     public EventResponse() {
 
@@ -76,7 +78,15 @@ public class EventResponse {
         this.logo = logo;
     }
 
-    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo) {
+    public String getChanged() {
+        return changed;
+    }
+
+    public void setChanged(String changed) {
+        this.changed = changed;
+    }
+
+    public EventResponse(NameResponse name, String id, DescriptionResponse description, String category, EventDate start, EventDate end, Logo logo, String changed) {
 
         this.name = name;
         this.id = id;
@@ -85,5 +95,6 @@ public class EventResponse {
         this.start = start;
         this.end = end;
         this.logo = logo;
+        this.changed = changed;
     }
 }

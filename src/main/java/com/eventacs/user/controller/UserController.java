@@ -2,18 +2,17 @@ package com.eventacs.user.controller;
 
 import com.eventacs.user.dto.AlarmDTO;
 import com.eventacs.user.dto.SearchDTO;
-import com.eventacs.user.dto.UserInfoDTO;
+import com.eventacs.user.dto.UserDataDTO;
 import com.eventacs.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.QueryParam;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -25,25 +24,34 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
     @ResponseBody
-    public UserInfoDTO getUser(@PathVariable String userId) {
+    public UserDataDTO getUserData(@PathVariable String userId) {
         LOGGER.info("/users/{} [GET]", userId);
         return this.userService.getUser(userId);
     }
 
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+//    @RequestMapping(value = "/users", method = RequestMethod.GET)
+//    @ResponseBody
+//    public List<UserInfoDTO> getUsers() {
+//        LOGGER.info("/users [GET]");
+//        return this.userService.getUsers();
+//    }
+
+    @RequestMapping(value = "/users/{username}/alarms", method = RequestMethod.POST)
     @ResponseBody
-    public List<UserInfoDTO> getUsers() {
-        LOGGER.info("/users [GET]");
-        return this.userService.getUsers();
+    public AlarmDTO createAlarm(@PathVariable String username, @RequestBody (required = false) SearchDTO searchDTO) {
+        LOGGER.info("/users/alarms [POST] {} for {}", searchDTO, username);
+        return this.userService.createAlarm(searchDTO, username);
     }
 
-    @RequestMapping(value = "/users/alarms", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/users/{username}/alarms/count", method = RequestMethod.GET)
     @ResponseBody
-    public AlarmDTO createAlarm(@RequestBody (required = false) SearchDTO searchDTO) {
-        LOGGER.info("/users/alarms [POST] {}", searchDTO);
-        return this.userService.createAlarm(searchDTO);
+    public BigDecimal countAlarms(@PathVariable String username) {
+        LOGGER.info("/users/{}/alarms/count [GET]", username);
+        return this.userService.countAlarms(username);
     }
 
 }

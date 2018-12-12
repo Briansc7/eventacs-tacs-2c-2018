@@ -1,23 +1,30 @@
 package com.eventacs.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SearchDTO {
 
     private Optional<String> keyword;
     private Optional<List<String>> categories;
     private Optional<LocalDate> startDate;
     private Optional<LocalDate> endDate;
+    private Optional<LocalDate> changed;
+    private String alarmName;
 
     public SearchDTO() { }
 
-    public SearchDTO(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
+    public SearchDTO(Optional<String> keyword, Optional<List<String>> categories, Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<LocalDate> changed, String alarmName) {
         this.keyword = keyword;
         this.categories = categories;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.changed = changed;
+        this.alarmName = alarmName;
     }
 
     public Optional<String> getKeyword() {
@@ -52,4 +59,15 @@ public class SearchDTO {
         this.endDate = endDate;
     }
 
+    public Optional<LocalDate> getChanged() { return changed;}
+
+    public void setChanged(Optional<LocalDate> changed) { this.changed = changed;}
+
+    public String getAlarmName() {
+        return alarmName;
+    }
+
+    public void setAlarmName(String alarmName) {
+        this.alarmName = alarmName;
+    }
 }

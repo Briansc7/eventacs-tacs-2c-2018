@@ -9,8 +9,8 @@ import com.eventacs.external.eventbrite.facade.EventbriteFacade;
 import com.eventacs.external.eventbrite.mapping.CategoryMapper;
 import com.eventacs.external.eventbrite.mapping.EventMapper;
 import com.eventacs.external.eventbrite.mapping.PaginationMapper;
-import com.eventacs.external.eventbrite.model.GetAccessToken;
 import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoTelegramUserData;
+import com.eventacs.external.telegram.client.JdbcDao.JdbcDaoUserData;
 import com.eventacs.external.telegram.client.MainTelegram;
 import com.eventacs.external.telegram.client.TacsBot;
 import com.eventacs.httpclient.RestClient;
@@ -31,35 +31,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import org.springframework.data.redis.connection.jedis.JedisConnection;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.core.CrudMethods;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Repository;
-
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 
 @EnableWebMvc
+@EnableScheduling
 @Configuration
 @PropertySource({ "classpath:persistence.properties" })
 @ComponentScan(basePackages = "com.eventacs")
@@ -72,7 +66,10 @@ public class AppConfig {
     private Resource schemaScript;
 
     @Bean
-    public AccountService accountService() { return new AccountService(jdbcDaoTelegramUserData()); }
+    public UsersRepository usersRepository() { return new UsersRepository(jdbcDaoUserData()); }
+
+    @Bean
+    public AccountService accountService() { return new AccountService(jdbcDaoUserData()); }
 
     @Bean
     public UserService userService() { return new UserService(usersRepository(), usersMapper(), alarmsRepository(eventacsMongoClient()), alarmsMapper(), eventListsMapper()); }
@@ -89,10 +86,10 @@ public class AppConfig {
     @Bean
     public AlarmsRepository alarmsRepository(EventacsMongoClient eventacsMongoClient) { return new AlarmsRepository(eventacsMongoClient); }
 
-    @Bean
-    public UsersRepository usersRepository() {
-        return new UsersRepository();
-    }
+//    @Bean
+//    public UsersRepository usersRepository() {
+//        return new UsersRepository();
+//    }
 
     @Bean
     public EventService eventService() {
@@ -137,12 +134,16 @@ public class AppConfig {
         return mapper;
     }
 
+    JdbcDaoUserData jdbcDaoUserData() { return new JdbcDaoUserData(dataSourceUsers()); };
+
     @Bean
     JdbcDaoTelegramUserData jdbcDaoTelegramUserData() { return new JdbcDaoTelegramUserData(dataSource()); };
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory(){
-        return new JedisConnectionFactory();
+    JedisConnectionFactory jedisConnectionFactory()
+    {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration("redis",6379);
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
@@ -152,6 +153,10 @@ public class AppConfig {
         template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
         return template;
     }
+    /*
+    @Repository
+    public interface UsersRepo extends CrudRepository<Long,String>  {
+    }*/
 
     @Bean
     public TelegramUsersRepositoryImpl telegramUsersRepositoryImpl() {
@@ -159,7 +164,7 @@ public class AppConfig {
     }
 
     @Bean
-    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl()); }
+    public TacsBot tacsBot() { return new TacsBot(eventService(), telegramUsersRepositoryImpl(), userService()); }
 
     @Bean
     public MainTelegram mainTelegram() { return new MainTelegram(tacsBot()); }
@@ -173,6 +178,7 @@ public class AppConfig {
     @Bean
     public EventacsMongoClient eventacsMongoClient() { return new EventacsMongoClient(); }
 
+    @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
         final DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
@@ -197,6 +203,14 @@ public class AppConfig {
     }
 
     @Bean
+    public DataSource dataSourceUsers() {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(env.getProperty("jdbc.urlUsers"));
+        dataSource.setUsername(env.getProperty("jdbc.user"));
+        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        return dataSource;
+    }
+@Bean
     public MongoContext mongoContext() { return new MongoContext();}
-
 }
