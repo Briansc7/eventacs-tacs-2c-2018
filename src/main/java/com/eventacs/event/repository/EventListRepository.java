@@ -10,15 +10,12 @@ import com.eventacs.event.exception.EventListNotFound;
 import com.eventacs.event.model.Event;
 import com.eventacs.event.model.EventList;
 import com.eventacs.mongo.EventacsMongoClient;
-import com.eventacs.user.dto.UserInfoDTO;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,14 +38,14 @@ public class EventListRepository {
     }
 
     public List<EventList> getEventListByUserId(String userId) {
-        Map<String, String> conditions = new HashMap<>();
+        Map<String, Object> conditions = new HashMap<>();
         conditions.put("userId", userId);
 
         List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
         return eventLists.stream().map(el -> eventListMapper.toModel(el)).collect(Collectors.toList());
     }
 
-    public void createEventList(EventListCreationDTO eventListCreationDTO, String listId) {
+    public void createEventList(EventListCreationDTO eventListCreationDTO, Long listId) {
 
         try {
             getEventListByListId(listId);
@@ -65,7 +62,7 @@ public class EventListRepository {
         }
     }
 
-    public void addEventsToEventList(Event event, String listId) {
+    public void addEventsToEventList(Event event, Long listId) {
         BasicDBList dbEvents = new BasicDBList();
         List<Event> events = getEventsListByListId(listId);
 
@@ -98,23 +95,23 @@ public class EventListRepository {
     }
 
 
-    public String deleteEventList(String listId) {
+    public Long deleteEventList(Long listId) {
         return eventacsMongoClient.deleteEventList(listId);
     }
 
-    public String changeListName(String listId, String listName) {
+    public Long changeListName(Long listId, String listName) {
         Map<String, Object> documentElements =  new HashMap<>();
         documentElements.put("listName", listName);
         return eventacsMongoClient.update("listId", listId, documentElements, "eventLists");
     }
 
 
-    public Integer listIdGenerator() {
+    public Long listIdGenerator() {
         return eventacsMongoClient.listIdGenerator();
     }
 
-    public List<Event> getEventsListByListId(String listId) {
-        Map<String, String> conditions = new HashMap<>();
+    public List<Event> getEventsListByListId(Long listId) {
+        Map<String, Object> conditions = new HashMap<>();
         conditions.put("listId", listId);
 
         List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");
@@ -127,8 +124,8 @@ public class EventListRepository {
         }
     }
 
-    public EventList getEventListByListId(String listId) {
-        Map<String, String> conditions = new HashMap<>();
+    public EventList getEventListByListId(Long listId) {
+        Map<String, Object> conditions = new HashMap<>();
         conditions.put("listId", listId);
 
         List<EventListDTO> eventLists = eventacsMongoClient.getElementsAs(EventListDTO.class, conditions, "eventLists", "eventacs");

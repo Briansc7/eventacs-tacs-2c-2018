@@ -91,7 +91,7 @@ public class Validaciones {
 
         mensajeDeError.append("El id de lista ingresado no es válido");
 
-        return listas.stream().anyMatch(l->l.getListId().equalsIgnoreCase(listId));
+        return listas.stream().anyMatch(l->l.getListId().equals(listId));
 
     }
 

@@ -4,12 +4,12 @@ package com.eventacs.event.model;
 import java.util.List;
 
 public class EventList {
-    private String listId;
+    private Long listId;
     private String listName;
     private String userName;
     private List<Event> events;
 
-    public EventList(String listId, String listName, List<Event> events) {
+    public EventList(Long listId, String listName, List<Event> events) {
         this.listId = listId;
         this.listName = listName;
         this.events = events;
@@ -26,11 +26,11 @@ public class EventList {
         this.userName = userName;
     }
 
-    public String getListId() {
+    public Long getListId() {
         return listId;
     }
 
-    public void setListId(String listId) {
+    public void setListId(Long listId) {
         this.listId = listId;
     }
 

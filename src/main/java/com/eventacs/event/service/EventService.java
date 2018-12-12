@@ -41,8 +41,8 @@ public class EventService {
         return this.eventbriteFacade.getEventsByChangedDate(keyword, categories, startDate, endDate, changedDate, page);
     }
 
-    public String createEventList(EventListCreationDTO eventListCreation) {
-        String listId = listIdGenerator();
+    public Long createEventList(EventListCreationDTO eventListCreation) {
+        Long listId = listIdGenerator();
         try {
             userService.addEventList(eventListCreation, listId);
             return listId;
@@ -51,16 +51,16 @@ public class EventService {
         }
     }
 
-    public void addEvent(String listId, String eventId, String userId) {
+    public void addEvent(Long listId, String eventId, String userId) {
         Event event = getEvent(eventId);
         userService.addEvent(listId, event, userId);
     }
 
-    public String changeListName(String listId, String listName) {
+    public Long changeListName(Long listId, String listName) {
         return userService.changeListName(listId, listName);
     }
 
-    public String deleteEventList(String listId) {
+    public Long deleteEventList(Long listId) {
         return userService.deleteEventList(listId);
     }
 
@@ -92,7 +92,7 @@ public class EventService {
     }
 
 
-    public List<Event> getSharedEvents(String listId, String anotherListId) {
+    public List<Event> getSharedEvents(Long listId, Long anotherListId) {
         // TODO por ahora usar este user generico
         //UserInfoDTO user = this.userService.getUsers().stream().findFirst().orElseThrow(() -> new UserNotFound("Repository without users"));
 
@@ -119,8 +119,8 @@ public class EventService {
 
     }
 
-    private String listIdGenerator() {
-        return eventListRepository.listIdGenerator().toString();
+    private Long listIdGenerator() {
+        return eventListRepository.listIdGenerator();
     }
 
     public Event getEvent(String eventId) {
@@ -131,10 +131,8 @@ public class EventService {
         return this.eventbriteFacade.getCategories();
     }
 
-    public EventList getEventList(String listId) {
-        //return eventListRepository.getEventListByUserId(userId);
+    public EventList getEventList(Long listId) {
         return eventListRepository.getEventListByListId(listId);
-      // Si no devuelve nada el front debería decirle al chabon que cree una eventlist
     }
 
     public List<EventList> getEventLists(String userId) {

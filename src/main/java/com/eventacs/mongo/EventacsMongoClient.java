@@ -40,7 +40,7 @@ public class EventacsMongoClient {
         return database.getCollection(collection);
     }
 
-    public <T> List<T> getElementsAs(Class<T> clazz, Map<String, String> conditions, String collectionName, String dbName) {
+    public <T> List<T> getElementsAs(Class<T> clazz, Map<String, Object> conditions, String collectionName, String dbName) {
         List<DBObject> queryResult = new ArrayList<>();
         BasicDBObject searchQuery = new BasicDBObject();
         Datastore datastore = this.getDatastore(dbName);
@@ -93,8 +93,8 @@ public class EventacsMongoClient {
         collection.insert(document);
     }
 
-    public String deleteEventList(String listId) {
-        Map<String, String> conditions = new HashMap<>();
+    public Long deleteEventList(Long listId) {
+        Map<String, Object> conditions = new HashMap<>();
         BasicDBObject deleteQuery = new BasicDBObject();
         DBCollection collection = this.getCollection("eventLists");
 
@@ -111,7 +111,7 @@ public class EventacsMongoClient {
         }
     }
 
-    public String update(String idName, String id, Map<String, Object> documentElements, String collectionName) {
+    public Long update(String idName, Long id, Map<String, Object> documentElements, String collectionName) {
         BasicDBObject query = new BasicDBObject();
         DBCollection collection = this.getCollection(collectionName);
         BasicDBObject newDocument = new BasicDBObject();
@@ -126,7 +126,7 @@ public class EventacsMongoClient {
         return id;
     }
 
-    public String addEvents(String idName, String id, BasicDBList documentElements, String collectionName) {
+    public Long addEvents(String idName, Long id, BasicDBList documentElements, String collectionName) {
         BasicDBObject query = new BasicDBObject();
         DBCollection collection = this.getCollection(collectionName);
         BasicDBObject updateObject = new BasicDBObject();
@@ -140,10 +140,10 @@ public class EventacsMongoClient {
         return id;
     }
 
-    public Integer listIdGenerator() {
+    public Long listIdGenerator() {
 
         if(getCollection("eventLists").count() == 0){
-            return 1;
+            return 1L;
         } else {
             List<DBObject> queryResult = new ArrayList<>();
             BasicDBObject sorting = new BasicDBObject();
@@ -164,16 +164,13 @@ public class EventacsMongoClient {
 
             EventListDTO eventListDTO = morphia.fromDBObject(datastore, EventListDTO.class, queryResult.get(0));
 
-            String id = eventListDTO.getListId();
-
-            int lastId = Integer.parseInt(id);
-            return lastId + 1;
+            return eventListDTO.getListId() + 1L;
         }
     }
 
-    public Integer alarmIdGenerator() {
+    public Long alarmIdGenerator() {
         if(getCollection("alarms").count() == 0){
-            return 1;
+            return 1L;
         } else {
             List<DBObject> queryResult = new ArrayList<>();
             BasicDBObject sorting = new BasicDBObject();
@@ -190,9 +187,7 @@ public class EventacsMongoClient {
 
             morphia.map(AlarmDAO.class);
 
-            int lastId = Integer.parseInt(morphia.fromDBObject(datastore, AlarmDAO.class, queryResult.get(0)).getAlarmId());
-
-            return lastId + 1;
+            return morphia.fromDBObject(datastore, AlarmDAO.class, queryResult.get(0)).getAlarmId() + 1L;
         }
     }
 
@@ -200,8 +195,8 @@ public class EventacsMongoClient {
         this.database.dropDatabase();
     }
 
-    public void deleteAlarm(String alarmId) {
-        Map<String, String> conditions = new HashMap<>();
+    public void deleteAlarm(Long alarmId) {
+        Map<String, Object> conditions = new HashMap<>();
         BasicDBObject deleteQuery = new BasicDBObject();
         DBCollection collection = this.getCollection("alarms");
 

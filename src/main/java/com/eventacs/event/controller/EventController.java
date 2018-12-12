@@ -56,35 +56,35 @@ public class EventController {
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.GET)
     @ResponseBody
-    public EventList getEventList(@PathVariable String listId) {
+    public EventList getEventList(@PathVariable Long listId) {
         LOGGER.info("/eventacs/event-lists/{} [GET]", listId);
         return this.eventService.getEventList(listId);//TODO obtener el userId de la sesión
     }
 
     @RequestMapping(value = "/event-lists", method = RequestMethod.POST)
     @ResponseBody
-    public String createEventList(@RequestBody EventListCreationDTO eventListCreation){
+    public Long createEventList(@RequestBody EventListCreationDTO eventListCreation){
         LOGGER.info("/eventacs/event-lists [POST] With: userId: {} listName: {}", eventListCreation.getUserId(), eventListCreation.getListName());
         return this.eventService.createEventList(eventListCreation);
     }
 
     @RequestMapping(value = "/event-lists/{listId}/{eventId}", method = RequestMethod.PUT)
     @ResponseBody
-    public void addEvent(@PathVariable String listId, @PathVariable String eventId, @RequestBody UserId userId) {
+    public void addEvent(@PathVariable Long listId, @PathVariable String eventId, @RequestBody UserId userId) {
         LOGGER.info("/eventacs/event-lists/{}/{} [PUT] for this userId: {}", listId, eventId, userId);
         this.eventService.addEvent(listId, eventId, userId.getUserId());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.PUT)
     @ResponseBody
-    public String changeListName(@PathVariable String listId, @RequestBody ListName listName) {
+    public Long changeListName(@PathVariable Long listId, @RequestBody ListName listName) {
         LOGGER.info("/eventacs/event-lists/{} [PUT] With listName: {} ", listId, listName);
         return this.eventService.changeListName(listId, listName.getListName());
     }
 
     @RequestMapping(value = "/event-lists/{listId}", method = RequestMethod.DELETE)
     @ResponseBody
-    public String deleteEventList(@PathVariable String listId) {
+    public Long deleteEventList(@PathVariable Long listId) {
         LOGGER.info("/eventacs/event-lists/{} [DELETE]", listId);
         return this.eventService.deleteEventList(listId);
     }
@@ -108,7 +108,7 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/event-lists/shared-events", method = RequestMethod.GET)
     @ResponseBody
-    public List<Event> getSharedEvents(@RequestParam String listId, @RequestParam String anotherListId) {
+    public List<Event> getSharedEvents(@RequestParam Long listId, @RequestParam Long anotherListId) {
         LOGGER.info("/eventacs/event-lists/shared-events [get] Lists IDs: {}, {}", listId, anotherListId);
         return this.eventService.getSharedEvents(listId, anotherListId);
     }

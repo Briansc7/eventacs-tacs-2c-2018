@@ -62,7 +62,7 @@ public class User {
         this.password = password;
     }
 
-    public void addEventList(String listName, String listId) {
+    public void addEventList(String listName, Long listId) {
         getEvents().add(new EventList(listId, listName, new ArrayList<>()));
     }
 

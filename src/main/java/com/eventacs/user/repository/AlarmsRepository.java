@@ -14,13 +14,13 @@ public class AlarmsRepository {
 
     public AlarmsRepository() {
         this.alarms = new ArrayList<>();
-        this.alarms.add(new Alarm("alarmId1", "userId1", new Search(Optional.of("KeywordTest1"), Optional.of(new ArrayList<>()), Optional.empty(), Optional.empty(), Optional.empty(), "Alarma 1")));
-        this.alarms.add(new Alarm("alarmId2", "userId2", new Search(Optional.of("KeywordTest2"), Optional.of(new ArrayList<>()), Optional.empty(), Optional.empty(), Optional.empty(), "Alarma 2")));
+        this.alarms.add(new Alarm(1L, "userId1", new Search(Optional.of("KeywordTest1"), Optional.of(new ArrayList<>()), Optional.empty(), Optional.empty(), Optional.empty(), "Alarma 1")));
+        this.alarms.add(new Alarm(2L, "userId2", new Search(Optional.of("KeywordTest2"), Optional.of(new ArrayList<>()), Optional.empty(), Optional.empty(), Optional.empty(), "Alarma 2")));
     }
 
     public Optional<Alarm> createAlarm(String userId, SearchDTO searchDTO) {
         // TODO verificar si se agrego correctamente, caso contrario devolver empty
-        Alarm alarm = new Alarm("", userId, new Search(searchDTO.getKeyword(),
+        Alarm alarm = new Alarm(0L, userId, new Search(searchDTO.getKeyword(),
                                                        searchDTO.getCategories(),
                                                        searchDTO.getStartDate(),
                                                        searchDTO.getEndDate(),

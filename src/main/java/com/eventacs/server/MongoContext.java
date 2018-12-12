@@ -19,8 +19,8 @@ public class MongoContext {
         EventListCreationDTO eventList = new EventListCreationDTO("User1", "Favoritos");
         EventListCreationDTO otherEventList = new EventListCreationDTO("User2", "Teatros");
 
-        repository.createEventList(eventList, "1");
-        repository.createEventList(otherEventList, "2");
+        repository.createEventList(eventList, 1L);
+        repository.createEventList(otherEventList, 2L);
     }
 
 }

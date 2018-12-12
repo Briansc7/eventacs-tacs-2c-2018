@@ -13,7 +13,7 @@ public class EventListDTO {
 
     @Id
     private String _id;
-    private String listId;
+    private Long listId;
     private String listName;
     private String userId;
     private List<EventDTO> events;
@@ -22,7 +22,7 @@ public class EventListDTO {
 
     }
 
-    public EventListDTO(String listId, String listName, List<EventDTO> events) {
+    public EventListDTO(Long listId, String listName, List<EventDTO> events) {
         this.listId = listId;
         this.listName = listName;
         this.events = events;
@@ -35,11 +35,11 @@ public class EventListDTO {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-    public String getListId() {
+    public Long getListId() {
         return listId;
     }
 
-    public void setListId(String listId) {
+    public void setListId(Long listId) {
         this.listId = listId;
     }
 

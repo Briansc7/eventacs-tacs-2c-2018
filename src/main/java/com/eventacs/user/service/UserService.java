@@ -71,50 +71,24 @@ public class UserService {
         return alarmsRepository.findAll();
     }
 
-    private String alarmIdGenerator() {
-        return alarmsRepository.alarmIdGenerator().toString();
+    private Long alarmIdGenerator() {
+        return alarmsRepository.alarmIdGenerator();
     }
 
-    public void addEventList(EventListCreationDTO eventListCreation, String listId) {
-        //Optional<User> user = this.usersRepository.getByUserId(eventListCreation.getUserId());
-
-        //if (user.isPresent()) {
-         //   this.usersRepository.update(user.get());
-            this.eventListRepository.createEventList(eventListCreation, listId);
-        //} else {
-         //   throw new UserNotFound("User " + eventListCreation.getUserId() + " not found");
-        //}
+    public void addEventList(EventListCreationDTO eventListCreation, Long listId) {
+        this.eventListRepository.createEventList(eventListCreation, listId);
     }
 
-    public void addEvent(String listId, Event event, String userId) {
-
-        //Optional<User> user = this.usersRepository.getByUserId(userId);
-
-        //List<EventList> eventListList = user.orElseThrow(() -> new UserNotFound("User " + userId + " not found")).getEvents();
-
-        //Optional<EventList> eventListOptional = eventListList.stream().filter(list -> list.getListId().equals(listId)).findFirst();
-
-        //eventListOptional.orElseThrow(() -> new EventListNotFound("ListID " + listId + " not found for User " + userId)).getEvents().add(event);
-
+    public void addEvent(Long listId, Event event, String userId) {
         this.eventListRepository.addEventsToEventList(event, listId);
     }
 
-    public String changeListName(String listId, String listName) {
-        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
+    public Long changeListName(Long listId, String listName) {
         return this.eventListRepository.changeListName(listId, listName);
     }
 
-    public String deleteEventList(String listId) {
-        //TODO más adelante al manejar lo de sesion verificar que el listId que se cambia pertenece al userId que lo pida
-
-        /*List<User> filteredUsers = this.usersRepository.getUsers().stream().filter(u -> u.getEvents().stream().anyMatch(el -> el.getListId().equals(listId))).collect(Collectors.toList());
-        List<EventList> eventListsToBeRemoved = filteredUsers.stream().flatMap(u -> u.getEvents().stream().filter(el -> el.getListId().contains(listId))).collect(Collectors.toList());
-
-        if(filteredUsers.size() == 0 || eventListsToBeRemoved.size() == 0){
-            throw new UserNotFound("User not found for this event list Id" + listId);
-        } else {*/
+    public Long deleteEventList(Long listId) {
             return this.eventListRepository.deleteEventList(listId);
-        //}
     }
 
     public void setEventListRepository(EventListRepository eventListRepository) {
@@ -129,7 +103,7 @@ public class UserService {
         return BigDecimal.valueOf(this.eventListRepository.getEventListByUserId(username).size());
     }
 
-    public void deleteAlarm(String alarmId) {
+    public void deleteAlarm(Long alarmId) {
         alarmsRepository.deleteAlarm(alarmId);
     }
 

@@ -9,24 +9,24 @@ public class AlarmDAO {
   @Id
   private String _id;
 
-  private String alarmId;
+  private Long alarmId;
   private String userId;
   private SearchDAO search;
 
   public AlarmDAO() {
   }
 
-  public AlarmDAO(String alarmId, String userId, SearchDAO search) {
+  public AlarmDAO(Long alarmId, String userId, SearchDAO search) {
     this.alarmId = alarmId;
     this.userId = userId;
     this.search = search;
   }
 
-  public String getAlarmId() {
+  public Long getAlarmId() {
     return alarmId;
   }
 
-  public void setAlarmId(String alarmId) {
+  public void setAlarmId(Long alarmId) {
     this.alarmId = alarmId;
   }
 

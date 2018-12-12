@@ -2,21 +2,21 @@ package com.eventacs.user.model;
 
 public class Alarm {
 
-    private String id;
+    private Long id;
     private String userId;
     private Search search;
 
-    public Alarm(String id, String userId, Search search) {
+    public Alarm(Long id, String userId, Search search) {
         this.id = id;
         this.userId = userId;
         this.search = search;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

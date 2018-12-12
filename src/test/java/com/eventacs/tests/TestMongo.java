@@ -38,14 +38,14 @@ public class TestMongo {
 
         eventListCreationDTO = new EventListCreationDTO("User3", "Tiraste gas");
 
-        repository.createEventList(eventListCreationDTO, "100");
-        repository.createEventList(new EventListCreationDTO("User2", "lista"), "200");
+        repository.createEventList(eventListCreationDTO, 100L);
+        repository.createEventList(new EventListCreationDTO("User2", "lista"), 200L);
 
-        repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "100");
-        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "100");
-        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), "200");
-        List<Event> list = repository.getEventsListByListId("100");
-        List<Event> list2 = repository.getEventsListByListId("200");
+        repository.addEventsToEventList(new Event("98765", "alto event", "un re evento", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), 100L);
+        repository.addEventsToEventList(new Event("999", "coco", "teatro", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), 100L);
+        repository.addEventsToEventList(new Event("0000", "avangers", "cine", "900", LocalDateTime.now(), LocalDateTime.now(), "http", LocalDateTime.now(), LocalDateTime.now()), 200L);
+        List<Event> list = repository.getEventsListByListId(100L);
+        List<Event> list2 = repository.getEventsListByListId(200L);
 
         Assert.assertTrue(!list.isEmpty());
         Assert.assertTrue(!list2.isEmpty());
@@ -56,12 +56,12 @@ public class TestMongo {
     public void ChangeEventListNameTest(){
         repository = new EventListRepository(new EventacsMongoClient(), new EventListMapper());
 
-        eventListCreationDTO = new EventListCreationDTO("Figo", "Lista figo");
+        eventListCreationDTO = new EventListCreationDTO("Figo", "ESTAMOS MELOS");
 
-        repository.createEventList(eventListCreationDTO, "10");
-        repository.changeListName("10", "CARP");
+        repository.createEventList(eventListCreationDTO, 10L);
+        repository.changeListName(10L, "CARP");
 
-        EventList eventList = repository.getEventListByListId("10");
+        EventList eventList = repository.getEventListByListId(10L);
 
         Assert.assertEquals("CARP",eventList.getListName());
     }
@@ -72,11 +72,11 @@ public class TestMongo {
 
         eventListCreationDTO = new EventListCreationDTO("Chebi", "Favoritos");
 
-        repository.createEventList(eventListCreationDTO, "99");
-        repository.deleteEventList("99");
+        repository.createEventList(eventListCreationDTO, 99L);
+        repository.deleteEventList(99L);
 
        // Acá debería romper porque no encuentra la event list
-        repository.getEventListByListId("99");
+        repository.getEventListByListId(99L);
 
     }
 
@@ -86,7 +86,7 @@ public class TestMongo {
 
         searchDTO = new SearchDTO(Optional.empty(), Optional.empty(), Optional.of(LocalDate.now()), Optional.of(LocalDate.now()), Optional.of(LocalDate.now()), "AlarmaFigo");
 
-        alarmsRepository.createAlarm(searchDTO,"User1", "1");
+        alarmsRepository.createAlarm(searchDTO,"User1", 1L);
         List<AlarmDAO> alarms = alarmsRepository.findAll();
         Assert.assertEquals(1, alarms.size());
     }

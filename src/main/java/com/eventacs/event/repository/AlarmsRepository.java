@@ -28,9 +28,9 @@ public class AlarmsRepository {
         this.eventacsMongoClient = eventacsMongoClient;
     }
 
-    public AlarmDTO createAlarm(SearchDTO searchDTO, String userId, String alarmId) {
+    public AlarmDTO createAlarm(SearchDTO searchDTO, String userId, Long alarmId) {
         Map<String, Object> documentElements =  new HashMap<>();
-        Map<String, String> conditions =  new HashMap<>();
+        Map<String, Object> conditions =  new HashMap<>();
         Map<String, Object> searchJson =  new HashMap<>();
 
         documentElements.put("userId", userId);
@@ -67,7 +67,7 @@ public class AlarmsRepository {
     }
 
     public List<AlarmDAO> findAllByUserId(String userId) {
-        Map<String, String> conditions = new HashMap<>();
+        Map<String, Object> conditions = new HashMap<>();
         conditions.put("userId", userId);
         return this.eventacsMongoClient.getElementsAs(AlarmDAO.class, conditions, "alarms", "eventacs");
     }
@@ -77,15 +77,15 @@ public class AlarmsRepository {
         return this.eventacsMongoClient.getAllElements(AlarmDAO.class, "alarms", "eventacs");
     }
 
-    public Integer alarmIdGenerator() {
+    public Long alarmIdGenerator() {
         return eventacsMongoClient.alarmIdGenerator();
     }
 
-    public void deleteAlarm(String alarmId) {
+    public void deleteAlarm(Long alarmId) {
         eventacsMongoClient.deleteAlarm(alarmId);
     }
 
-    public String updateAlarm(AlarmDAO alarmDAO) {
+    public Long updateAlarm(AlarmDAO alarmDAO) {
         Map<String, Object> documentElements =  new HashMap<>();
         Map<String, Object> searchJson =  new HashMap<>();
 
