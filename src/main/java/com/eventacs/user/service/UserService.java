@@ -107,8 +107,8 @@ public class UserService {
         alarmsRepository.deleteAlarm(alarmId);
     }
 
-    public void updateAlarm(AlarmDAO alarmDAO) {
-        alarmsRepository.updateAlarm(alarmDAO);
+    public void updateAlarm(AlarmDTO alarmDTO) {
+        alarmsRepository.updateAlarm(alarmDTO);
     }
 
 }

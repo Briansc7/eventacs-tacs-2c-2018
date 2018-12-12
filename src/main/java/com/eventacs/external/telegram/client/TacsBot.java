@@ -676,6 +676,8 @@ public class TacsBot extends TelegramLongPollingBot {
 
         eventList.sort(ChangedDateComparator.getInstance());//ordena por el maximo changed
 
+        LocalDateTime newChanged = eventList.get(0).getChanged();
+
         //creo nueva busqueda para update de alarma con el nuevo changed
         SearchDTO searchDTO = new SearchDTO(Optional.of(searchDAO.getKeyword()),
                 Optional.of(searchDAO.getCategories()),
@@ -687,7 +689,7 @@ public class TacsBot extends TelegramLongPollingBot {
                 ),
                 Optional.of(
                         dateToLocalDate(
-                                localDateTimeToDate(eventList.get(0).getChanged())//nuevo changed
+                                localDateTimeToDate(newChanged)//nuevo changed
                         )
                 ),
                 searchDAO.getAlarmName());

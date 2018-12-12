@@ -85,23 +85,28 @@ public class AlarmsRepository {
         eventacsMongoClient.deleteAlarm(alarmId);
     }
 
-    public Long updateAlarm(AlarmDAO alarmDAO) {
+    public Long updateAlarm(AlarmDTO alarmDTO) {
         Map<String, Object> documentElements =  new HashMap<>();
         Map<String, Object> searchJson =  new HashMap<>();
 
-        documentElements.put("alarmId", alarmDAO.getAlarmId());
-        documentElements.put("userId", alarmDAO.getUserId());
+        SearchDTO searchDTO = alarmDTO.getSearch();
 
-        searchJson.put("keyword", alarmDAO.getSearch().getKeyword());
-        searchJson.put("alarmName", alarmDAO.getSearch().getAlarmName());
-        searchJson.put("categories", alarmDAO.getSearch().getCategories());
-        searchJson.put("endDate", alarmDAO.getSearch().getEndDate());
-        searchJson.put("startDate", alarmDAO.getSearch().getStartDate());
-        searchJson.put("modifiedStartDate", alarmDAO.getSearch().getChanged());
+        Long alarmId = alarmDTO.getAlarmId().orElseGet(()->Long.valueOf("0"));
+
+        documentElements.put("alarmId", alarmId);
+        documentElements.put("userId", alarmDTO.getUserId());
+
+        searchJson.put("keyword", searchDTO.getKeyword().orElseGet(()->""));
+        searchJson.put("alarmName", searchDTO.getAlarmName());
+        searchJson.put("categories", searchDTO.getCategories().orElseGet(ArrayList::new));
+        searchJson.put("endDate", Date.from(searchDTO.getEndDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(() -> Instant.now().plus(7, ChronoUnit.DAYS))).toString());
+        searchJson.put("startDate", Date.from(searchDTO.getStartDate().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)).toString());
+        searchJson.put("changed", Date.from(searchDTO.getChanged().map(x -> x.atStartOfDay(ZoneId.systemDefault()).toInstant()).orElseGet(Instant::now)).toString());
+
 
         documentElements.put("search", searchJson);
 
-        return eventacsMongoClient.update("alarmId", alarmDAO.getAlarmId(), documentElements, "alarms");
+        return eventacsMongoClient.update("alarmId", alarmId, documentElements, "alarms");
     }
 
     public void dropDatabase(){
