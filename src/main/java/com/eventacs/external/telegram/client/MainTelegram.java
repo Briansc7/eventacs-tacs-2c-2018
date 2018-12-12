@@ -23,7 +23,7 @@ public class MainTelegram {
 
     private void initBot() {
         // Se crea un nuevo Bot API
-/*        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
         try {
             // Se registra el bot
@@ -31,7 +31,7 @@ public class MainTelegram {
             LOGGER.info("BOT REGISTRADO");
         } catch (TelegramApiException e) {
             e.printStackTrace();
-       }*/
+       }
 
     }
 
