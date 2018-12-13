@@ -44,7 +44,7 @@ Username: ``admin``, password: ``admin``, Rol: administrador
 Username: ``admin1``, password: ``111``, Rol: administrador
 
 ### Telegram
-El bot de telegram implementado es **@TacsBot**. 
+El bot de telegram implementado es **@TacsBot**. El bot provee de un teclado con botones para usar los comandos sin necesidad de escribirlos. También según sea necesario se ofrece opciones si/no con el teclado. Para el caso en que sea necesario introducir un id como por ejemplo el id de una lista de eventos, se puede presionar sobre el id del mismo que haya sido recibido por mensaje para enviarlo como si fuera un comando ya que aparecen con una "/".
 
 ### Comandos disponibles Telegram
 
@@ -52,11 +52,17 @@ El bot de telegram implementado es **@TacsBot**.
 
 **/buscarevento:** busca eventos en eventbrite. Pide de forma separada los siguientes parámetros: keyword, Id de categoría (muestra las categorías disponibles y pregunta si se desea agregar otra categoría), fecha de inicio (pide por separado día, mes y año), y fecha de fin. Retorna una lista de eventos con listId y nombre.
 
-**/crearalarma:** crea una alarma que son los parametros de una busqueda para ser realizada después. La búsqueda se realiza todos los días a las 11 am y en caso de encontrar eventos, el usuario recibirá los nuevos eventos encontrados por la alarma por telegram.
+**/crearalarma:** crea una alarma que son los parametros de una busqueda para ser realizada después. La búsqueda se realiza todos los días a las 11 am y en caso de encontrar eventos, el usuario recibirá los nuevos eventos encontrados por la alarma por telegram. Las alarmas que terminen teniendo una fecha de fin de evento menos a la fecha actual, serán eliminadas y no se ejecutarán. Pide los mismos parametros que /buscarevento y además un nombre para la alarma.
 
 **/agregarevento:** agrega un evento a una lista de eventos ya existente del usuario. Los parámetros que pide son Id de la lista de eventos, y Id del evento a agregar (primero usar /buscarevento para saber el listId). 
 
 **/revisareventos:** muestra los eventos de una lista de eventos del usuario. Solamente pide el listId de la lista de eventos a consultar. 
+
+**/crearlista:** crea una lista de eventos a la cual se le pueden agregar eventos. Pide el nombre para la nueva lista.
+
+**/eliminarlista:** elimina una lista de eventos. Pide el id de la lista a eliminar.
+
+**/cambiarnombrelista:** cambia el nombre de una lista de eventos. Pide el id de la lista y el nuevo nombre.
 
 **/login:** verifica a qué usuario de la app pertenece la cuenta de telegram. Sólo es necesario utilizarlo una vez. Pide Usuario y contraseña.
 
