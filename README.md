@@ -90,13 +90,12 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - URI: /signup
 - Body Example:
 ```
-  {
+ {
 "fullName": "nombre completo", 
 "email": "Correo Electronico", 
 "password": "clave",
 "username": "User2"
 }
-
 ```
 
 **Login**
@@ -105,11 +104,10 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - URI: /login
 - Body Example:
 ```
-  {	
+ {	
 "password": "clave",
 "username": "usuario"
 }
-
 ```
 
 **Logout**
@@ -118,16 +116,57 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - URI: /logout
 Utilizar el token del usuario que desea hacer logout
 
-#### Users Management Services
-**Get User**
+#### User Rol Services
+**Get Events**
 - Method: GET
-- Rol: Administrator
-- URI: /users/:userId
+- Rol: User
+- URI: /events?keyword={someCriteria}
 
-**Get Users**
-- Method: GET
-- Rol: Administrator
-- URI: /users
+`Parameters:
+  keyword Optional[String], 
+  endDate Optional[LocalDate], 
+  startDate Optional[LocalDate]
+  categories Optional[List[String]]`
+  
+  **Add event to event list**
+- Method: PUT
+- Rol: User
+- URI: /event-lists/:listId/:eventId
+- Body: userId
+```
+  {
+    "userId": "User1"
+  }
+```
+
+**Create event list**
+- Method: POST
+- Rol: User
+- URI: /event-lists
+- Body Example:
+```
+  {
+    "userId": "User1",
+    "listName": "listNameExample"
+  }
+```
+
+**Delete event list**
+- Method: DELETE
+- Rol: User
+- URI: /event-lists/:listId
+
+**Modify event list**
+- Method: PUT
+- Rol: User
+- URI: /event-lists/:listId
+- Body Example:
+```
+  {
+    "listName": "listNameExample"
+  }
+```
+
 
 **Create Alarm**
 - Method: POST
@@ -148,22 +187,24 @@ Utilizar el token del usuario que desea hacer logout
   startDate Optional[LocalDate]
   categories Optional[List[String]]`
 
-#### Events Services
-**Get Events**
+#### Admin Rol Services
+**Get User info**
 - Method: GET
-- Rol: User
-- URI: /events?keyword={someCriteria}
+- Rol: Administrator
+- URI: /users/:userId
+Response example: ``{"userName":"admin","listCount":0,"alarmsCount":0,"lastAccess":[2018,12,13,0,42,43]}``
 
-`Parameters:
-  keyword Optional[String], 
-  endDate Optional[LocalDate], 
-  startDate Optional[LocalDate]
-  categories Optional[List[String]]`
+**Get shared events between two lists**
+- Method: GET
+- Rol: Administrator
+- URI: /event-lists/shared-events?listId=1&anotherListId=2
+Response example: ``[{"id":"53398893528","name":"Polar Express Party","description":"Grab the kids, grab their favorite P.J's and come join the fun! The fun begins with pictures with Santa, making \"reindeer food,\" writing letters to Santa, eating snacks and more! Then we will settle down and watch the classic movie \"The Polar Express\" and relive the wonders of the season!","category":"116","logoUrl":"https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F53652103%2F7042342723%2F1%2Foriginal.jpg?h=200&w=450&auto=compress&rect=0%2C203%2C694%2C347&s=4cf847eae6112ca6b629bc61147d4649","registerDate":[2018,12,13,0,7,27],"start":[2018,12,15,15,0],"end":[2018,12,15,18,0],"changed":[2018,12,6,18,13,13]}]``
 
 **Get Watchers**
 - Method: GET
 - Rol: Administrator
 - URI: /events/:eventId/watchers
+Response example: ``2``
 
 **Count Events**
 - Method: GET
@@ -172,51 +213,24 @@ Utilizar el token del usuario que desea hacer logout
 
 `Timelapses = TODAY, FEW_DAYS, WEEK, MONTH, ALL`
 
+Response example: ``8``
+
+
+
+
+
+
+
+
+
+
 #### Events Lists Services
-**Add event to event list**
-- Method: PUT
-- Rol: User
-- URI: /event-lists/:listId/:eventId
-- Body: userId
-```
-  {
-    "userId": "User1"
-  }
-```
 
 
-**Create event list**
-- Method: POST
-- Rol: User
-- URI: /event-lists
-- Body Example:
-```
-  {
-    "userId": "User1",
-    "listName": "listNameExample"
-  }
-```
 
-**Modify event list**
-- Method: PUT
-- Rol: User
-- URI: /event-lists/:listId
-- Body Example:
-```
-  {
-    "listName": "listNameExample"
-  }
-```
 
-**Delete event list**
-- Method: DELETE
-- Rol: User
-- URI: /event-lists/:listId
 
-**Get shared events between two lists**
-- Method: GET
-- Rol: Administrator
-- URI: /event-lists/shared-events?listId=1&anotherListId=2
+
 
 
 
