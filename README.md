@@ -31,79 +31,32 @@ Si al probar una nueva versión de la app los cambios no se reflejan al levantar
 Por lo tanto para probar una nueva versión de la app, puede ser necesario correr primero el siguiente comando:
 ``sudo docker rmi $(sudo docker images)``
 
+### Usuarios disponibles para las pruebas
 
-### Pasos viejos sin docker
-### Creacion de certificados
-La variable de entorno JAVA_HOME debe estar seteada
-En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:
+Username: ``User1``, password: ``Pw1``, Rol: usuario
 
- ``keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650``
- (contraseña eventacs, nombre y organización eventacs.com, los demás datos no es necesario completarlos)
- 
- ``keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer``
- (contraseña eventacs)
- 
- ``sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
-(contraseña changeit o changeme)
+Username: ``usuario``, password: ``clave``, Rol: usuario
 
-Si el tercer comando ya había sido ejecutado anteriormente, es necesario primero ejecutar el siguiente comando:
-``sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
-(contraseña changeit o changeme)
+Username: ``usuario2``, password: ``clave``, Rol: usuario
 
- -archivo hosts (ubicado en linux en /etc/hosts) agregar la siguiente linea sin comentar
-``127.0.0.1       eventacs.com    eventacs        localhost``
+Username: ``admin``, password: ``admin``, Rol: administrador
 
- -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados a la carpeta resources del servidor de oauth
-
-###Para los certificados del front
- Crear el directorio certificate (en el raiz de la app, del front). Pararse en ese directorio y ejecutar los siguientes comandos
- 
- ``openssl genrsa -out server.key 2048``
- 
- ``openssl rsa -in server.key -out server.key``
- 
- ``openssl req -sha256 -new -key server.key -out server.csr -subj '/CN=eventacs.com'``
- 
- ``openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt``
- 
- ``cat server.crt server.key > server.pem``
-
-
-### Mysql
-Instalar Mysql y crear el usuario pds. Para ello loguearse en Mysql como root y ejecutar los siguientes comandos:
-
-``CREATE USER 'pds'@'localhost' IDENTIFIED BY 'clave';``
-
-``GRANT ALL PRIVILEGES ON * . * TO 'pds'@'localhost';``
-
-### Install
-Luego de instalar los certificados y crear el usuario de Mysql, realizar los siguientes pasos:
-Primero levantar el servidor de Mongo y el de Redis.
-Luego ubicarse en la carpeta oauth-authorization-server y ejecutar desde una consola el siguiente comando para levantar el servidor de autenticación:
-
-$- ``mvn clean compile exec:java``
-
-Finalmente ubicarse en la carpeta raíz (eventacs-tacs-2c-2018) y ejecutar desde una consola el siguiente comando para levantar el servidor de recursos (levanta al bot de telegram):
-
-$- ``mvn clean compile exec:java``
+Username: ``admin1``, password: ``111``, Rol: administrador
 
 ### Telegram
 El bot de telegram implementado es **@TacsBot**. 
-Para realizar las pruebas, se tienen los siguientes usuarios:
-
-**Usuario 1:**``username: User1, password: Pw1, IdlistaEventos: 2``
-
-**Usuario 2:**``username: User2, password: Pw2, IdlistaEventos: no tiene``
 
 ### Comandos disponibles Telegram
 
 **/ayuda:** muestra los comandos disponibles
 
-**/buscarevento:** busca eventos en eventbrite. Pide de forma separada los siguientes parámetros: keyword, Id de categoría (muestra las categorías disponibles y pregunta si se desea agregar otra categoría), fecha de inicio (pide por separado día, mes y año), y fecha de fin. Retorna una lista de eventos con listId y nombre. Se puede utilizar sin haber usado /login.
+**/buscarevento:** busca eventos en eventbrite. Pide de forma separada los siguientes parámetros: keyword, Id de categoría (muestra las categorías disponibles y pregunta si se desea agregar otra categoría), fecha de inicio (pide por separado día, mes y año), y fecha de fin. Retorna una lista de eventos con listId y nombre.
 
-**/agregarevento:** agrega un evento a una lista de eventos ya existente del usuario. Los parámetros que pide son Id de la lista de eventos, y Id del evento a agregar (primero usar /buscarevento para saber el listId). Requiere que el usuario haya verificado su cuenta de telegram usando el comando /login.
+**/crearalarma:** crea una alarma que son los parametros de una busqueda para ser realizada después. La búsqueda se realiza todos los días a las 11 am y en caso de encontrar eventos, el usuario recibirá los nuevos eventos encontrados por la alarma por telegram.
 
-**/revisareventos:** muestra los eventos de una lista de eventos del usuario. Solamente pide el listId de la lista de eventos a consultar. Requiere que el usuario haya verificado su cuenta de telegram usando el comando /login.
+**/agregarevento:** agrega un evento a una lista de eventos ya existente del usuario. Los parámetros que pide son Id de la lista de eventos, y Id del evento a agregar (primero usar /buscarevento para saber el listId). 
+
+**/revisareventos:** muestra los eventos de una lista de eventos del usuario. Solamente pide el listId de la lista de eventos a consultar. 
 
 **/login:** verifica a qué usuario de la app pertenece la cuenta de telegram. Sólo es necesario utilizarlo una vez. Pide Usuario y contraseña.
 
@@ -294,3 +247,61 @@ En mongo guardamos 2 colecciones con el siguiente formato:
 }
 
 Tenemos dos métodos de idGenerator que cada vez que se crea una entrada, nos devuelve un id único, el alarmId y el listId para manejarlo desde el modelo.
+
+
+
+### Pasos viejos sin docker
+### Creacion de certificados
+La variable de entorno JAVA_HOME debe estar seteada
+En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:
+
+ ``keytool -genkeypair -alias eventacs -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore eventacskeystore.p12 -validity 3650``
+ (contraseña eventacs, nombre y organización eventacs.com, los demás datos no es necesario completarlos)
+ 
+ ``keytool -export -keystore eventacskeystore.p12 -alias eventacs -file eventacsCertificate.cer``
+ (contraseña eventacs)
+ 
+ ``sudo keytool -import -trustcacerts -file eventacsCertificate.cer -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
+(contraseña changeit o changeme)
+
+Si el tercer comando ya había sido ejecutado anteriormente, es necesario primero ejecutar el siguiente comando:
+``sudo keytool -delete -alias eventacs -keystore $(find $JAVA_HOME -name cacerts)``
+(contraseña changeit o changeme)
+
+ -archivo hosts (ubicado en linux en /etc/hosts) agregar la siguiente linea sin comentar
+``127.0.0.1       eventacs.com    eventacs        localhost``
+
+ -copiar los eventacskeystore.p12 y eventacskeystore.p12 generados a la carpeta resources del servidor de oauth
+
+###Para los certificados del front
+ Crear el directorio certificate (en el raiz de la app, del front). Pararse en ese directorio y ejecutar los siguientes comandos
+ 
+ ``openssl genrsa -out server.key 2048``
+ 
+ ``openssl rsa -in server.key -out server.key``
+ 
+ ``openssl req -sha256 -new -key server.key -out server.csr -subj '/CN=eventacs.com'``
+ 
+ ``openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt``
+ 
+ ``cat server.crt server.key > server.pem``
+
+
+### Mysql
+Instalar Mysql y crear el usuario pds. Para ello loguearse en Mysql como root y ejecutar los siguientes comandos:
+
+``CREATE USER 'pds'@'localhost' IDENTIFIED BY 'clave';``
+
+``GRANT ALL PRIVILEGES ON * . * TO 'pds'@'localhost';``
+
+### Install
+Luego de instalar los certificados y crear el usuario de Mysql, realizar los siguientes pasos:
+Primero levantar el servidor de Mongo y el de Redis.
+Luego ubicarse en la carpeta oauth-authorization-server y ejecutar desde una consola el siguiente comando para levantar el servidor de autenticación:
+
+$- ``mvn clean compile exec:java``
+
+Finalmente ubicarse en la carpeta raíz (eventacs-tacs-2c-2018) y ejecutar desde una consola el siguiente comando para levantar el servidor de recursos (levanta al bot de telegram):
+
+$- ``mvn clean compile exec:java``
+
