@@ -270,7 +270,7 @@ Tenemos dos métodos de idGenerator que cada vez que se crea una entrada, nos de
 
 
 ### Pasos viejos sin docker
-### Creacion de certificados
+### Creacion de certificados (se quitaron, ya no se usan)
 La variable de entorno JAVA_HOME debe estar seteada
 En el directorio resources del servidor de recursos borrar los archivos eventacskeystore.p12 y eventacsCertificate.cer, luego ejecutar los siguientes 3 comandos:
 
