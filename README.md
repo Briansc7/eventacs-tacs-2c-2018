@@ -114,6 +114,7 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Method: POST
 - Rol: User
 - URI: /logout
+
 Utilizar el token del usuario que desea hacer logout
 
 #### User Rol Services
