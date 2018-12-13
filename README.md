@@ -198,18 +198,21 @@ Utilizar el token del usuario que desea hacer logout
 - Method: GET
 - Rol: Administrator
 - URI: /users/:userId
+
 Response example: ``{"userName":"admin","listCount":0,"alarmsCount":0,"lastAccess":[2018,12,13,0,42,43]}``
 
 **Get shared events between two lists**
 - Method: GET
 - Rol: Administrator
 - URI: /event-lists/shared-events?listId=1&anotherListId=2
+
 Response example: ``[{"id":"53398893528","name":"Polar Express Party","description":"Grab the kids, grab their favorite P.J's and come join the fun! The fun begins with pictures with Santa, making \"reindeer food,\" writing letters to Santa, eating snacks and more! Then we will settle down and watch the classic movie \"The Polar Express\" and relive the wonders of the season!","category":"116","logoUrl":"https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F53652103%2F7042342723%2F1%2Foriginal.jpg?h=200&w=450&auto=compress&rect=0%2C203%2C694%2C347&s=4cf847eae6112ca6b629bc61147d4649","registerDate":[2018,12,13,0,7,27],"start":[2018,12,15,15,0],"end":[2018,12,15,18,0],"changed":[2018,12,6,18,13,13]}]``
 
 **Get Watchers**
 - Method: GET
 - Rol: Administrator
 - URI: /events/:eventId/watchers
+
 Response example: ``2``
 
 **Count Events**
@@ -222,7 +225,7 @@ Response example: ``2``
 Response example: ``8``
 
 
-Mongo
+#### Mongo
 
 En mongo guardamos 2 colecciones con el siguiente formato:
 
