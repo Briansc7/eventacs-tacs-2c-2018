@@ -128,6 +128,8 @@ Utilizar el token del usuario que desea hacer logout
   startDate Optional[LocalDate]
   categories Optional[List[String]]`
   
+  Example: ``http://backend:9000/eventacs/events?keyword=hola&categories=113&startDate=2019-01-01&endDate=2019-01-15``
+  
   **Add event to event list**
 - Method: PUT
 - Rol: User
@@ -156,7 +158,7 @@ Utilizar el token del usuario que desea hacer logout
 - Rol: User
 - URI: /event-lists/:listId
 
-**Modify event list**
+**Modify event list name**
 - Method: PUT
 - Rol: User
 - URI: /event-lists/:listId
@@ -166,7 +168,6 @@ Utilizar el token del usuario que desea hacer logout
     "listName": "listNameExample"
   }
 ```
-
 
 **Create Alarm**
 - Method: POST
@@ -178,14 +179,19 @@ Utilizar el token del usuario que desea hacer logout
     "keyword": "keywordExample",
     "categories": ["105"],
     "startDate": "2018-12-12",
-    "endDate": "2018-12-24"
+    "endDate": "2018-12-24",
+    "alarmName": "name example",
+    "changed": "2018-12-11"
   }
 ```
 `Parameters:
   keyword Optional[String], 
   endDate Optional[LocalDate], 
-  startDate Optional[LocalDate]
-  categories Optional[List[String]]`
+  startDate Optional[LocalDate],
+  categories Optional[List[String]],
+  alarmName String, 
+  changed Optional[LocalDate]`
+  changed corresponde a la maxima fecha de modificacion de entre todos los eventos que fueron encontrados por la alarma. Sirve para identificar nuevos eventos al volver a ejecutar la búsqueda.
 
 #### Admin Rol Services
 **Get User info**
@@ -216,24 +222,6 @@ Response example: ``2``
 Response example: ``8``
 
 
-
-
-
-
-
-
-
-
-#### Events Lists Services
-
-
-
-
-
-
-
-
-
 Mongo
 
 En mongo guardamos 2 colecciones con el siguiente formato:
@@ -242,10 +230,10 @@ En mongo guardamos 2 colecciones con el siguiente formato:
 
 {
 	"_id" : ObjectId("5bfb193b3f751cb4ca497a44"),
-	"listId" : "1",
+	"listId" : "NumberLong(1)",
 	"listName" : "Lista figo",
 	"userId" : "Figo",
-	"events" : {
+	"events" : [{
 		"name" : "alto event",
 		"start" : "Sun Nov 25 18:50:54 ART 2018",
 		"description" : "un re evento",
@@ -253,20 +241,22 @@ En mongo guardamos 2 colecciones con el siguiente formato:
 		"id" : "98765",
 		"category" : "900",
 		"logoUrl" : "http"
-	          }
+	          }]
 }
 
 **Alarms
 
 {
 	"_id" : ObjectId("5bfb193b3f751cb4ca497a44"),
-	"alarmId" : "1",
+	"alarmId" : "NumberLong(1)",
 	"userId" : "Figo",
 	"search" : {
 		"keyword" : "buenos",
 		"start" : "Sun Nov 25 18:50:54 ART 2018",
-		"categories" : [ ],
+		"categories" : ["120"],
 		"end" : "Sun Nov 25 18:50:54 ART 2018",
+		"changed" : "Sun Nov 24 18:50:54 ART 2018",
+		"alarmName": "nombre de alarma"
 	}
 }
 
