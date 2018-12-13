@@ -23,6 +23,8 @@ Una vez terminado se puede probar el bot de telegram mandandole mensajes a @Tacs
 
 También se puede probar el front accediendo desde un navegador a http://frontend:3000/ 
 
+Actualmente funciona desde el frontend login, logout y creación de usuario (el password debe tener una letra mayuscula, una minuscula, un caracter especial, un número y al menos 8 caracteres).
+
 Al finalizar las pruebas, ejecutar:
 ``sudo docker-compose down``
 
@@ -72,10 +74,14 @@ El bot de telegram implementado es **@TacsBot**. El bot provee de un teclado con
 ### Routes
 **Puerto:** 9000 **Basepath:** "/eventacs" 
 Example:
-`localhost:9000/eventacs`
+`backend:9000/eventacs`
 
-Para los métodos POST, se debe agregar el header Content-Type con el valor application/json.
+Para los métodos POST, se debe agregar el header ``Content-Type`` con el valor ``application/json``.
+
+Para los métodos que requieran autenticación, agregar el header ``Authorization`` con el valor ``Bearer <token>``. El token se obtiene al hacer login. Ejemplo ``Bearer 7f04d156-6759-4268-9dc9-df29535b656a``. Para los servicios que requieran de permisos de administrador, se debe utilizar un token correspondiente a un administrador, sino de lo contrario se obtendrá acceso denegado.
+
 El body debe ser escrito en formato json como se ve en los ejemplos a continuación.
+
 
 #### Account Services
 **Signup**
@@ -85,10 +91,12 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - Body Example:
 ```
   {
-    "name": "nameExample",
-    "lastName": "lastNameExample",
-    "password": "encryptedPasswordExample"
-  }
+"fullName": "nombre completo", 
+"email": "Correo Electronico", 
+"password": "clave",
+"username": "User2"
+}
+
 ```
 
 **Login**
@@ -97,22 +105,18 @@ El body debe ser escrito en formato json como se ve en los ejemplos a continuaci
 - URI: /login
 - Body Example:
 ```
-  {
-    "name": "nameExample",
-    "encryptedPassword": "encryptedPasswordExample"
-  }
+  {	
+"password": "clave",
+"username": "usuario"
+}
+
 ```
 
 **Logout**
 - Method: POST
 - Rol: User
 - URI: /logout
-- Body Example:
-```
-  {
-    "sessionCookieId": "sessionCookieIdExample"
-  }
-```
+Utilizar el token del usuario que desea hacer logout
 
 #### Users Management Services
 **Get User**
