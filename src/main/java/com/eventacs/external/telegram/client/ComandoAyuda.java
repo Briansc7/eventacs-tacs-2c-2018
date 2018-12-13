@@ -16,7 +16,8 @@ public class ComandoAyuda{
             case 1:
                 mensajeAEnviar.append("Comandos disponibles:\n\n");
                 mensajeAEnviar.append("/ayuda para mostrar este mensaje\n\n");
-                mensajeAEnviar.append("/buscarevento para buscar eventos\n\n");
+                mensajeAEnviar.append("/buscarevento para buscar eventos según criterios\n\n");
+                mensajeAEnviar.append("/crearalarma para crear una alarma que avise de eventos nuevos encontrados según criterios. Todos los dias a las 11 am se recibirán por telegram los nuevos eventos encontrados\n\n");
                 mensajeAEnviar.append("/agregarevento para agregar eventos a una lista de eventos \n\n");
                 mensajeAEnviar.append("/revisareventos para ver eventos de una lista de eventos\n\n");
                 mensajeAEnviar.append("/crearlista para crear una lista de eventos a la cual se le puede agregar eventos posteriormente\n\n");
