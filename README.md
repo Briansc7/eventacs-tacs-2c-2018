@@ -184,6 +184,7 @@ Utilizar el token del usuario que desea hacer logout
     "changed": "2018-12-11"
   }
 ```
+
 `Parameters:
   keyword Optional[String], 
   endDate Optional[LocalDate], 
@@ -191,6 +192,7 @@ Utilizar el token del usuario que desea hacer logout
   categories Optional[List[String]],
   alarmName String, 
   changed Optional[LocalDate]`
+  
   changed corresponde a la maxima fecha de modificacion de entre todos los eventos que fueron encontrados por la alarma. Sirve para identificar nuevos eventos al volver a ejecutar la búsqueda.
 
 #### Admin Rol Services
